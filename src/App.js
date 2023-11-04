@@ -24,10 +24,6 @@ function App() {
     fetchPokemonData();
   }, []);
 
-  useEffect(() => {
-    setLoaded(true);
-  },[loading])
-
   const loadPokemon = async (data) => {
     const _pokemon = await Promise.all(
       data.map((pokemon) => {
@@ -71,7 +67,7 @@ function App() {
   const scrollOnTop = () => {
     window.scroll({top: 0, behavior: 'instant'});
   }
-  
+
   return (
     <>
       <Navbar />
@@ -83,13 +79,16 @@ function App() {
             <h1>ポケモンデータを取得しました</h1>
             <div className="pokemonCardContainer">
               {pokemonData.map((pokemon, i) => {
+                i === 20 && setLoaded(true);
                 return <Card key={i} pokemon={pokemon} />;
               })}
             </div>
-            <div className="btn">
-              {prevURL !== initialURL && prevURL !== null && (<button onClick={()=> {handlePrevPage(); scrollOnTop();}}>前へ</button>)}
-              {nextURL !== null && (<button onClick={()=> {handleNextPage(); scrollOnTop();}}>次へ</button>)}
-            </div>
+            {Loaded && 
+              <div className="btn">
+                {prevURL !== initialURL && prevURL !== null && (<button onClick={()=> {handlePrevPage(); scrollOnTop();}}>前へ</button>)}
+                {nextURL !== null && (<button onClick={()=> {handleNextPage(); scrollOnTop();}}>次へ</button>)}
+              </div>
+            }
           </>
         )}
       </div>
