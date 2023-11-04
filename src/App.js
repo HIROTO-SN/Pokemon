@@ -34,13 +34,17 @@ function App() {
 
   const handlePrevPage = async () => {
     // 前のページのポケモンデータを表示
-    // setLoading(true);
-    // const prevPokemonData = await getAllPokemon(prevURL);
-    // await loadPokemon(prevPokemonData.results);
-    // setLoading(false);
+    setLoading(true);
+    const prevPokemonData = await getAllPokemon(prevURL);
+    await loadPokemon(prevPokemonData.results);
 
-    // // 更に前のページのポケモンデータを取得しておく
-    // setPrevURL(prevPokemonData.next);
+    // 前の前のページのURLをセット
+    setPrevURL(prevPokemonData.previous);
+
+    // 次のページのURLをセット
+    setNextURL(prevPokemonData.next);
+
+    setLoading(false);
   };
 
   const handleNextPage = async () => {
@@ -49,8 +53,11 @@ function App() {
     const newPokemonData = await getAllPokemon(nextURL);
     await loadPokemon(newPokemonData.results);
 
-    // 次の次のページのポケモンデータを取得しておく
+    // 次の次のページのURLをセット
     setNextURL(newPokemonData.next);
+
+    // 前のページのURLをセット
+    setPrevURL(newPokemonData.previous);
 
     setLoading(false);
   };
@@ -70,8 +77,8 @@ function App() {
               })}
             </div>
             <div className="btn">
-              <button onClick={handlePrevPage}>前へ</button>
-              <button onClick={handleNextPage}>次へ</button>
+              {prevURL !== initialURL && prevURL !== null && (<button onClick={handlePrevPage}>前へ</button>)}
+              {nextURL !== null && (<button onClick={handleNextPage}>次へ</button>)}
             </div>
           </>
         )}

@@ -1,9 +1,9 @@
 import React from "react";
 import "./Card.css";
 
-const Card = ({ no, pokemon }) => {
+const Card = ({ pokemon }) => {
   return (
-    <div className="card" key={no}>
+    <div className="card">
       <div className="img">
         <img src={pokemon.sprites.front_default} />
       </div>
@@ -12,7 +12,7 @@ const Card = ({ no, pokemon }) => {
         <div>タイプ</div>
         {pokemon.types.map((_type) => {
           return (
-            <div>
+            <div key={_type.type.name}>
               <span className="typeName">{_type.type.name}</span>
             </div>
           );
