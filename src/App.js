@@ -1,8 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
 import "./App.css";
 import { getAllPokemon, getPokemon } from "./utils/pokemon.js";
 import Card from "./components/Card/Card.js";
 import Navbar from "./components/Navbar/Navbar.js";
+import Load from "./components/Load/Load.js";
 
 function App() {
   const initialURL = "https://pokeapi.co/api/v2/pokemon";
@@ -10,6 +11,7 @@ function App() {
   const [pokemonData, setPokemonData] = useState([]);
   const [nextURL, setNextURL] = useState("");
   const [prevURL, setPrevURL] = useState(initialURL);
+  const [Loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const fetchPokemonData = async () => {
@@ -21,6 +23,10 @@ function App() {
     };
     fetchPokemonData();
   }, []);
+
+  useEffect(() => {
+    setLoaded(true);
+  },[loading])
 
   const loadPokemon = async (data) => {
     const _pokemon = await Promise.all(
@@ -62,12 +68,16 @@ function App() {
     setLoading(false);
   };
 
+  const scrollOnTop = () => {
+    window.scroll({top: 0, behavior: 'instant'});
+  }
+  
   return (
     <>
       <Navbar />
       <div className="App">
         {loading ? (
-          <h1>ロード中・・・</h1>
+          <Load />
         ) : (
           <>
             <h1>ポケモンデータを取得しました</h1>
@@ -77,8 +87,8 @@ function App() {
               })}
             </div>
             <div className="btn">
-              {prevURL !== initialURL && prevURL !== null && (<button onClick={handlePrevPage}>前へ</button>)}
-              {nextURL !== null && (<button onClick={handleNextPage}>次へ</button>)}
+              {prevURL !== initialURL && prevURL !== null && (<button onClick={()=> {handlePrevPage(); scrollOnTop();}}>前へ</button>)}
+              {nextURL !== null && (<button onClick={()=> {handleNextPage(); scrollOnTop();}}>次へ</button>)}
             </div>
           </>
         )}
