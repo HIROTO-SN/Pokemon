@@ -11,7 +11,6 @@ function App() {
   const [pokemonData, setPokemonData] = useState([]);
   const [nextURL, setNextURL] = useState("");
   const [prevURL, setPrevURL] = useState(initialURL);
-  const [Loaded, setLoaded] = useState(false);
 
   useEffect(() => {
     const fetchPokemonData = async () => {
@@ -76,19 +75,17 @@ function App() {
           <Load />
         ) : (
           <>
-            <h1>ポケモンデータを取得しました</h1>
+            {/* <h1>ポケモンデータを取得しました</h1> */}
             <div className="pokemonCardContainer">
               {pokemonData.map((pokemon, i) => {
-                i === 20 && setLoaded(true);
                 return <Card key={i} pokemon={pokemon} />;
               })}
             </div>
-            {Loaded && 
-              <div className="btn">
-                {prevURL !== initialURL && prevURL !== null && (<button onClick={()=> {handlePrevPage(); scrollOnTop();}}>前へ</button>)}
-                {nextURL !== null && (<button onClick={()=> {handleNextPage(); scrollOnTop();}}>次へ</button>)}
-              </div>
-            }
+            
+            <div className="btn">
+              {prevURL !== initialURL && prevURL !== null && (<button onClick={()=> {handlePrevPage(); scrollOnTop();}}>前へ</button>)}
+              {nextURL !== null && (<button onClick={()=> {handleNextPage(); scrollOnTop();}}>次へ</button>)}
+            </div>
           </>
         )}
       </div>
