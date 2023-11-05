@@ -75,7 +75,7 @@ function App() {
               {pokemonData.map((pokemon, i) => {
                 return <Card key={i} pokemon={pokemon} />;
               })}
-            </div>
+            </div><br />
           </>
         )}
       </div>
