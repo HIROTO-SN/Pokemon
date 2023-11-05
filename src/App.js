@@ -62,14 +62,9 @@ function App() {
 
     setLoading(false);
   };
-
-  const scrollOnTop = () => {
-    window.scroll({top: 0, behavior: 'instant'});
-  }
-
   return (
     <>
-      <Navbar />
+      <Navbar initialURL={initialURL} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} nextURL={nextURL} prevURL={prevURL}/>
       <div className="App">
         {loading ? (
           <Load />
@@ -80,11 +75,6 @@ function App() {
               {pokemonData.map((pokemon, i) => {
                 return <Card key={i} pokemon={pokemon} />;
               })}
-            </div>
-            
-            <div className="btn">
-              {prevURL !== initialURL && prevURL !== null && (<button onClick={()=> {handlePrevPage(); scrollOnTop();}}>前へ</button>)}
-              {nextURL !== null && (<button onClick={()=> {handleNextPage(); scrollOnTop();}}>次へ</button>)}
             </div>
           </>
         )}
