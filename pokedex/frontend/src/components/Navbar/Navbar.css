@@ -13,7 +13,7 @@
 	font-family: "Roboto",arial,sans-serif;
 }
 
-.nav-item {
+li.nav-item {
 	cursor: pointer;
 	height: 87px;
 	margin: 0;
@@ -21,12 +21,10 @@
 	position: relative;
 	width: 14.287571%;
 	display: flex;
-	justify-content: center;
-	align-items: center;
-	flex-direction: column;
+	transition: 0.1s;
 }
 
-.none {
+li.none {
 	cursor: initial;
 	float: left;
 	height: 87px;
@@ -36,9 +34,31 @@
 	width: 5%;
 }
 
-nav.main span.icon {
-	
+/* タイトル部共通 */
+span.title {
+	position: absolute;
+	top: 70%;
+	left: 50%;
+	transform: translate(-50%);
 }
+
+/* icon共通 */
+.icon img {
+	cursor: pointer;
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	transition: 0.1s;
+}
+.icon img:nth-child(2) {
+	opacity: 0%;
+}
+
+
+
+
+
 
 .btn {
 	z-index: 1;
