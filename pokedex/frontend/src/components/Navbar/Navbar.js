@@ -1,19 +1,54 @@
 import "./Navbar.css";
 
-const Navbar = ({initialURL, handlePrevPage, handleNextPage, nextURL, prevURL}) => {
-  
-  const scrollOnTop = () => {
-    window.scroll({top: 0, behavior: 'instant'});
-  }
-	
-	return (
+const Navbar = () => {
+  return (
     <>
-      <nav>ポケモン図鑑
-			</nav>
-			<div className="btn">
-				{prevURL !== initialURL && prevURL !== null && (<button className="btn-mae" onClick={()=> {handlePrevPage(); scrollOnTop();}}>前へ</button>)}
-				{nextURL !== null && (<button onClick={()=> {handleNextPage(); scrollOnTop();}}>次へ</button>)}
-			</div>
+      <nav className="main">
+        <li className="nav-item none"></li>
+        <li className="nav-item">
+          <span className="icon">
+            <img src="./icons/home.png" height="30px" vspace="2px" />
+          </span>
+          <span className="title">Home</span>
+        </li>
+        <li className="nav-item">
+          <span className="icon">
+            <img src="./icons/pokeball.png" height="30px" vspace="2px" />
+          </span>
+          <span className="title">Pokédex</span>
+        </li>
+        <li className="nav-item">
+          <span className="icon">
+            <img src="./icons/gamepad.png" height="30px" vspace="2px" />
+          </span>
+          <span className="title">Video Games & Apps</span>
+        </li>
+        <li className="nav-item">
+          <span className="icon">
+            <img src="./icons/trading.png" height="30px" vspace="2px" />
+          </span>
+          <span className="title">Trading Card Game</span>
+        </li>
+        <li className="nav-item">
+          <span className="icon">
+            <img src="./icons/tv.png" height="30px" vspace="2px" />
+          </span>
+          <span className="title">Pokédex TV</span>
+        </li>
+        <li className="nav-item">
+          <span className="icon">
+            <img src="./icons/trophy.png" height="30px" vspace="2px" />
+          </span>
+          <span className="title">Play! Pokédex Events</span>
+        </li>
+        <li className="nav-item">
+          <span className="icon">
+            <img src="./icons/newspaper-folded.png" height="30px" vspace="2px" />
+          </span>
+          <span className="title">News</span>
+        </li>
+        <li className="nav-item none"></li>
+      </nav>
     </>
   );
 };

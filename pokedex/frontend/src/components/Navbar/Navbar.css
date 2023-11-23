@@ -1,15 +1,43 @@
-nav {
-	background-color: #d69a3f;
-	color: white;
-	height: 65px;
+.main {
+	background-color: #FFF;
+	height: 87px;
 	width: 100%;
-	font-weight: 600;
-	font-size: 25px;
+	display: flex;
+	justify-content: center;
+	z-index: 1;
+	position: fixed;
+	list-style: none;
+	font-weight: 500;
+	color: #464646;
+	font-size: 15px;
+	font-family: "Roboto",arial,sans-serif;
+}
+
+.nav-item {
+	cursor: pointer;
+	height: 87px;
+	margin: 0;
+	overflow: visible;
+	position: relative;
+	width: 14.287571%;
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	z-index: 1;
-	position: fixed;
+	flex-direction: column;
+}
+
+.none {
+	cursor: initial;
+	float: left;
+	height: 87px;
+	margin: 0;
+	overflow: visible;
+	position: relative;
+	width: 5%;
+}
+
+nav.main span.icon {
+	
 }
 
 .btn {
