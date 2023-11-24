@@ -49,38 +49,38 @@ span.title {
 	top: 40%;
 	left: 50%;
 	transform: translate(-50%, -50%);
-	transition: 0.1s;
+	transition: 0.2s;
 }
 .icon img:nth-child(2) {
 	opacity: 0%;
 }
 
-
-
-
-
-
-.btn {
-	z-index: 1;
-	position: fixed;
-	right: 20px;
-	top: 10px;
+/* icon 個別 */
+li.home {
+	border-bottom: 5px solid #AAAAAA;
+	border-bottom-left-radius: 5px;
 }
-
-.btn-mae {
-	margin-right: 5px;;
+li.pokedex {
+	border-bottom: 5px solid #FF0033;
+	border-bottom-left-radius: 5px;
 }
-
-.btn button {
-  padding: 13px 32px;
-  background-color: rgba(48, 9, 189, 0.601);
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s;
+li.game {
+	border-bottom: 5px solid #FF6666;
+	border-bottom-left-radius: 5px;
 }
-
-.btn button:hover {
-  transform: scale(1.05,1.05);
+li.trading {
+	border-bottom: 5px solid #FFCC00;
+	border-bottom-left-radius: 5px;
+}
+li.tv {
+	border-bottom: 5px solid #00BB00;
+	border-bottom-left-radius: 5px;
+}
+li.trophy {
+	border-bottom: 5px solid #0099FF;
+	border-bottom-left-radius: 5px;
+}
+li.news {
+	border-bottom: 5px solid #0000FF;
+	border-bottom-left-radius: 5px;
 }

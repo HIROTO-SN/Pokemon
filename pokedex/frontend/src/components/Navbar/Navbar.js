@@ -7,7 +7,7 @@ const Navbar = () => {
     {name: "pokedex", backgroundCSS: "#FF0033"},
     {name: "game",    backgroundCSS: "#FF6666"},
     {name: "trading", backgroundCSS: "#FFCC00"},
-    {name: "tV",      backgroundCSS: "#00BB00"},
+    {name: "tv",      backgroundCSS: "#00BB00"},
     {name: "trophy",  backgroundCSS: "#0099FF"},
     {name: "news",    backgroundCSS: "#0000FF"}
   ];
