@@ -4,6 +4,7 @@ import { getAllPokemon, getPokemon } from "./utils/pokemon.js";
 import Card from "./components/Card/Card.js";
 import Navbar from "./components/Navbar/Navbar.js";
 import Load from "./components/Load/Load.js";
+import Background from "./components/Background/Background.js";
 
 function App() {
   const initialURL = "https://pokeapi.co/api/v2/pokemon";
@@ -67,7 +68,8 @@ function App() {
   };
   return (
     <>
-      <Navbar/>
+      <Navbar />
+      <Background />
       <div className="App">
         {loading ? (
           <Load />

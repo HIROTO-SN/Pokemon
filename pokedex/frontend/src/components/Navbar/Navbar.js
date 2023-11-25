@@ -35,7 +35,6 @@ const Navbar = () => {
   };
 
   return (
-    <>
       <nav className="main">
         <li className="nav-item none"></li>
         {iconList.map((icon) => (
@@ -65,7 +64,6 @@ const Navbar = () => {
         ))}
         <li className="nav-item none"></li>
       </nav>
-    </>
   );
 };
 
