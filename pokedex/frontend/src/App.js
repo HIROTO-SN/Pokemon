@@ -1,9 +1,10 @@
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { getAllPokemon, getPokemon } from "./utils/pokemon.js";
 import Card from "./components/Card/Card.js";
 import Navbar from "./components/Navbar/Navbar.js";
 import Load from "./components/Load/Load.js";
+import Background from "./components/Background/Background.js";
 
 function App() {
   const initialURL = "https://pokeapi.co/api/v2/pokemon";
@@ -62,9 +63,13 @@ function App() {
 
     setLoading(false);
   };
+  const scrollOnTop = () => {
+    window.scroll({ top: 0, behavior: "instant" });
+  };
   return (
     <>
-      <Navbar initialURL={initialURL} handlePrevPage={handlePrevPage} handleNextPage={handleNextPage} nextURL={nextURL} prevURL={prevURL}/>
+      <Navbar />
+      <Background />
       <div className="App">
         {loading ? (
           <Load />
@@ -75,7 +80,31 @@ function App() {
               {pokemonData.map((pokemon, i) => {
                 return <Card key={i} pokemon={pokemon} />;
               })}
-            </div><br />
+            </div>
+            <br />
+            <div className="btn">
+              {prevURL !== initialURL && prevURL !== null && (
+                <button
+                  className="btn-mae"
+                  onClick={() => {
+                    handlePrevPage();
+                    scrollOnTop();
+                  }}
+                >
+                  前へ
+                </button>
+              )}
+              {nextURL !== null && (
+                <button
+                  onClick={() => {
+                    handleNextPage();
+                    scrollOnTop();
+                  }}
+                >
+                  次へ
+                </button>
+              )}
+            </div>
           </>
         )}
       </div>

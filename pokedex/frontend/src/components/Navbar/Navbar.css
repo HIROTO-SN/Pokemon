@@ -1,38 +1,86 @@
-nav {
-	background-color: #d69a3f;
-	color: white;
-	height: 65px;
+.main {
+	background-color: #FFF;
+	height: 87px;
 	width: 100%;
-	font-weight: 600;
-	font-size: 25px;
 	display: flex;
 	justify-content: center;
-	align-items: center;
 	z-index: 1;
 	position: fixed;
+	list-style: none;
+	font-weight: 500;
+	color: #464646;
+	font-size: 15px;
+	font-family: "Roboto",arial,sans-serif;
 }
 
-.btn {
-	z-index: 1;
-	position: fixed;
-	right: 20px;
-	top: 10px;
+li.nav-item {
+	cursor: pointer;
+	height: 87px;
+	margin: 0;
+	overflow: visible;
+	position: relative;
+	width: 14.287571%;
+	display: flex;
+	transition: 0.1s;
 }
 
-.btn-mae {
-	margin-right: 5px;;
+li.none {
+	cursor: initial;
+	float: left;
+	height: 87px;
+	margin: 0;
+	overflow: visible;
+	position: relative;
+	width: 5%;
 }
 
-.btn button {
-  padding: 13px 32px;
-  background-color: rgba(48, 9, 189, 0.601);
-  border: none;
-  border-radius: 5px;
-  color: white;
-  cursor: pointer;
-  transition: all 0.3s;
+/* タイトル部共通 */
+span.title {
+	position: absolute;
+	top: 70%;
+	left: 50%;
+	transform: translate(-50%);
 }
 
-.btn button:hover {
-  transform: scale(1.05,1.05);
+/* icon共通 */
+.icon img {
+	cursor: pointer;
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	transition: 0.2s;
+}
+.icon img:nth-child(2) {
+	opacity: 0%;
+}
+
+/* icon 個別 */
+li.home {
+	border-bottom: 5px solid #AAAAAA;
+	border-bottom-left-radius: 5px;
+}
+li.pokedex {
+	border-bottom: 5px solid #FF0033;
+	border-bottom-left-radius: 5px;
+}
+li.game {
+	border-bottom: 5px solid #FF6666;
+	border-bottom-left-radius: 5px;
+}
+li.trading {
+	border-bottom: 5px solid #FFCC00;
+	border-bottom-left-radius: 5px;
+}
+li.tv {
+	border-bottom: 5px solid #00BB00;
+	border-bottom-left-radius: 5px;
+}
+li.trophy {
+	border-bottom: 5px solid #0099FF;
+	border-bottom-left-radius: 5px;
+}
+li.news {
+	border-bottom: 5px solid #0000FF;
+	border-bottom-left-radius: 5px;
 }
