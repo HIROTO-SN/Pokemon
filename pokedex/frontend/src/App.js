@@ -5,6 +5,7 @@ import Card from "./components/Card/Card.js";
 import Navbar from "./components/Navbar/Navbar.js";
 import Load from "./components/Load/Load.js";
 import Background from "./components/Background/Background.js";
+import Search from "./components/Search/Search.js";
 
 function App() {
   const initialURL = "https://pokeapi.co/api/v2/pokemon";
@@ -71,42 +72,45 @@ function App() {
       <Navbar />
       <Background />
       <div className="App">
-        {loading ? (
-          <Load />
-        ) : (
-          <>
-            {/* <h1>ポケモンデータを取得しました</h1> */}
-            <div className="pokemonCardContainer">
-              {pokemonData.map((pokemon, i) => {
-                return <Card key={i} pokemon={pokemon} />;
-              })}
-            </div>
-            <br />
-            <div className="btn">
-              {prevURL !== initialURL && prevURL !== null && (
-                <button
-                  className="btn-mae"
-                  onClick={() => {
-                    handlePrevPage();
-                    scrollOnTop();
-                  }}
-                >
-                  前へ
-                </button>
-              )}
-              {nextURL !== null && (
-                <button
-                  onClick={() => {
-                    handleNextPage();
-                    scrollOnTop();
-                  }}
-                >
-                  次へ
-                </button>
-              )}
-            </div>
-          </>
-        )}
+        <div>
+          <Search />
+          {loading ? (
+            <Load />
+          ) : (
+            <>
+              {/* <h1>ポケモンデータを取得しました</h1> */}
+              <div className="pokemonCardContainer">
+                {pokemonData.map((pokemon, i) => {
+                  return <Card key={i} pokemon={pokemon} />;
+                })}
+              </div>
+              <br />
+              <div className="btn">
+                {prevURL !== initialURL && prevURL !== null && (
+                  <button
+                    className="btn-mae"
+                    onClick={() => {
+                      handlePrevPage();
+                      scrollOnTop();
+                    }}
+                  >
+                    前へ
+                  </button>
+                )}
+                {nextURL !== null && (
+                  <button
+                    onClick={() => {
+                      handleNextPage();
+                      scrollOnTop();
+                    }}
+                  >
+                    次へ
+                  </button>
+                )}
+              </div>
+            </>
+          )}
+        </div>
       </div>
     </>
   );
