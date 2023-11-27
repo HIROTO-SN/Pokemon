@@ -20,7 +20,7 @@
 
 .search-title {
 	color: #908e8e;
-	font-size: 25px;
+	font-size: 22px;
 	margin-left: 15px;
 }
 
@@ -28,35 +28,33 @@
 	background-color: #1c1b1b;
 	width: 100%;
 	position: relative;
-	height: 150px;
-	padding-top: 30px;
-	padding-bottom: 10px;
+	height: 110px;
+	padding-top: 25px;
+	padding-bottom: 15px;
 	text-align: left;
 }
 
 .search-box-container {
-	display: flex;
-	flex-direction: column;
 	position: relative;
-	transform: translate(-50%);
-	left: 50%;
-	width: 73%;
+	height: 100%;
+	left: 14%;
+	width: 72%;
 	text-align: left;
 	color: white;
 	margin-left: 15px;
-	gap: 10px;
 }
 
 .search-main-title {
-	font-size: 23px;
+	font-size: 20px;
 }
 
 .search-submit {
 	display: flex;
+	margin: 5px 0 5px 0;
 }
 
 .search-main-input {
-	width: 350px;
+	width: 35%;
 	height: 30px;
 	border-radius: 5px;
 	border-color: transparent;
@@ -68,7 +66,7 @@
 	position: relative;
 	text-indent: -9999px;
 	height: 38px;
-	width: 50px;
+	width: 45px;
 	margin-right: -100%;
 	margin-left: 15px;
 	background: #ee6b2f url("../../../public/icons/search.png");
@@ -80,27 +78,77 @@
 	border-radius: 5px;
 }
 
+.search-main-comment {
+	font-size: 13px;
+}
+
 .search-exp {
-	width: 400px;
+	color: white;
 	position: absolute;
-	font-size: 20px;
-	left: 450px;
-	top: 0px;
-	padding: 15px 5px 15px 20px;
+	top: 0%;
+	left: 51%;
+	width: 40%;
+	font-size: 15px;
+	padding: 15px;
 	background-color: #4dad5b;
 	border-radius: 5px;
 }
 
-.search-main-comment {
-	font-size: 18px;
-}
-
 .filter-toggle-wrapper {
 	position: relative;
-	padding: 50px;
-	background-color: #908e8e;
+	padding: 15px;
+	background-color: #616161;
 	border-color: #212121;
 	border-style: solid;
 	border-width: 1px 0 0 0;
 	padding-bottom: 1em;
+}
+
+.toggle-button {
+	display: none;
+}
+
+.filter-label {
+	background-color: #616161;
+	padding: 1em;
+	display: block;
+	color: #fff;
+}
+
+.filter-label::before {
+	content: "";
+	width: 6px;
+	height: 6px;
+	border-top: 2px solid #fff;
+	border-right: 2px solid #fff;
+	-webkit-transform: rotate(45deg);
+	position: absolute;
+	top:calc( 50% - 3px );
+	right: 40%;
+	transform: rotate(135deg);
+}
+
+.filter-label, .toggle-content {
+	-webkit-backface-visibility: hidden;
+	backface-visibility: hidden;
+	transform: translateZ(0);
+	transition: all 0.3s;
+}
+
+.toggle-content {
+	height: 0;
+	margin-bottom:10px;
+	padding:0 20px;
+	overflow: hidden;
+	background-color: #616161;
+}
+
+.toggle-button:checked + .filter-label + .toggle-content {
+	height: auto;
+	padding: 20px;
+	transition: all .3s;
+}
+
+.toggle-button:checked + .filter-label::before {
+	transform: rotate(-45deg) !important;
 }
