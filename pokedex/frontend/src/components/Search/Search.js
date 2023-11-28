@@ -1,5 +1,6 @@
 import React from "react";
 import "./Search.css";
+import AdvancedMenu from "./AdvancedMenu";
 
 const Search = () => {
   return (
@@ -25,14 +26,7 @@ const Search = () => {
 				</div>
 			</div>
 			<div className="filter-toggle-wrapper"></div>
-			<div className="pokemon-filter-toggle">
-				<input id="chkFilter" type="checkbox" class="toggle-button"/>
-				<label class="filter-label" for="chkFilter">Show Advanced Search</label>
-				<div class="toggle-content">
-					<p>【不思議の国のアリスの内容が表示します。】<br/>
-					アリスは川辺でおねえさんのよこにすわって、なんにもすることがないのでとても退屈（たいくつ）しはじめていました。一、二回はおねえさんの読んでいる本をのぞいてみたけれど、そこには絵も会話もないのです。「絵や会話のない本なんて、なんの役にもたたないじゃないの」とアリスは思いました。</p>
-			</div>
-			</div>
+			<AdvancedMenu />
     </div>
   );
 };
