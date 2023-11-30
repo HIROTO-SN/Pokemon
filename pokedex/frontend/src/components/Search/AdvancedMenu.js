@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { IoIosArrowDown } from "react-icons/io";
 import styled from "styled-components";
+import MenuContent from "./MenuContent";
 
 const AdvancedMenu = () => {
   // ↓ js ↓
@@ -10,7 +10,7 @@ const AdvancedMenu = () => {
   };
 
   // ↓ CSS ↓
-  const Main = styled.div`
+  const SearchPart = styled.div`
     margin: auto;
     width: 35%;
     border-bottom-right-radius: 30px;
@@ -29,31 +29,50 @@ const AdvancedMenu = () => {
   `;
 	const Text = styled.span`
 		color: white;
+		font-size: 0.8em;
 	`;
-  const IconLabel = styled.label`
-		padding: 5px;
+  const Cricle = styled.div`
 		cursor: pointer;
-		margin-left: 5px;
-		border-radius: 50%;
 		background-color: white;
-		height: 10px;
-		width: 10px;
+		border-radius: 10px;
+		margin-left: 0.5em;
+		height: 1em;
+		width: 1em;
+	`;
+
+	const Arrow = styled.span`
+		display: inline-block;
+		vertical-align: top;
+		${accordionActive && "margin-top: 30%"};
+		color: #616161;
+		line-height: 1;
+		width: 0.5em;
+		height: 0.5em;
+		border: 0.1em solid currentColor;
+		border-left: 0;
+		border-bottom: 0;
+		box-sizing: border-box;
+		transform: ${!accordionActive ? "translateY(-25%) rotate(135deg)" : "translateY(-25%) rotate(-45deg)"};
+		transition: transform 0.3s ease;
 	`;
 
   return (
-    <Main>
-      <AccordionSpan onClick={toggleAccordion}>
-				<Text>
-					{accordionActive ?
-						"Hide Advanced Search" :
-						"Show Advanced Search"
-				  }
-				</Text>
-				<IconLabel>
-					<IoIosArrowDown/>
-				</IconLabel>
-			</AccordionSpan>
-    </Main>
+		<div>
+			<MenuContent accordionActive={accordionActive}/>
+			<SearchPart>
+				<AccordionSpan onClick={toggleAccordion}>
+					<Text>
+						{accordionActive ?
+							"Hide Advanced Search" :
+							"Show Advanced Search"
+						}
+					</Text>
+					<Cricle>
+						<Arrow/>
+					</Cricle>
+				</AccordionSpan>
+			</SearchPart>
+		</div>
   );
 };
 

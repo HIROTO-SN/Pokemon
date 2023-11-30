@@ -48,7 +48,7 @@ const Navbar = () => {
             <span className="icon">
               <img
                 src={iconPath + icon.name + extension}
-                height="30px"
+                height="30%"
                 vspace="2px"
               />
               <img
