@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { IoIosArrowDown } from "react-icons/io";
 import styled from "styled-components";
+import MenuContent from "./MenuContent";
 
 const AdvancedMenu = () => {
   // ↓ js ↓
@@ -10,7 +10,7 @@ const AdvancedMenu = () => {
   };
 
   // ↓ CSS ↓
-  const Main = styled.div`
+  const SearchPart = styled.div`
     margin: auto;
     width: 35%;
     border-bottom-right-radius: 30px;
@@ -57,19 +57,22 @@ const AdvancedMenu = () => {
 	`;
 
   return (
-    <Main>
-      <AccordionSpan onClick={toggleAccordion}>
-				<Text>
-					{accordionActive ?
-						"Hide Advanced Search" :
-						"Show Advanced Search"
-				  }
-				</Text>
-				<Cricle>
-					<Arrow/>
-				</Cricle>
-			</AccordionSpan>
-    </Main>
+		<div>
+			<MenuContent accordionActive={accordionActive}/>
+			<SearchPart>
+				<AccordionSpan onClick={toggleAccordion}>
+					<Text>
+						{accordionActive ?
+							"Hide Advanced Search" :
+							"Show Advanced Search"
+						}
+					</Text>
+					<Cricle>
+						<Arrow/>
+					</Cricle>
+				</AccordionSpan>
+			</SearchPart>
+		</div>
   );
 };
 
