@@ -6,10 +6,15 @@ import Column2 from './Columns/Column2';
 const MenuContent = ( {accordionActive} ) => {
 
 	const Menu = styled.div`
-		display: ${!accordionActive && "none"}; 
+		display: ${!accordionActive ? "none" : "table"}; 
 		height: ${!accordionActive ? "0px" : "400px"};
 		background-color: #616161;
 		color: white;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		font: inherit;
+		vertical-align: baseline;
 		
 		div:nth-child(1) {
 			margin-left: 15.5525%;
