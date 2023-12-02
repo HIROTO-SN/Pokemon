@@ -1,5 +1,8 @@
 import React from 'react';
 import styled from "styled-components";
+import Block1_1 from './Column1-blocks/Block1_1';
+import Block1_2 from './Column1-blocks/Block1_2';
+import Block1_3 from './Column1-blocks/Block1_3';
 
 const Column1 = () => {
 
@@ -9,35 +12,14 @@ const Column1 = () => {
 		width: 100%;
 		float: left;
 		position: relative;
-		vertical-align: baseline;
+		margin: 1em 0 0 0;
 	`;
-	const h4 = {
-		float: "left",
-    marginRight: "-100%",
-    width: "45.22%"
-	};
-	const help = {
-		float: "left",
-    marginRight: "-100%",
-    width: "49.22%",
-    marginLeft: "50.7825%",
-		fontSize: "90%"
-	};
 
 	return (
 		<>
-			<Block>
-				<h4 style={h4}>Type & Weakness</h4>
-				<div style={help}>
-					<span>
-						<strong>T</strong> = Type
-					</span>
-					<span>
-						<strong>W</strong> = Weakness
-					</span>
-				</div>
-				<div></div>
-			</Block>
+			<Block><Block1_1/></Block>
+			{/* <Block><Block1_2/></Block> */}
+			{/* <Block><Block1_3/></Block> */}
 		</>
 	)
 }
