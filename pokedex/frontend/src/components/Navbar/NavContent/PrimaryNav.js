@@ -1,16 +1,17 @@
+import { Link } from "react-router-dom";
 import "../Navbar.css";
 import React from 'react'
 
 const PrimaryNav = () => {
   const iconPath = "./icons/";
   const iconList = [
-    {name: "home",    backgroundCSS: "#AAAAAA"},
-    {name: "pokedex", backgroundCSS: "#FF0033"},
-    {name: "game",    backgroundCSS: "#FF6666"},
-    {name: "trading", backgroundCSS: "#FFCC00"},
-    {name: "tv",      backgroundCSS: "#00BB00"},
-    {name: "trophy",  backgroundCSS: "#0099FF"},
-    {name: "news",    backgroundCSS: "#0000FF"}
+    {name: "home",    backgroundCSS: "#AAAAAA", link: "/us"},
+    {name: "pokedex", backgroundCSS: "#FF0033", link: "/us/pokedex"},
+    {name: "game",    backgroundCSS: "#FF6666", link: "/us/pokemon-video-games"},
+    {name: "trading", backgroundCSS: "#FFCC00", link: "/us/pokemon-tcg"},
+    {name: "tv",      backgroundCSS: "#00BB00", link: "/us/animation"},
+    {name: "trophy",  backgroundCSS: "#0099FF", link: "/us/play-pokemon"},
+    {name: "news",    backgroundCSS: "#0000FF", link: "/us/pokemon-news"}
   ];
   const extension = ".png";
   const imageBeforeTag = " span img:nth-child(1)"; //イメージ変更前DOM指定用
@@ -46,21 +47,23 @@ const PrimaryNav = () => {
 							onMouseEnter={() => iconOverHandler(icon)}
 							onMouseLeave={() => iconLeaveHandler(icon)}
 						>
-							<span className="icon">
-								<img
-									src={iconPath + icon.name + extension}
-									height="30%"
-									vspace="2px"
-								/>
-								<img
-									src={iconPath + icon.name + "-after" + extension}
-									height="30px"
-									vspace="2px"
-								/>
-							</span>
-							<span className="title">
-								{icon.name.charAt(0).toUpperCase() + icon.name.slice(1)}
-							</span>
+							<Link to={icon.link}>
+								<span className="icon">
+									<img
+										src={iconPath + icon.name + extension}
+										height="30%"
+										vspace="2px"
+									/>
+									<img
+										src={iconPath + icon.name + "-after" + extension}
+										height="30px"
+										vspace="2px"
+									/>
+								</span>
+								<span className="title">
+									{icon.name.charAt(0).toUpperCase() + icon.name.slice(1)}
+								</span>
+							</Link>
 						</li>
 					))}
 			<li className="nav-item none"></li>
