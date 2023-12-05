@@ -1,6 +1,5 @@
 import { Link } from "react-router-dom";
-import "../Navbar.css";
-import React from 'react'
+import React from 'react';
 
 const PrimaryNav = () => {
   const iconPath = "./icons/";
@@ -38,37 +37,35 @@ const PrimaryNav = () => {
 
 	return (
 		<ul>
-			<li className="nav-item none"></li>
-					{iconList.map((icon) => (
-						<li
-							id={icon.name}
-							key={icon.name}
-							className={"nav-item " + icon.name}
-							onMouseEnter={() => iconOverHandler(icon)}
-							onMouseLeave={() => iconLeaveHandler(icon)}
-						>
-							<Link to={icon.link}>
-								<span className="icon">
-									<img
-										src={iconPath + icon.name + extension}
-										height="30%"
-										vspace="2px"
-									/>
-									<img
-										src={iconPath + icon.name + "-after" + extension}
-										height="30px"
-										vspace="2px"
-									/>
-								</span>
-								<span className="title">
-									{icon.name.charAt(0).toUpperCase() + icon.name.slice(1)}
-								</span>
-							</Link>
-						</li>
-					))}
-			<li className="nav-item none"></li>
+			{iconList.map((icon) => (
+				<li
+					id={icon.name}
+					key={icon.name}
+					className={"nav-item " + icon.name}
+					onMouseEnter={() => iconOverHandler(icon)}
+					onMouseLeave={() => iconLeaveHandler(icon)}
+				>
+					<Link to={icon.link}>
+						<span className="icon">
+							<img
+								src={iconPath + icon.name + extension}
+								height="30%"
+								vspace="2px"
+							/>
+							<img
+								src={iconPath + icon.name + "-after" + extension}
+								height="30px"
+								vspace="2px"
+							/>
+						</span>
+						<span className="title">
+							{icon.name.charAt(0).toUpperCase() + icon.name.slice(1)}
+						</span>
+					</Link>
+				</li>
+			))}
 		</ul>
-	)
-}
+	);
+};
 
-export default PrimaryNav
+export default PrimaryNav;
