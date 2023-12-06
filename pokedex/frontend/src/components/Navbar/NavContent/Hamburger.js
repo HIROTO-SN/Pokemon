@@ -2,7 +2,7 @@ import React from 'react'
 
 const Hamburger = () => {
 	return (
-		<div>Hamburger</div>
+		<div style={{display: "none"}}>Hamburger</div>
 	)
 }
 

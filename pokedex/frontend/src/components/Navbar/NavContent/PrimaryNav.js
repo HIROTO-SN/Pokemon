@@ -1,5 +1,8 @@
 import { Link } from "react-router-dom";
 import React from 'react';
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+
 
 const PrimaryNav = () => {
   const iconPath = "./icons/";
@@ -8,7 +11,7 @@ const PrimaryNav = () => {
     {name: "pokedex", backgroundCSS: "#FF0033", link: "/us/pokedex"},
     {name: "game",    backgroundCSS: "#FF6666", link: "/us/pokemon-video-games"},
     {name: "trading", backgroundCSS: "#FFCC00", link: "/us/pokemon-tcg"},
-    {name: "tv",      backgroundCSS: "#00BB00", link: "/us/animation"},
+    {name: "animation", backgroundCSS: "#00BB00", link: "/us/animation"},
     {name: "trophy",  backgroundCSS: "#0099FF", link: "/us/play-pokemon"},
     {name: "news",    backgroundCSS: "#0000FF", link: "/us/pokemon-news"}
   ];
@@ -67,5 +70,10 @@ const PrimaryNav = () => {
 		</ul>
 	);
 };
+
+
+const item = css`
+	
+`
 
 export default PrimaryNav;
