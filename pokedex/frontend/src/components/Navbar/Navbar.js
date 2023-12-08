@@ -1,6 +1,6 @@
 import Hamburger from "./NavContent/Hamburger";
 import PrimaryNav from "./NavContent/PrimaryNav";
-import "./Navbar.css";
+// import "./Navbar.css";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
@@ -33,21 +33,6 @@ const contentWrapper =css`
   display: block;
   margin: 0 auto;
   width: 100%;
-
-  >ul {
-    display: unset;
-    overflow: visible;
-    list-style: none;
-  }
-  >ul li {
-    cursor: pointer;
-    float: left;
-    height: 87px;
-    margin: 0;
-    overflow: visible;
-    position: relative;
-    width: 14.28571%;
-  }
 `
-
+      
 export default Navbar;
