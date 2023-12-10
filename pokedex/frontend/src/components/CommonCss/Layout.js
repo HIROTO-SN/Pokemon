@@ -15,4 +15,6 @@ export const column6 = css({
 	width: '41.96%',
 });
 
-
+export const ttHint = css({
+	display: 'none',
+});
