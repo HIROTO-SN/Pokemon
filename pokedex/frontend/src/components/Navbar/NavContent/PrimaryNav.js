@@ -29,8 +29,6 @@ const PrimaryNav = () => {
     const el_imageB = document.querySelector("#" + icon.name + imageBeforeTag);
     const el_imageA = document.querySelector("#" + icon.name + imageAfterTag);
 
-    console.log('clickedTag:' + clickedTag.name);
-    console.log('icon:' + icon.name);
     switch (action) {
       case 'add':
         el_title.style.color = "white";

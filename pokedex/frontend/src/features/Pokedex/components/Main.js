@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import Card from "./Card/Card.js";
 import Load from "./Load/Load.js";
 import Search from "./Search/Search.js";
@@ -73,7 +72,7 @@ function Pokedex() {
     <div css={container}>
       <Header/>
       <Filter/>
-      <Search />
+      {/* <Search /> */}
       {/* {loading ? ( */}
       // ) : (
         <>
