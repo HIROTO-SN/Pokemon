@@ -1,7 +1,7 @@
 import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import style from "@emotion/styled";
+import styled from "@emotion/styled";
 
 import {
   push1,
@@ -46,7 +46,7 @@ const FilterHeader = () => {
   );
 };
 
-const DivFilterHead = style.div`
+const DivFilterHead = styled.div`
 	background: #313131;
 	float: left;
 	width: 100%;
@@ -115,7 +115,7 @@ const twitterTypehead = css`
   border-radius: 5px;
   color: #212121;
 
-  input:first-child {
+  input:first-of-type {
     position: absolute;
     top: 0px;
     left: 0px;
@@ -199,6 +199,11 @@ const buttonSearch = css`
   text-align: center;
   cursor: pointer;
   border-radius: 5px;
+  transition: background-color 0.1s;
+
+  :hover {
+    background-color: #d6602a;
+  }
 `;
 
 const subtitle = css`
