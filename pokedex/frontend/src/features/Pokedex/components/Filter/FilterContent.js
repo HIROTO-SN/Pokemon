@@ -7,37 +7,41 @@ import {
   column5,
   column7,
 } from "../../../../components/CommonCss/Layout.js";
+import FilterContentLeft from "./FilterContentLeft.js";
+import FilterContentRight from "./FilterContentRight.js";
 
 
-const FilterContent = () => {
+const FilterContent = ({toggleActive}) => {
+  
+  const pokedexFilterWrapper = css`
+    background: none;
+    display: block;
+    margin: 0 auto;
+    max-width: 1024px;
+    overflow: hidden;
+    height: ${!toggleActive ? "0px" : "inherit"};
+  `;
+  const clear = css`
+    :before{
+      content: "";
+      display: table;
+    }
+    :after{
+      clear: both;
+      content: "";
+      display: table;
+    }
+  `;
+
   return (
     <div css={pokedexFilterWrapper}>
       <div css={clear}>
-        <div css={[column7, push1]}></div>
-        <div css={[column5, push8]}></div>
+        <div css={[column7, push1]}><FilterContentLeft/></div>
+        <div css={[column5, push8]}><FilterContentRight/></div>
       </div>
     </div>
   );
 };
 
-const pokedexFilterWrapper = css`
-  background: none;
-  display: block;
-  margin: 0 auto;
-  max-width: 1024px;
-  overflow: hidden;
-  height: 0px;
-`;
-const clear = css`
-  :before{
-		content: "";
-    display: table;
-	}
-	:after{
-		clear: both;
-		content: "";
-    display: table;
-	}
-`;
 
 export default FilterContent;
