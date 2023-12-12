@@ -127,9 +127,9 @@ const Filter = () => {
   return (
     <>
       <section css={filter}>
-        <FilterHeader />
-        <FilterMobile />
-        <FilterContent />
+        <FilterHeader/>
+        <FilterMobile toggleActive={toggleActive}/>
+        <FilterContent toggleActive={toggleActive}/>
       </section>
       <section css={filterToggle}>
         <div css={filterToggleSpan}>
