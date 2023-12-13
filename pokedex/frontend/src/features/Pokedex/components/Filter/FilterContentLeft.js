@@ -47,6 +47,80 @@ const FilterContentLeft = () => {
     }
   `;
 
+  const rangeFilterWrapper = css`
+    clear: both;
+    display: block;
+    margin: 0 0 1.5em;
+    width: 93.75%;
+
+    > h3 {
+      color: #fff;
+      font-size: 167.5%;
+      float: left;
+      margin-right: -100%;
+      margin-top: 0.5em;
+      margin-bottom: 1em;
+      text-transform: none;
+      width: 100%;
+      line-height: 125%;
+    }
+    @media (min-width: 461px) and (max-width: 960px) {
+       margin-bottom: 2em;
+    }
+  `;
+
+  const rangeBox = css`
+    @media screen and (min-width: 961px) {
+      margin-top: 10px;
+      float: right;
+    }
+    margin-bottom: 5px;
+
+    > span {
+      padding: 0 10px;
+    }
+  `;
+
+  const inputArea = css`
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    font-size: 100%;
+    font-family: "Roboto", arial, sans-serif;
+    line-height: 1.5;
+    padding: 0.5em 0;
+    text-indent: 0.5em;
+    height: auto;
+    background-color: #fff;
+  `;
+  const minRangeBox = css`
+    color: black;
+    width: 75px;
+    display: inline;
+  `;
+
+  const maxRangeBox = css`
+    color: black;
+    width: 75px;
+    display: inline;
+  `;
+
+  const rangeValues = css`
+    display: none;
+    float: left;
+    margin-right: -100%;
+    width: 34.71%;
+    margin-left: 65.2925%;
+    font-family: "Flexo-Medium",arial,sans-serif;
+    color: #fff;
+    font-size: 175%;
+    margin-top: 0.325em;
+    margin-bottom: 1em;
+    text-align: right;
+    font-weight: 500;
+    line-height: 125%;
+  `;
+
   return (
     <>
       <ContentBlock>
@@ -60,8 +134,24 @@ const FilterContentLeft = () => {
           </span>
         </div>
       </ContentBlock>
-      <ContentBlock>b</ContentBlock>
-      <ContentBlock>c</ContentBlock>
+      <ContentBlock>
+        <ul>
+          
+        </ul>
+      </ContentBlock>
+      <ContentBlock>
+        <div css={rangeFilterWrapper}>
+          <h3>Number Range</h3>
+          <div css={rangeBox}>
+            <input css={[minRangeBox, inputArea]} value="1"></input>
+            <span>-</span>
+            <input css={[maxRangeBox, inputArea]} value="1010"></input>
+          </div>
+        </div>
+        <p css={rangeValues}>
+          <span id="min"></span>-<span id="max"></span>
+        </p>
+      </ContentBlock>
     </>
   );
 };
