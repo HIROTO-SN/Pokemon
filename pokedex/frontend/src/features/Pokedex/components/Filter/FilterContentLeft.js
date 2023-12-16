@@ -1,9 +1,9 @@
-import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 const FilterContentLeft = () => {
+  /* ブロック全体CSS */
   const ContentBlock = styled.div`
     clear: both;
     display: block;
@@ -13,6 +13,7 @@ const FilterContentLeft = () => {
     position: relative;
   `;
 
+  /* ブロック1: タイトル */
   const wrapperH2 = css`
     padding: 0;
     float: left;
@@ -47,6 +48,66 @@ const FilterContentLeft = () => {
     }
   `;
 
+  /* ブロック2: タイプList */
+  const twList = css`
+    float: left;
+    height: 370px;
+    width: 100%;
+    list-style: none;
+
+    > li {
+      float: left;
+      height: 28px;
+      margin-bottom: 12px;
+      width: 50%;
+    }
+  `;
+
+  const pill = ({type}) => css`
+    border: 2px solid #a4a4a4;
+    border-radius: 5px;
+    line-height: 28px;
+    max-width: 110px;
+    width: 50%;
+    font-family: "Flexo-Medium", arial, sans-serif;
+    cursor: pointer;
+    float: left;
+    height: 28px;
+    margin: 0 0.75em 0 0;
+    text-align: center;
+    background: ${type.background};
+    color: ${type.color ? type.color : "inherit"};
+  `;
+
+  const filterTypeRound = css`
+    font-family: "Flexo-Bold", arial, sans-serif;
+    background: #f2f2f2;
+    border-radius: 14px;
+    color: #313131;
+    line-height: 30px;
+    width: 28px;
+    cursor: pointer;
+    float: left;
+    height: 28px;
+    margin: 0 0.75em 0 0;
+    text-align: center;
+  `;
+
+  const filterWeaknessRound = css`
+    margin-right: 0;
+    font-family: "Flexo-Bold", arial, sans-serif;
+    background: #f2f2f2;
+    border-radius: 14px;
+    color: #313131;
+    line-height: 30px;
+    width: 28px;
+    float: left;
+    height: 28px;
+    margin: 0 0.75em 0 0;
+    text-align: center;
+  `;
+
+  /* ブロック3: NumberRange */
   const rangeFilterWrapper = css`
     clear: both;
     display: block;
@@ -65,7 +126,7 @@ const FilterContentLeft = () => {
       line-height: 125%;
     }
     @media (min-width: 461px) and (max-width: 960px) {
-       margin-bottom: 2em;
+      margin-bottom: 2em;
     }
   `;
 
@@ -93,13 +154,7 @@ const FilterContentLeft = () => {
     height: auto;
     background-color: #fff;
   `;
-  const minRangeBox = css`
-    color: black;
-    width: 75px;
-    display: inline;
-  `;
-
-  const maxRangeBox = css`
+  const commonRangeBox = css`
     color: black;
     width: 75px;
     display: inline;
@@ -111,7 +166,7 @@ const FilterContentLeft = () => {
     margin-right: -100%;
     width: 34.71%;
     margin-left: 65.2925%;
-    font-family: "Flexo-Medium",arial,sans-serif;
+    font-family: "Flexo-Medium", arial, sans-serif;
     color: #fff;
     font-size: 175%;
     margin-top: 0.325em;
@@ -120,6 +175,27 @@ const FilterContentLeft = () => {
     font-weight: 500;
     line-height: 125%;
   `;
+
+  const typeList = [
+    { name: "Bug", background: "#729f3f" },
+    { name: "Dark", background: "#707070" },
+    { name: "Dragon", background: "linear-gradient(180deg, #53a4cf 50%, #f16e57 50%)"},
+    { name: "Electric", background: "#eed535", color: "#212121"},
+    { name: "Fairy", background: "#fdb9e9", color: "#212121" },
+    { name: "Fighting", background: "#d56723" },
+    { name: "Fire", background: "#fd7d24" },
+    { name: "Flying", background: "linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)", color: "#212121" },
+    { name: "Ghost", background: "#7b62a3" },
+    { name: "Grass", background: "#9bcc50", color: "#212121" },
+    { name: "Ground", background: "linear-gradient(180deg, #f7de3f 50%, #ab9842 50%)", color: "#212121" },
+    { name: "Ice", background: "#51c4e7", color: "#212121" },
+    { name: "Normal", background: "#a4acaf", color: "#212121" },
+    { name: "Poison", background: "#b97fc9" },
+    { name: "Psychic", background: "#f366b9" },
+    { name: "Rock", background: "#a38c21" },
+    { name: "Steel", background: "#9eb7b8", color: "#212121" },
+    { name: "Water", background: "#4592c4" },
+  ];
 
   return (
     <>
@@ -135,17 +211,23 @@ const FilterContentLeft = () => {
         </div>
       </ContentBlock>
       <ContentBlock>
-        <ul>
-          
+        <ul css={twList}>
+          {typeList.map((type) => (
+            <li>
+              <span css={pill({type})}>{type.name}</span>
+              <span css={filterTypeRound}>T</span>
+              <span css={filterWeaknessRound}>W</span>
+            </li>
+          ))}
         </ul>
       </ContentBlock>
       <ContentBlock>
         <div css={rangeFilterWrapper}>
           <h3>Number Range</h3>
           <div css={rangeBox}>
-            <input css={[minRangeBox, inputArea]} value="1"></input>
+            <input css={[commonRangeBox, inputArea]} value="1"></input>
             <span>-</span>
-            <input css={[maxRangeBox, inputArea]} value="1010"></input>
+            <input css={[commonRangeBox, inputArea]} value="1010"></input>
           </div>
         </div>
         <p css={rangeValues}>
