@@ -1,6 +1,6 @@
 body {
   margin: 0;
-  background-image: #424242 url("../public/background/stripe.jpg");
+  background: #424242 url("../public/background/body_bg.png");
   font-family: "Flexo-Regular,arial,sans-serif";
   font-size: 16px;
   color: #fff;

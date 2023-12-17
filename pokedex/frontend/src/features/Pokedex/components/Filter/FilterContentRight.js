@@ -5,6 +5,7 @@ import { CgPokemon } from "react-icons/cg";
 import { IoIosArrowDown } from "react-icons/io";
 import { IoIosArrowUp } from "react-icons/io";
 import { CgSearch } from "react-icons/cg";
+import { FaCircle } from "react-icons/fa";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -33,6 +34,7 @@ const FilterContentRight = () => {
     font-size: 187.5%;
   `;
 
+  /* ブロック1つ目 */
   const customSelectWrapper = css`
     visibility: visible;
     width: 100%;
@@ -106,6 +108,49 @@ const FilterContentRight = () => {
     }
   `;
 
+  /* ブロック2つ目 */
+  const filterWHeight = css`
+    height: 80px;
+    margin-bottom: 0.5em;
+    width: 100%;
+    list-style: none;
+
+    > li {
+      float: left;
+      width: 27.46%;
+      background-color: #f2f2f2;
+      border-radius: 12px;
+      color: #313131;
+      cursor: pointer;
+      height: 100%;
+      margin: 0 1.5625%;
+      overflow: hidden;
+    }
+    > li > span {
+      color: #313131;
+      font-size: 300%;
+      line-height: 80px;
+      text-align: center;
+      width: 100%;
+      vertical-align: middle;
+    }
+  `;
+	const size = ({list}) => css`
+		margin-left: ${list.name == "middle" && "5.62%"};
+		margin-right: ${list.name == "middle" && "5.62%"};
+	`;
+  const imgHeight = ({list}) => css`
+    cursor: pointer;
+    position: relative;
+    top: ${list.top};
+    left: 50%;
+    transform: translate(-50%, -50%);
+  `;
+  const offscreen = css`
+    left: -99999px;
+    position: absolute;
+  `;
+
   /* ブロック4つ目 */
   const filterAction = css`
     float: right;
@@ -117,15 +162,15 @@ const FilterContentRight = () => {
       clear: none;
       float: right;
       font-size: 125%;
-			line-height: 100%;
+      line-height: 100%;
     }
 
     > a svg {
       line-height: 100%;
       position: relative;
       top: -1px;
-			vertical-align: middle;
-			margin-right: 5px;
+      vertical-align: middle;
+      margin-right: 5px;
     }
   `;
 
@@ -145,22 +190,34 @@ const FilterContentRight = () => {
   const buttonOrange = css`
     color: #fff;
     background-color: #ee6b2f;
-		transition: 0.2s;
+    transition: 0.2s;
 
-		:hover {
-			background-color: #d05f2b;
-		}
+    :hover {
+      background-color: #d05f2b;
+    }
   `;
 
   const buttonGray = css`
     background-color: #a4a4a4;
     color: #fff;
-		transition: 0.2s;
-		
-		:hover {
-			background-color: #8c8585;
-		}
+    transition: 0.2s;
+
+    :hover {
+      background-color: #8c8585;
+    }
   `;
+
+  const heightList = [
+    { name: "short", height: "45%", top: "35%", urlB: "/icons/heightShort.png" },
+    { name: "middle", height: "52%", top: "35%", urlB:"/icons/heightMiddle.png" },
+    { name: "tall", height: "90%", top: "45%", urlB:"/icons/heightTall.png" },
+  ];
+
+  const weightList = [
+    { name: "light", height: "45%", top: "35%", urlB: "/icons/ball.png" },
+    { name: "middle", height: "50%", top: "38%", urlB:"/icons/ball.png" },
+    { name: "heavy", height: "60%", top: "45%", urlB:"/icons/ball.png" },
+  ];
 
   return (
     <>
@@ -180,14 +237,42 @@ const FilterContentRight = () => {
       </ContentBlock>
       <ContentBlock>
         <h3 css={[sectionTitle, filterTitle]}>Height</h3>
+        <ul css={filterWHeight}>
+          {heightList.map((list) => (
+            <li css={size({list})}>
+              <span>
+                <img
+                  css={imgHeight({list})}
+                  src={list.urlB}
+                  height={list.height}
+                />
+              </span>
+							<span css={offscreen}></span>
+            </li>
+          ))}
+        </ul>
       </ContentBlock>
       <ContentBlock>
         <h3 css={[sectionTitle, filterTitle]}>Weight</h3>
+				<ul css={filterWHeight}>
+          {weightList.map((list) => (
+            <li css={size({list})}>
+              <span>
+                <img
+                  css={imgHeight({list})}
+                  src={list.urlB}
+                  height={list.height}
+                />
+              </span>
+							<span css={offscreen}></span>
+            </li>
+          ))}
+        </ul>
       </ContentBlock>
       <ContentBlock>
         <div css={filterAction}>
           <a id="advSearch" css={[buttonOrange, button]}>
-            <CgSearch stroke-width="1"/>
+            <CgSearch stroke-width="1" />
             Search
           </a>
           <a id="reset" css={[buttonGray, button]}>
