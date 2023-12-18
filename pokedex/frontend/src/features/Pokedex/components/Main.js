@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import "./App.css";
 import Card from "./Card/Card.js";
 import Load from "./Load/Load.js";
 import Search from "./Search/Search.js";
 import { getAllPokemon, getPokemon } from "../../../utils/pokemon.js";
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+import Header from "./Header/Header.js";
+import Filter from "./Filter/Filter.js";
 
 function Pokedex() {
   const initialURL = "https://pokeapi.co/api/v2/pokemon";
@@ -66,50 +69,58 @@ function Pokedex() {
     window.scroll({ top: 0, behavior: "instant" });
   };
   return (
-    <>
-      <div className="container">
-        <div>
-          <Search />
-          {loading ? (
-            <Load />
-          ) : (
-            <>
-              {/* <h1>ポケモンデータを取得しました</h1> */}
-              <div className="pokemonCardContainer">
-                {pokemonData.map((pokemon, i) => {
-                  return <Card key={i} pokemon={pokemon} />;
-                })}
-              </div>
-              <br />
-              <div className="btn">
-                {prevURL !== initialURL && prevURL !== null && (
-                  <button
-                    className="btn-mae"
-                    onClick={() => {
-                      handlePrevPage();
-                      scrollOnTop();
-                    }}
-                  >
-                    前へ
-                  </button>
-                )}
-                {nextURL !== null && (
-                  <button
-                    onClick={() => {
-                      handleNextPage();
-                      scrollOnTop();
-                    }}
-                  >
-                    次へ
-                  </button>
-                )}
-              </div>
-            </>
-          )}
-        </div>
-      </div>
-    </>
+    <div css={container}>
+      <Header/>
+      <Filter/>
+      {/* <Search /> */}
+      {/* {loading ? ( */}
+      // ) : (
+        <>
+          {/* <h1>ポケモンデータを取得しました</h1>
+          <div className="pokemonCardContainer">
+            {pokemonData.map((pokemon, i) => {
+              return <Card key={i} pokemon={pokemon} />;
+            })}
+          </div>
+          <br />
+          <div className="btn">
+            {prevURL !== initialURL && prevURL !== null && (
+              <button
+                className="btn-mae"
+                onClick={() => {
+                  handlePrevPage();
+                  scrollOnTop();
+                }}
+              >
+                前へ
+              </button>
+            )}
+            {nextURL !== null && (
+              <button
+                onClick={() => {
+                  handleNextPage();
+                  scrollOnTop();
+                }}
+              >
+                次へ
+              </button>
+            )}
+          </div> */}
+        </>
+      {/* )} */}
+    </div>
   );
-}
+};
+
+const container = css`
+  box-sizing: border-box;
+  background: #fff url("/background/container_bg.png");
+  clear: both;
+  display: block;
+  margin: 0 auto;
+  max-width: 1280px;
+  overflow: hidden;
+  position: relative;
+`;
 
 export default Pokedex;
