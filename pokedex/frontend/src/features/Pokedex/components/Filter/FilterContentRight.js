@@ -239,7 +239,7 @@ const FilterContentRight = () => {
         <h3 css={[sectionTitle, filterTitle]}>Height</h3>
         <ul css={filterWHeight}>
           {heightList.map((list) => (
-            <li css={size({list})}>
+            <li css={size({list})} key={list.name}>
               <span>
                 <img
                   css={imgHeight({list})}
@@ -256,7 +256,7 @@ const FilterContentRight = () => {
         <h3 css={[sectionTitle, filterTitle]}>Weight</h3>
 				<ul css={filterWHeight}>
           {weightList.map((list) => (
-            <li css={size({list})}>
+            <li css={size({list})} key={list.name}>
               <span>
                 <img
                   css={imgHeight({list})}
@@ -272,7 +272,7 @@ const FilterContentRight = () => {
       <ContentBlock>
         <div css={filterAction}>
           <a id="advSearch" css={[buttonOrange, button]}>
-            <CgSearch stroke-width="1" />
+            <CgSearch strokeWidth="1" />
             Search
           </a>
           <a id="reset" css={[buttonGray, button]}>
