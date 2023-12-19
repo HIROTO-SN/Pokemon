@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import { useEffect, useState } from "react";
 
 const FilterContentLeft = () => {
   /* ブロック全体CSS */
@@ -94,6 +95,7 @@ const FilterContentLeft = () => {
   `;
 
   const filterWeaknessRound = css`
+    cursor: pointer;
     margin-right: 0;
     font-family: "Flexo-Bold", arial, sans-serif;
     background: #f2f2f2;
@@ -197,6 +199,45 @@ const FilterContentLeft = () => {
     { name: "Water", background: "#4592c4" },
   ];
 
+  const clickedColor = "#30a7d7";
+  const initColor = "#f2f2f2";
+  const [clickedTypeList, setClickedTypeList] = useState([]);
+  const [clickedWeakList, setClickedWeakList] = useState([]);
+  console.log("type:" + clickedTypeList);
+  console.log("weak:" + clickedWeakList);
+
+  const clickTWHandler = (e, name, type) => {
+    // ターゲットDOM
+    const el_target = document.querySelector("#" + e.target.id);
+
+    switch (type) {
+      case "T" :
+        if (clickedTypeList.find((n) => n === name)) {
+          el_target.style.background = initColor;
+          const filteredTypeList = clickedTypeList.filter((typeName) => typeName !== name)
+          setClickedTypeList(filteredTypeList);
+        } else {
+          el_target.style.background = clickedColor;
+          setClickedTypeList([...clickedTypeList, name]);
+        }
+        break;
+      case "W" :
+        if (clickedWeakList.find((n) => n === name)) {
+          el_target.style.background = initColor;
+          const filteredWeakList = clickedWeakList.filter((typeName) => typeName !== name)
+          setClickedWeakList(filteredWeakList);
+        } else {
+          el_target.style.background = clickedColor;
+          setClickedWeakList([...clickedWeakList, name]);
+        }
+        break;
+    }
+  }
+
+  const changeColor = () => {
+    
+  }
+
   return (
     <>
       <ContentBlock>
@@ -213,10 +254,10 @@ const FilterContentLeft = () => {
       <ContentBlock>
         <ul css={twList}>
           {typeList.map((type) => (
-            <li>
+            <li key={type.name}>
               <span css={pill({type})}>{type.name}</span>
-              <span css={filterTypeRound}>T</span>
-              <span css={filterWeaknessRound}>W</span>
+              <span id={type.name + "_t"} css={filterTypeRound} onClick={(e) => clickTWHandler(e, type.name, "T")}>T</span>
+              <span id={type.name + "_w"} css={filterWeaknessRound} onClick={(e) => clickTWHandler(e, type.name, "W")}>W</span>
             </li>
           ))}
         </ul>
@@ -225,9 +266,9 @@ const FilterContentLeft = () => {
         <div css={rangeFilterWrapper}>
           <h3>Number Range</h3>
           <div css={rangeBox}>
-            <input css={[commonRangeBox, inputArea]} value="1"></input>
+            <input css={[commonRangeBox, inputArea]} defaultValue="1"></input>
             <span>-</span>
-            <input css={[commonRangeBox, inputArea]} value="1010"></input>
+            <input css={[commonRangeBox, inputArea]} defaultValue="1010"></input>
           </div>
         </div>
         <p css={rangeValues}>

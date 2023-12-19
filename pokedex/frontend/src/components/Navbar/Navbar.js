@@ -28,7 +28,6 @@ const main = css`
 const contentWrapper =css`
   max-width: 895px;
   overflow: visible;
-  background: transparent url("/background/stripe.jpg");
   background-size: 100% 1px;
   display: block;
   margin: 0 auto;

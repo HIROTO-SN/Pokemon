@@ -50,6 +50,7 @@ const PrimaryNav = () => {
   const clickHandler = (icon) =>{
     clickActive && changeColor(clickedTag, 'remove');
     setClickedTag(icon);
+    console.log(clickedTag);
     setClickActive(true);
   }
     
@@ -170,7 +171,5 @@ const primaryNav = css`
     opacity: 0%;
   }
 `;
-
-const navBox = css``;
 
 export default PrimaryNav;
