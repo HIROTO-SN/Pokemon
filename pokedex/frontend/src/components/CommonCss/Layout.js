@@ -1,4 +1,3 @@
-import React from 'react';
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
@@ -26,6 +25,11 @@ export const column7 = css({
 	float: 'left',
 	marginRight: '-100%',
 	width: '49.22%',
+});
+export const column12 = css({
+	float: 'left',
+	marginRight: '-100%',
+	width: '85.49%',
 });
 
 export const ttHint = css({

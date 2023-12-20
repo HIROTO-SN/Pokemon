@@ -3,9 +3,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { CgPokemon } from "react-icons/cg";
 import { IoIosArrowDown } from "react-icons/io";
-import { IoIosArrowUp } from "react-icons/io";
 import { CgSearch } from "react-icons/cg";
-import { FaCircle } from "react-icons/fa";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
