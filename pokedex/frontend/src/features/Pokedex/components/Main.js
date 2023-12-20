@@ -7,6 +7,7 @@ import { getAllPokemon, getPokemon } from "../../../utils/pokemon.js";
 import { css } from "@emotion/react";
 import Header from "./Header/Header.js";
 import Filter from "./Filter/Filter.js";
+import Sort from "./Sort/Sort.js";
 
 function Pokedex() {
   const initialURL = "https://pokeapi.co/api/v2/pokemon";
@@ -72,6 +73,7 @@ function Pokedex() {
     <div css={container}>
       <Header/>
       <Filter/>
+      <Sort/>
       {/* <Search /> */}
       {/* {loading ? ( */}
       // ) : (
