@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import { CgPokemon } from "react-icons/cg";
 import { IoIosArrowDown } from "react-icons/io";
 import { CgSearch } from "react-icons/cg";
+import { useEffect, useState } from "react";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -133,11 +134,11 @@ const FilterContentRight = () => {
       vertical-align: middle;
     }
   `;
-	const size = ({list}) => css`
-		margin-left: ${list.name == "middle" && "5.62%"};
-		margin-right: ${list.name == "middle" && "5.62%"};
-	`;
-  const imgHeight = ({list}) => css`
+  const size = ({ list }) => css`
+    margin-left: ${list.name == "middle" && "5.62%"};
+    margin-right: ${list.name == "middle" && "5.62%"};
+  `;
+  const imgHWeight = ({ list }) => css`
     cursor: pointer;
     position: relative;
     top: ${list.top};
@@ -206,16 +207,69 @@ const FilterContentRight = () => {
   `;
 
   const heightList = [
-    { name: "short", height: "45%", top: "35%", urlB: "/icons/heightShort.png" },
-    { name: "middle", height: "52%", top: "35%", urlB:"/icons/heightMiddle.png" },
-    { name: "tall", height: "90%", top: "45%", urlB:"/icons/heightTall.png" },
+    {
+      name: "short",
+      height: "45%",
+      top: "35%",
+      urlB: "/icons/heightShort.png",
+    },
+    {
+      name: "middle",
+      height: "52%",
+      top: "35%",
+      urlB: "/icons/heightMiddle.png",
+    },
+    { name: "tall", height: "90%", top: "45%", urlB: "/icons/heightTall.png" },
   ];
 
   const weightList = [
     { name: "light", height: "45%", top: "35%", urlB: "/icons/ball.png" },
-    { name: "middle", height: "50%", top: "38%", urlB:"/icons/ball.png" },
-    { name: "heavy", height: "60%", top: "45%", urlB:"/icons/ball.png" },
+    { name: "middle", height: "50%", top: "38%", urlB: "/icons/ball.png" },
+    { name: "heavy", height: "60%", top: "45%", urlB: "/icons/ball.png" },
   ];
+
+  const clickedColor = "#ee6b2f";
+
+  const [clickedHeightList, setClickedHeightList] = useState([]);
+  const [clickedWeightList, setClickedWeightList] = useState([]);
+
+  const clickHWHandler = (name, type) => {
+    switch (type) {
+      case "H":
+        if (clickedHeightList.find((n) => n === name)) {
+          const filteredHeightList = clickedHeightList.filter(
+            (heightName) => heightName !== name
+          );
+          setClickedHeightList(filteredHeightList);
+        } else {
+          setClickedHeightList([...clickedHeightList, name]);
+        }
+        break;
+      case "W":
+        if (clickedWeightList.find((n) => n === name)) {
+          const filteredWeightList = clickedWeightList.filter(
+            (weightName) => weightName !== name
+          );
+          setClickedWeightList(filteredWeightList);
+        } else {
+          setClickedWeightList([...clickedWeightList, name]);
+        }
+        break;
+    }
+  };
+
+  useEffect(() => {
+    clickedHeightList.map((heightList) => {
+      const el_target = document.querySelector("#" + heightList + "_h");
+      el_target.style.background = clickedColor;
+
+      // const el_target_img = document.querySelector("#" + heightList + "_imgH");
+    });
+    clickedWeightList.map((weightList) => {
+      const el_target = document.querySelector("#" + weightList + "_w");
+      el_target.style.background = clickedColor;
+    });
+  }, [clickedWeightList, clickedHeightList]);
 
   return (
     <>
@@ -237,32 +291,43 @@ const FilterContentRight = () => {
         <h3 css={[sectionTitle, filterTitle]}>Height</h3>
         <ul css={filterWHeight}>
           {heightList.map((list) => (
-            <li css={size({list})} key={list.name}>
+            <li
+              id={list.name + "_h"}
+              css={size({ list })}
+              key={list.name}
+              onClick={() => clickHWHandler(list.name, "H")}
+            >
               <span>
                 <img
-                  css={imgHeight({list})}
+                  id={list.name + "_imgH"}
+                  css={imgHWeight({ list })}
                   src={list.urlB}
                   height={list.height}
                 />
               </span>
-							<span css={offscreen}></span>
+              <span css={offscreen}></span>
             </li>
           ))}
         </ul>
       </ContentBlock>
       <ContentBlock>
         <h3 css={[sectionTitle, filterTitle]}>Weight</h3>
-				<ul css={filterWHeight}>
+        <ul css={filterWHeight}>
           {weightList.map((list) => (
-            <li css={size({list})} key={list.name}>
+            <li
+              id={list.name + "_w"}
+              css={size({ list })}
+              key={list.name}
+              onClick={() => clickHWHandler(list.name, "W")}
+            >
               <span>
                 <img
-                  css={imgHeight({list})}
+                  css={imgHWeight({ list })}
                   src={list.urlB}
                   height={list.height}
                 />
               </span>
-							<span css={offscreen}></span>
+              <span css={offscreen}></span>
             </li>
           ))}
         </ul>
