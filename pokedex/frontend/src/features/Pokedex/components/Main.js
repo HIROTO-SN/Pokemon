@@ -1,13 +1,13 @@
 import { useEffect, useState } from "react";
 import Card from "./Card/Card.js";
 import Load from "./Load/Load.js";
-import Search from "./Search/Search.js";
 import { getAllPokemon, getPokemon } from "../../../utils/pokemon.js";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Header from "./Header/Header.js";
 import Filter from "./Filter/Filter.js";
 import Sort from "./Sort/Sort.js";
+import Results from "./Results/Results.js";
 
 function Pokedex() {
   const initialURL = "https://pokeapi.co/api/v2/pokemon";
@@ -74,7 +74,7 @@ function Pokedex() {
       <Header/>
       <Filter/>
       <Sort/>
-      {/* <Search /> */}
+      <Results/>
       {/* {loading ? ( */}
       // ) : (
         <>
