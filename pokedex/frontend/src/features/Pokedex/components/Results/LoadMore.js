@@ -1,11 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const LoadMore = () => {
+const LoadMore = ({ clickedloadMorePokemon }) => {
   return (
-    <a href id="loadMore" css={loadMore}>
+    <button id="loadMore" css={loadMore} onClick={clickedloadMorePokemon}>
       <span css={buttonLightBlue}>Load more Pokémon</span>
-    </a>
+    </button>
   );
 };
 
@@ -23,7 +23,7 @@ const loadMore = css`
   text-transform: none;
   font-size: 100%;
   font-family: "Flexo-Demi", arial, sans-serif;
-	
+
 	> span {
     display: inline-block;
     margin: 0 auto;
@@ -44,6 +44,10 @@ const loadMore = css`
 const buttonLightBlue = css`
   background-color: #30a7d7;
   color: #fff;
+
+  :hover {
+    background-color: #137fab;
+  }
 `;
 
 export default LoadMore;

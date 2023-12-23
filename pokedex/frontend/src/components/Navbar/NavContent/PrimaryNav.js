@@ -2,6 +2,7 @@ import { Link } from "react-router-dom";
 import React, { useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolUtils";
 
 const PrimaryNav = () => {
   
@@ -50,7 +51,6 @@ const PrimaryNav = () => {
   const clickHandler = (icon) =>{
     clickActive && changeColor(clickedTag, 'remove');
     setClickedTag(icon);
-    console.log(clickedTag);
     setClickActive(true);
   }
     
@@ -85,7 +85,7 @@ const PrimaryNav = () => {
                 vspace="2px"
               />
               <span id={"title" + icon.name} className="title">
-                {icon.name.charAt(0).toUpperCase() + icon.name.slice(1)}
+                {capitalizeFirstLetter(icon.name)}
               </span>
             </span>
           </Link>
