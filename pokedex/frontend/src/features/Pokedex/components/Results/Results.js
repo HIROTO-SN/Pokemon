@@ -5,7 +5,8 @@ import Alert from "./Alert.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
 import { useEffect, useState } from "react";
-import { getAllPokemon, getPokemon } from "../../../../utils/pokemon";
+import { getAllPokemon, getPokemon } from "../../../../utils/PokemoApi.js";
+import { pokemonAcessApiUrl } from "../../types/AcessTypes.js";
 
 
 const Results = () => {
@@ -13,8 +14,8 @@ const Results = () => {
     overflow: visible;
     position: relative;
     height: auto;
-    position: 1em 0;
-    background: transparent url("/icons/content_bg.png") left top;
+    padding: 1em 0;
+    background: transparent url("/background/content_bg.png") left top;
     background-size: 100% 1px;
     display: block;
     margin: 0 auto;
@@ -40,18 +41,6 @@ const Results = () => {
     width: 85.49%;
     margin-left: 7.2525%;
     list-style: none;
-
-    > li {
-      opacity: 1;
-      top: 0px;
-      left: 0px;
-      transform: matrix(1, 0, 0, 1, 0, 0);
-      display: block;
-      float: left;
-      position: relative;
-      margin: 0 0.78125% 50px;
-      width: 23.4375%;
-    }
   `;
 
 	const noResults = css`
@@ -67,40 +56,61 @@ const Results = () => {
     position: relative;
 	`;
 
-	const initialURL = "https://pokeapi.co/api/v2/pokemon";
 	const [pokemonData, setPokemonData] = useState([]);
+  const [nextURL, setNextURL] = useState("");
 
 	useEffect(() => {
 		const fetchPokemonData = async () => {
 			// 全てのポケモンデータを取得
-			let res = await getAllPokemon(initialURL);
-			loadPokemon(res.results);
-		};
+			let res = await getAllPokemon(pokemonAcessApiUrl);
+      loadPokemon(res.results, "init");
+      setNextURL(res.next);
+    };
 		fetchPokemonData();
 	}, []);
 
-	const loadPokemon = async (data) => {
+	const loadPokemon = async (data, type) => {
 		const _pokemon = await Promise.all(
 			data.map((pokemon) => {
 				const pokemonRecord = getPokemon(pokemon.url);
 				return pokemonRecord;
 			})
 		);
-		setPokemonData(_pokemon);
+    switch (type) {
+      case "init": {
+        setPokemonData(_pokemon);
+        break;
+      }
+      case "more": {
+        console.log("currentPoekmonData:");
+        const combinedPoekmonData = [...pokemonData, ..._pokemon];
+        setPokemonData(combinedPoekmonData);
+        break;
+      }
+    }
 	};
+
+  const clickedloadMorePokemon = async () => {
+    console.log("ボタンクリック！");
+    const nextTwentyPokemonData = await getAllPokemon(nextURL);
+    await loadPokemon(nextTwentyPokemonData.results, "more");
+
+    // 次のページのURLをセット
+    setNextURL(nextTwentyPokemonData.next);
+  }
 
   return (
     <section css={results}>
       <ul css={resultsList}>
 				{pokemonData.map((pokemon, i) => {
-					return <PokemonList key={i} pokemon={pokemon} />;
+					return <PokemonList key={i} number={i} pokemon={pokemon} />;
 				})}
 			</ul>
       <div css={[push1, column12, noResults]}>
 				<Alert/>
 			</div>
       <div css={contentBlock}>
-				<LoadMore/>
+				<LoadMore clickedloadMorePokemon={clickedloadMorePokemon}/>
 			</div>
     </section>
   );

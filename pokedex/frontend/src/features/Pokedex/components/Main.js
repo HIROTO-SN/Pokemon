@@ -1,25 +1,24 @@
 import { useEffect, useState } from "react";
-import Card from "./Card/Card.js";
 import Load from "./Load/Load.js";
-import { getAllPokemon, getPokemon } from "../../../utils/pokemon.js";
+import { getAllPokemon, getPokemon } from "../../../utils/PokemoApi.js";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import Header from "./Header/Header.js";
 import Filter from "./Filter/Filter.js";
 import Sort from "./Sort/Sort.js";
 import Results from "./Results/Results.js";
+import { pokemonAcessApiUrl } from "../types/AcessTypes.js";
 
 function Pokedex() {
-  const initialURL = "https://pokeapi.co/api/v2/pokemon";
   const [loading, setLoading] = useState(true);
   const [pokemonData, setPokemonData] = useState([]);
   const [nextURL, setNextURL] = useState("");
-  const [prevURL, setPrevURL] = useState(initialURL);
+  const [prevURL, setPrevURL] = useState(pokemonAcessApiUrl);
 
   useEffect(() => {
     const fetchPokemonData = async () => {
       // 全てのポケモンデータを取得
-      let res = await getAllPokemon(initialURL);
+      let res = await getAllPokemon(pokemonAcessApiUrl);
       loadPokemon(res.results);
       setNextURL(res.next);
       setLoading(false);
@@ -76,40 +75,6 @@ function Pokedex() {
       <Sort/>
       <Results/>
       {/* {loading ? ( */}
-      // ) : (
-        <>
-          {/* <h1>ポケモンデータを取得しました</h1>
-          <div className="pokemonCardContainer">
-            {pokemonData.map((pokemon, i) => {
-              return <Card key={i} pokemon={pokemon} />;
-            })}
-          </div>
-          <br />
-          <div className="btn">
-            {prevURL !== initialURL && prevURL !== null && (
-              <button
-                className="btn-mae"
-                onClick={() => {
-                  handlePrevPage();
-                  scrollOnTop();
-                }}
-              >
-                前へ
-              </button>
-            )}
-            {nextURL !== null && (
-              <button
-                onClick={() => {
-                  handleNextPage();
-                  scrollOnTop();
-                }}
-              >
-                次へ
-              </button>
-            )}
-          </div> */}
-        </>
-      {/* )} */}
     </div>
   );
 };
