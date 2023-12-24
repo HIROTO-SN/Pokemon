@@ -7,7 +7,7 @@ import PokemonList from "./PokemonList.js";
 import { useEffect, useState } from "react";
 import { getAllPokemon, getPokemon } from "../../../../utils/PokemoApi.js";
 import { pokemonAcessApiUrl } from "../../types/AcessTypes.js";
-
+import Load from "./Load.js";
 
 const Results = () => {
   const results = css`
@@ -43,75 +43,80 @@ const Results = () => {
     list-style: none;
   `;
 
-	const noResults = css`
-		display: none;
-	`;
+  const noResults = css`
+    display: none;
+  `;
 
-	const contentBlock = css`
-		clear: both;
+  const contentBlock = css`
+    clear: both;
     display: block;
     width: 100%;
-		float: left;
+    float: left;
     margin: 1em 0 0 0;
     position: relative;
-	`;
+  `;
 
-	const [pokemonData, setPokemonData] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [pokemonData, setPokemonData] = useState([]);
   const [nextURL, setNextURL] = useState("");
 
-	useEffect(() => {
-		const fetchPokemonData = async () => {
-			// 全てのポケモンデータを取得
-			let res = await getAllPokemon(pokemonAcessApiUrl);
+  useEffect(() => {
+    const fetchPokemonData = async () => {
+      // 全てのポケモンデータを取得
+      let res = await getAllPokemon(pokemonAcessApiUrl);
       loadPokemon(res.results, "init");
+      setLoading(false);
       setNextURL(res.next);
     };
-		fetchPokemonData();
-	}, []);
+    fetchPokemonData();
+  }, []);
 
-	const loadPokemon = async (data, type) => {
-		const _pokemon = await Promise.all(
-			data.map((pokemon) => {
-				const pokemonRecord = getPokemon(pokemon.url);
-				return pokemonRecord;
-			})
-		);
+  const loadPokemon = async (data, type) => {
+    const _pokemon = await Promise.all(
+      data.map((pokemon) => {
+        const pokemonRecord = getPokemon(pokemon.url);
+        return pokemonRecord;
+      })
+    );
     switch (type) {
       case "init": {
         setPokemonData(_pokemon);
         break;
       }
       case "more": {
-        console.log("currentPoekmonData:");
         const combinedPoekmonData = [...pokemonData, ..._pokemon];
         setPokemonData(combinedPoekmonData);
         break;
       }
     }
-	};
+  };
 
   const clickedloadMorePokemon = async () => {
-    console.log("ボタンクリック！");
+    // ローダーを表示
+    setLoading(true);
     const nextTwentyPokemonData = await getAllPokemon(nextURL);
     await loadPokemon(nextTwentyPokemonData.results, "more");
 
     // 次のページのURLをセット
     setNextURL(nextTwentyPokemonData.next);
-  }
+    // ローダーを再度非表示
+    setLoading(false);
+  };
 
   return (
     <section css={results}>
       <ul css={resultsList}>
-				{pokemonData.map((pokemon, i) => {
-					return <PokemonList key={i} number={i} pokemon={pokemon} />;
-				})}
-			</ul>
+        {pokemonData.map((pokemon, i) => {
+          return <PokemonList key={i} number={i} pokemon={pokemon} />;
+        })}
+      </ul>
       <div css={[push1, column12, noResults]}>
-				<Alert/>
-			</div>
+        <Alert />
+      </div>
       <div css={contentBlock}>
-				<LoadMore clickedloadMorePokemon={clickedloadMorePokemon}/>
-			</div>
+        {loading && <Load />}
+        <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
+      </div>
     </section>
   );
 };

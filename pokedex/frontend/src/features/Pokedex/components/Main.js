@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import Load from "./Load/Load.js";
 import { getAllPokemon, getPokemon } from "../../../utils/PokemoApi.js";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
@@ -74,7 +73,6 @@ function Pokedex() {
       <Filter/>
       <Sort/>
       <Results/>
-      {/* {loading ? ( */}
     </div>
   );
 };
