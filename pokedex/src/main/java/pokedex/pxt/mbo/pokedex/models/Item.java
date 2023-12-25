@@ -10,11 +10,11 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@Entity
+// @Entity
 public class Item {
 
-	@Id
 	// @GeneratedValue(strategy=GenerationType.IDENTITY)
+	// @Id
 	private String itemId;
 
 	private String itemName;
