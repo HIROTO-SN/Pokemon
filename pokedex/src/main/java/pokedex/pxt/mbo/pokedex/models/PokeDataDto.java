@@ -1,13 +1,19 @@
-// package pokedex.pxt.mbo.pokedex.models;
+package pokedex.pxt.mbo.pokedex.models;
 
-// import lombok.AllArgsConstructor;
-// import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
-// @Data
-// @AllArgsConstructor
-// public class PokeDataDto {
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer"})
+
+public class PokeDataDto {
 	
-// 	private String name;
+	private String name;
 	
-// 	private String url;
-// }
+	private String url;
+}
