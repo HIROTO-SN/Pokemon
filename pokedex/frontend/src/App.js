@@ -13,20 +13,23 @@ import VideoGames from "./features/VideoGames/Main.js";
 
 function App() {
   return (
-    <Router>
-      <Navbar />
-      <Routes>
-        <Route path="/us/" element={<Home />}></Route>
-        <Route path="/us/pokedex/" element={<Pokedex />}></Route>
-        <Route path="/us/pokemon-video-games" element={<VideoGames />}></Route>
-        <Route path="/us/pokemon-tcg" element={<TradingCard />}></Route>
-        <Route path="/us/animation/" element={<Animation />}></Route>
-        <Route path="/us/play-pokemon" element={<PlayEvents />}></Route>
-        <Route path="/us/pokemon-news" element={<News />}></Route>
-      </Routes>
+    <>
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/" element={<Home />}></Route>
+          <Route path="/us" element={<Home />}></Route>
+          <Route path="/us/pokedex" element={<Pokedex />}></Route>
+          <Route path="/us/pokemon-video-games" element={<VideoGames />}></Route>
+          <Route path="/us/pokemon-tcg" element={<TradingCard />}></Route>
+          <Route path="/us/animation" element={<Animation />}></Route>
+          <Route path="/us/play-pokemon" element={<PlayEvents />}></Route>
+          <Route path="/us/pokemon-news" element={<News />}></Route>
+        </Routes>
+      </Router>
       <FooterDivider />
       <Footer />
-    </Router>
+    </>
   );
 }
 
