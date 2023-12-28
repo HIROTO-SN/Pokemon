@@ -74,14 +74,28 @@ const UserDashboard = () => {
     }
   `;
 
+  const bottomAngle = css`
+    background: transparent url("./background/profile-nav-bg.png") left top;
+    width: 68px;
+    height: 17px;
+    transform: scaleY(-1);
+    -moz-transform: scaleY(-1);
+    -o-transform: scaleY(-1);
+    -webkit-transform: scaleY(-1);
+    transform: scaleY(-1);
+    float: left;
+    display: none;
+  `;
+
   return (
     <div css={userDashboard}>
       <div css={drawer}>
         <nav css={[profileNav, hiddenModile]}>
           <ul css={[dashboardOpen, notSignedIn]}>
             <DashboardOpen />
-            <DashSearch />
           </ul>
+          <DashSearch />
+          <div css={bottomAngle}></div>
         </nav>
         <Dashboard />
       </div>
