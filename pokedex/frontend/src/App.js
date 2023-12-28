@@ -11,13 +11,16 @@ import PlayEvents from "./features/PlayEvents/Main.js";
 import TradingCard from "./features/TradingCard/Main.js";
 import VideoGames from "./features/VideoGames/Main.js";
 import UserDashboard from "./components/Dashboard/UserDashboard.js";
+import Login from "./components/Login/Login.js";
 
 function App() {
   return (
     <>
       <Router>
         <Navbar />
+        <UserDashboard />
         <Routes>
+          <Route path="/login" element={<Login />}></Route>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/pokedex" element={<Pokedex />}></Route>
           <Route path="/pokemon-video-games" element={<VideoGames />}></Route>
@@ -27,7 +30,6 @@ function App() {
           <Route path="/pokemon-news" element={<News />}></Route>
         </Routes>
       </Router>
-      <UserDashboard />
       <FooterDivider />
       <Footer />
     </>

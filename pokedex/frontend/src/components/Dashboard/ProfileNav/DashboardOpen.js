@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
+import { Link } from "react-router-dom";
 
 const DashboardOpen = () => {
   /***** CSS ******/
@@ -51,7 +52,15 @@ const DashboardOpen = () => {
   /***** HTML ******/
   return (
     <>
-      <DashList css={[visibleNotSignedIn, singUp]}></DashList>
+      <DashList css={[visibleNotSignedIn, singUp]}>
+        <Link to="/login">
+          <span>
+            <div>
+              <img/>
+            </div>
+          </span>
+        </Link>
+      </DashList>
       <DashList css={visibleSignedIn}></DashList>
       <DashList css={[visibleSignedIn, organizerLink]}></DashList>
       <DashList id="sidebar-logout-button" css={[visibleSignedIn, signIn]}></DashList>
