@@ -111,7 +111,6 @@ const primaryNav = css`
     width: 14.28571%;
   }
   li a {
-    text-decoration: none;
     float: left;
     height: 87px;
     width: 100%;
