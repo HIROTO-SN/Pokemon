@@ -11,6 +11,10 @@ const DashSearch = () => {
     height: 67px;
     margin-top: 0;
     width: 59px;
+
+    :hover {
+      background-image: url("./background/profile-nav-search-bg-hover.png");
+    }
   `;
 
   const iconSearch = css`

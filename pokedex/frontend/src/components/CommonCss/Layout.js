@@ -36,3 +36,14 @@ export const ttHint = css({
 	display: 'none',
 });
 
+export const container = css`
+	box-sizing: border-box;
+  background: #fff url("/background/container_bg.png");
+  clear: both;
+  display: block;
+  margin: 0 auto;
+  max-width: 1280px;
+  overflow: hidden;
+  position: relative;
+`;
+

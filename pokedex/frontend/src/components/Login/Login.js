@@ -1,8 +1,17 @@
-import React from 'react'
+/** @jsxImportSource @emotion/react */
+import { css } from "@emotion/react";
+import { container } from "../CommonCss/Layout.js"
 
 const Login = () => {
+	/***** CSS ******/
+
+
 	return (
-		<div>Login</div>
+		<div css={[container]}>
+			<section>
+
+			</section>
+		</div>
 	);
 }
 

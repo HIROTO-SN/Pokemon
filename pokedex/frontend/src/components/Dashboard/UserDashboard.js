@@ -16,7 +16,7 @@ const UserDashboard = () => {
     overflow: hidden;
 
     @media (min-width: 1281px) and (max-width: 9999px) {
-      left: 50%;
+      left: 49.99%;
       margin-left: -640px;
     }
   `;

@@ -10,7 +10,6 @@ import News from "./features/News/Main.js";
 import PlayEvents from "./features/PlayEvents/Main.js";
 import TradingCard from "./features/TradingCard/Main.js";
 import VideoGames from "./features/VideoGames/Main.js";
-import UserDashboard from "./components/Dashboard/UserDashboard.js";
 import Login from "./components/Login/Login.js";
 
 function App() {
@@ -18,7 +17,6 @@ function App() {
     <>
       <Router>
         <Navbar />
-        <UserDashboard />
         <Routes>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/home" element={<Home />}></Route>
