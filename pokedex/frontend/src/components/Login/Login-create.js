@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { accountButton } from "./Login";
+import { accountButton, hiddenMobile, notchBottomCenter } from "./Login";
 
 const LoginCreate = () => {
   /***** CSS ******/
@@ -39,61 +39,11 @@ const LoginCreate = () => {
 		:hover {
 			background-color: #1b82b1;
 		}
-		
+
     @media (min-width: 961px) and (max-width: 9999px) {
       margin-top: 1em;
       margin-bottom: 1em;
       margin-right: 1em;
-    }
-  `;
-
-  // 下部の凹凸レイアウト
-  const notchBottomCenter = css`
-    margin-left: 25%;
-    width: 50%;
-    backface-visibility: hidden;
-    background: #fff;
-    float: left;
-    height: 8px;
-
-    :before {
-      left: -10px;
-      background: transparent url("./background/left-notch-bottom-right.png")
-        no-repeat;
-      background-size: 12px 8px;
-      backface-visibility: hidden;
-      top: 0;
-      content: " ";
-      height: 8px;
-      position: absolute;
-      width: 12px;
-    }
-
-    :after {
-      right: -10px;
-      background: transparent url("./background/right-notch-bottom-right.png")
-        no-repeat;
-      background-size: 12px 8px;
-      backface-visibility: hidden;
-      top: 0;
-      content: " ";
-      height: 8px;
-      position: absolute;
-      width: 12px;
-    }
-
-    @media (min-width: 961px) and (max-width: 9999px) {
-      position: absolute;
-      bottom: 0;
-    }
-  `;
-
-  const hiddenMobile = css`
-    @media (min-width: 461px) and (max-width: 960px) {
-      display: none !important;
-    }
-    @media (min-width: 961px) and (max-width: 9999px) {
-      display: inherit !important;
     }
   `;
 
