@@ -1,6 +1,5 @@
 import Hamburger from "./NavContent/Hamburger";
 import PrimaryNav from "./NavContent/PrimaryNav";
-// import "./Navbar.css";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 

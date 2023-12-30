@@ -10,10 +10,29 @@ import News from "./features/News/Main.js";
 import PlayEvents from "./features/PlayEvents/Main.js";
 import TradingCard from "./features/TradingCard/Main.js";
 import VideoGames from "./features/VideoGames/Main.js";
+import Login from "./components/Login/Login.js";
 
 function App() {
   return (
     <>
+<<<<<<< HEAD
+      <Router>
+        <Navbar />
+        <Routes>
+          <Route path="/login" element={<Login />}></Route>
+          <Route path="/home" element={<Home />}></Route>
+          <Route path="/pokedex" element={<Pokedex />}></Route>
+          <Route path="/pokemon-video-games" element={<VideoGames />}></Route>
+          <Route path="/pokemon-tcg" element={<TradingCard />}></Route>
+          <Route path="/animation" element={<Animation />}></Route>
+          <Route path="/play-pokemon" element={<PlayEvents />}></Route>
+          <Route path="/pokemon-news" element={<News />}></Route>
+        </Routes>
+      </Router>
+      <FooterDivider />
+      <Footer />
+=======
+>>>>>>> development
     </>
   );
 }
