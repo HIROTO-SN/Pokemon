@@ -28,7 +28,7 @@ const Login = () => {
     text-transform: none;
     font-family: "Flexo-Regular", arial, sans-serif;
 
-    @media (min-width: 1281px) and (max-width: 9999px) {
+    @media (min-width: 961px) and (max-width: 9999px) {
       margin-top: 1em;
       margin-bottom: 1em;
     }
@@ -87,7 +87,7 @@ const Login = () => {
 		max-width: 100%;
     height: auto;
 
-    @media (min-width: 1281px) and (max-width: 9999px) {
+    @media (min-width: 961px) and (max-width: 9999px) {
       float: left;
       position: relative;
       margin-top: -75px;
@@ -122,6 +122,9 @@ const Login = () => {
   );
 };
 
+export default Login;
+
+// Login画面共通CSS定義
 export const accountButton = css`
   border-radius: 5px;
   border: none;
@@ -137,7 +140,7 @@ export const accountButton = css`
   text-align: center;
   text-transform: none;
   font-family: "Flexo-Demi", arial, sans-serif;
-
+	
   @media (min-width: 461px) and (max-width: 960px) {
     margin-top: 1em;
     margin-bottom: 1em;
@@ -145,4 +148,53 @@ export const accountButton = css`
   }
 `;
 
-export default Login;
+// 下部の凹凸レイアウト
+export const notchBottomCenter = css`
+	margin-left: 25%;
+	width: 50%;
+	backface-visibility: hidden;
+	background: #fff;
+	float: left;
+	height: 8px;
+
+	:before {
+		left: -10px;
+		background: transparent url("./background/left-notch-bottom-right.png")
+			no-repeat;
+		background-size: 12px 8px;
+		backface-visibility: hidden;
+		top: 0;
+		content: " ";
+		height: 8px;
+		position: absolute;
+		width: 12px;
+	}
+
+	:after {
+		right: -10px;
+		background: transparent url("./background/right-notch-bottom-right.png")
+			no-repeat;
+		background-size: 12px 8px;
+		backface-visibility: hidden;
+		top: 0;
+		content: " ";
+		height: 8px;
+		position: absolute;
+		width: 12px;
+	}
+
+	@media (min-width: 961px) and (max-width: 9999px) {
+		position: absolute;
+		bottom: 0;
+	}
+`;
+
+export const hiddenMobile = css`
+	@media (min-width: 461px) and (max-width: 960px) {
+		display: none !important;
+	}
+	@media (min-width: 961px) and (max-width: 9999px) {
+		display: inherit !important;
+	}
+`;
+
