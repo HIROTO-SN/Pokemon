@@ -15,6 +15,7 @@ import Login from "./components/Login/Login.js";
 function App() {
   return (
     <>
+<<<<<<< HEAD
       <Router>
         <Navbar />
         <Routes>
@@ -30,6 +31,8 @@ function App() {
       </Router>
       <FooterDivider />
       <Footer />
+=======
+>>>>>>> development
     </>
   );
 }
