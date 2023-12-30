@@ -14,13 +14,6 @@ import VideoGames from "./features/VideoGames/Main.js";
 function App() {
   return (
     <>
-      <Router>
-        <Navbar />
-        <Routes>
-        </Routes>
-      </Router>
-      <FooterDivider />
-      <Footer />
     </>
   );
 }
