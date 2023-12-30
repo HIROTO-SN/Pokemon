@@ -11,6 +11,7 @@ import PlayEvents from "./features/PlayEvents/Main.js";
 import TradingCard from "./features/TradingCard/Main.js";
 import VideoGames from "./features/VideoGames/Main.js";
 import Login from "./components/Login/Login.js";
+import Backtotop from "./components/BackToTop/Backtotop.js";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
           <Route path="/pokemon-news" element={<News />}></Route>
         </Routes>
       </Router>
+      <Backtotop />
       <FooterDivider />
       <Footer />
     </>

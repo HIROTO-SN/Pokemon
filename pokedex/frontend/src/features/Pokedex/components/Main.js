@@ -6,6 +6,7 @@ import Sort from "./Sort/Sort.js";
 import Results from "./Results/Results.js";
 import UserDashboard from "../../../components/Dashboard/UserDashboard.js";
 import { container } from "../../../components/CommonCss/Layout.js";
+import Head from "../../../components/Head/Head.js";
 
 const Pokedex = () => {
   
@@ -14,6 +15,7 @@ const Pokedex = () => {
   };
   return (
     <>
+      <Head />
       <UserDashboard />
       <div css={container}>
         <Header/>
