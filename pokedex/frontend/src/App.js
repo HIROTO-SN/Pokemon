@@ -12,10 +12,12 @@ import TradingCard from "./features/TradingCard/Main.js";
 import VideoGames from "./features/VideoGames/Main.js";
 import Login from "./components/Login/Login.js";
 import Backtotop from "./components/BackToTop/Backtotop.js";
+import Head from "./components/Head/Head.js";
 
 function App() {
   return (
     <>
+      <Head />
       <Router>
         <Navbar />
         <Routes>
