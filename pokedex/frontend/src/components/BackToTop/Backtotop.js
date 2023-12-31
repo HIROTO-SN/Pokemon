@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { IoIosArrowUp } from "react-icons/io";
 
 const Backtotop = () => {
   /***** CSS ******/
@@ -22,30 +23,44 @@ const Backtotop = () => {
     height: 64px;
     opacity: 0.6;
     /* position: fixed; */
+		margin-left: 100px; /* 後で消す */
     bottom: -68px;
     right: 0;
     width: 64px;
     z-index: 10;
     transition: all 0.2s linear;
-
-    :before {
-			content: "\f106";
-      font-size: 200%;
-      line-height: 64px;
-      margin: 6px 0 0 0;
-      text-align: center;
-      width: 64px;
-    }
   `;
 
-	const offscreen = css`
-		left: -99999px;
-    position: absolute;
+	// iconの位置調整
+	const iconPosition = css`
+		cursor: pointer;
+		margin: 6px 0 0 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 	`;
+
+  const icon = css`
+		font-size: 320%;
+  `;
+
+  const offscreen = css`
+    left: -99999px;
+    position: absolute;
+  `;
+
+	
+  /***** JS ******/
+	const scrollOnTop = () => {
+    window.scroll({ top: 0, behavior: "smooth" });
+  };
 
   /***** HTML ******/
   return (
-    <div id="back-to-top" css={[visibleMobile, backToTop]}>
+    <div id="back-to-top" css={[visibleMobile, backToTop]} onClick={scrollOnTop}>
+			<label css={iconPosition}>
+      	<IoIosArrowUp css={icon} />
+			</label>
       <span css={offscreen}>Back To Top</span>
     </div>
   );
