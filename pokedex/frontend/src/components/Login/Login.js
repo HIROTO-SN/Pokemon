@@ -126,6 +126,8 @@ export default Login;
 
 // Login画面共通CSS定義
 export const accountButton = css`
+  position: relative;
+  z-index: 2;
   border-radius: 5px;
   border: none;
   clear: both;
