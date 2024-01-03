@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import pokedex.pxt.mbo.pokedex.models.Item;
+import pokedex.pxt.mbo.pokedex.entity.Item;
 
 @Service
 public class ItemService {

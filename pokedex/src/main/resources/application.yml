@@ -1,0 +1,19 @@
+spring:
+ datasource:
+  url: jdbc:mysql://localhost:3306/pokedexdb
+  username: develop
+  password: develop
+ jpa:
+  hibernate:
+    ddl-auto: update
+ sql:
+  init:
+   mode: always
+   encoding: UTF-8
+
+# logging:
+#  level:
+#   root: info
+#  file:
+#   name: logs/app.log
+

@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.models;
+package pokedex.pxt.mbo.pokedex.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
