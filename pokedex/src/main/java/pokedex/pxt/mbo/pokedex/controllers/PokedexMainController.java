@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import pokedex.pxt.mbo.pokedex.models.Item;
+import pokedex.pxt.mbo.pokedex.entity.Item;
 import pokedex.pxt.mbo.pokedex.services.ItemService;
 
 @RestController
