@@ -38,3 +38,8 @@ out/
 
 ### node_modules ###
 *.json
+
+### logs ###
+*.log
+*.log.*
+*.gz
