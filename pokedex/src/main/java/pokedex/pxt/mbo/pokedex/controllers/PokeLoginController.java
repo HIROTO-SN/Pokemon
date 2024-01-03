@@ -6,15 +6,15 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import pokedex.pxt.mbo.pokedex.models.User;
-import pokedex.pxt.mbo.pokedex.services.LoginService;
+import pokedex.pxt.mbo.pokedex.services.UserService;
 
 @RestController
 public class PokeLoginController {
 	
 	@Autowired
-	LoginService loginService;
+	UserService loginService;
 
-	@GetMapping("/login")
+	@GetMapping("/login/info")
 	public List<User> getLoginInfo() {
 		return loginService.getLoginInfo();
 	}
