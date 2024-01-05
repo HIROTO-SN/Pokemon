@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.services;
+package pokedex.pxt.mbo.pokedex.services.test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -6,7 +6,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import pokedex.pxt.mbo.pokedex.models.Item;
+import pokedex.pxt.mbo.pokedex.entity.test.Item;
 
 @Service
 public class ItemService {

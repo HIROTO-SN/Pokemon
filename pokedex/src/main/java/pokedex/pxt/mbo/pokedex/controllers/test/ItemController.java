@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.controllers;
+package pokedex.pxt.mbo.pokedex.controllers.test;
 
 import java.util.List;
 
@@ -11,11 +11,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import pokedex.pxt.mbo.pokedex.models.Item;
-import pokedex.pxt.mbo.pokedex.services.ItemService;
+import pokedex.pxt.mbo.pokedex.entity.test.Item;
+import pokedex.pxt.mbo.pokedex.services.test.ItemService;
 
 @RestController
-public class PokedexMainController {
+public class ItemController {
 	
 	@Autowired
 	private ItemService itemService;

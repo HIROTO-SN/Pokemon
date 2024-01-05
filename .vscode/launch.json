@@ -6,6 +6,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "PasswordGeneratorEncoder",
+			"request": "launch",
+			"mainClass": "utils.PasswordGeneratorEncoder",
+			"projectName": "pokedex"
+		},
+		{
+			"type": "java",
 			"name": "Current File",
 			"request": "launch",
 			"mainClass": "${file}"

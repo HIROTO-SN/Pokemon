@@ -3,7 +3,7 @@ package pokedex.pxt.mbo.pokedex.services;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import pokedex.pxt.mbo.pokedex.models.PokeDto;
+import pokedex.pxt.mbo.pokedex.entity.PokeDto;
 
 @Service
 public class PokeListService {
