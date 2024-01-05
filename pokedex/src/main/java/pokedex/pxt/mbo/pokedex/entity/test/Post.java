@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.entity;
+package pokedex.pxt.mbo.pokedex.entity.test;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

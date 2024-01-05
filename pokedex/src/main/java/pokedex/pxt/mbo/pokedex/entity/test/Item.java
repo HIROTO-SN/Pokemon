@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.entity;
+package pokedex.pxt.mbo.pokedex.entity.test;
 
 import org.springframework.data.annotation.Id;
 
