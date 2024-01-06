@@ -13,11 +13,12 @@ import VideoGames from "./features/VideoGames/Main.js";
 import Login from "./components/Login/Login.js";
 import Backtotop from "./components/BackToTop/Backtotop.js";
 import Head from "./components/Head/Head.js";
+import { LoginProvider } from "./contexts/LoginContext.js";
 
 function App() {
   return (
-    <>
-      <Head />
+    <LoginProvider>
+      {/* <Head /> */}
       <Router>
         <Navbar />
         <Routes>
@@ -34,7 +35,7 @@ function App() {
       <Backtotop />
       <FooterDivider />
       <Footer />
-    </>
+    </LoginProvider>
   );
 }
 
