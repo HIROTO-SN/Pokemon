@@ -5,8 +5,8 @@ import Alert from "./Alert.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
 import { useEffect, useState } from "react";
-import { getAllPokemon, getPokemon } from "../../../../utils/PokemoApi.js";
-import { pokemonAcessApiUrl } from "../../types/AcessTypes.js";
+import { getAllPokemon, getPokemon } from "../../../../components/api/PokemoApi.js";
+import { pokemonAcessApiUrl } from "../../../../constants/ApiUrls.js";
 import Load from "./Load.js";
 
 const Results = () => {

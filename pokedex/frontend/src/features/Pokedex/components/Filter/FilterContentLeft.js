@@ -2,7 +2,7 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
-import { typeList } from "../../types/PokemonInfoTypes";
+import { typeList } from "../../../../constants/PokemonInfoTypes";
 
 const FilterContentLeft = () => {
   /* ブロック全体CSS */
