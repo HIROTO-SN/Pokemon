@@ -5,6 +5,7 @@ import { push1 } from "../CommonCss/Layout";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useLoginInfo, useLoginAction } from "../../contexts/LoginContext";
+import { loginAuth } from "../api/LoginApi";
 
 const LoginForm = () => {
   /***** CSS ******/
@@ -158,17 +159,23 @@ const LoginForm = () => {
   const navigate = useNavigate();
 
   /***** JS ******/
-  const handleLoginSubmit = () => {
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
     console.log("ログインSUBMIT");
-  };
-  
-  const onClickLogin = () => {
-    console.log("Log Inボタン押下");
+    // ログイン認証処理
+    loginAuth(username, password);
+
+    // ログイン成功時処理
     userStateAction({username: username, isLogin: true});
     console.log("userState.username: " + userState.username);
     console.log("userState.isLogin: " + userState.isLogin);
     console.log("username: " + username);
+    // navigate("/profile");
   };
+  
+  // Log Inボタン押下処理
+  // const onClickLogin = () => {
+  // };
 
   /***** HTML ******/
   return (
@@ -206,10 +213,10 @@ const LoginForm = () => {
         <input
           id="login"
           name="login"
-          type="button"
+          type="submit"
           css={[accountButton, buttonGreen]}
           value="Log In"
-          onClick={onClickLogin}
+          // onClick={onClickLogin}
         ></input>
       </form>
       <p css={pblock}> &nbsp; </p>
