@@ -3,6 +3,8 @@ import { css } from "@emotion/react";
 import { accountButton, hiddenMobile, notchBottomCenter } from "./Login";
 import { push1 } from "../CommonCss/Layout";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useLoginInfo, useLoginAction } from "../../contexts/LoginContext";
 
 const LoginForm = () => {
   /***** CSS ******/
@@ -145,17 +147,27 @@ const LoginForm = () => {
 
   // const pblock = css``;
 
+  /***** context ******/
+  const userState = useLoginInfo();
+  const userStateAction = useLoginAction();
+
   /***** State ******/
-  const [username, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   /***** JS ******/
   const handleLoginSubmit = () => {
     console.log("ログインSUBMIT");
   };
-
+  
   const onClickLogin = () => {
     console.log("Log Inボタン押下");
+    userStateAction({username: username, isLogin: true});
+    console.log("userState.username: " + userState.username);
+    console.log("userState.isLogin: " + userState.isLogin);
+    console.log("username: " + username);
   };
 
   /***** HTML ******/
@@ -172,7 +184,7 @@ const LoginForm = () => {
             tabIndex={1}
             autoComplete="false"
             value={username}
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           ></input>
           <a css={roboto}>Forgot your username?</a>
         </div>
