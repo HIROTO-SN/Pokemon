@@ -1,15 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { push1, push7, column6, container } from "../CommonCss/Layout.js";
-import LoginForm from "./Login-form.js";
+import { column6, container, push1, push7 } from "../CommonCss/Layout.js";
+import Alert from "./Alert.js";
 import LoginCreate from "./Login-create.js";
+import LoginForm from "./Login-form.js";
+import { useState } from "react";
 
 const Login = () => {
   /***** CSS ******/
-  const section = css`
+  const useraccount = css`
     padding-bottom: 4em;
     padding-top: 25px;
     position: relative;
+  `;
+
+  const section = css`
     background: transparent url("./background/content_bg.png") left top;
     background-size: 100% 1px;
     display: block;
@@ -96,16 +101,23 @@ const Login = () => {
     }
   `;
 
+  /***** State ******/
+  // 入力チェック時エラー内容State
+  const [error, setError] = useState("");
+    
   return (
     <div css={[container]}>
-      <section css={section}>
+      {error !== "" && 
+        <Alert section={section} error={error} />
+      }
+      <section css={[useraccount, section]}>
         <h1 css={[pageMainTitle, push1]}>
           Welcome to the Pokémon Trainer Club!
         </h1>
         <div css={[push1, column6]}>
           <h2 css={sectionTitle}> Log In </h2>
           <div css={[colorBlock, dogEar("bl")]}>
-            <LoginForm />
+            <LoginForm setError={setError} />
           </div>
         </div>
         <div css={[push7, column6]}>
