@@ -6,8 +6,9 @@ import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useLoginInfo, useLoginAction } from "../../contexts/LoginContext";
 import { loginAuth } from "../api/LoginApi";
+import { valid_message_passwordEmpty, valid_message_usernameEmpty } from "../../constants/ValidationMessage";
 
-const LoginForm = () => {
+const LoginForm = ({ setError }) => {
   /***** CSS ******/
 
   // Form大元
@@ -155,14 +156,22 @@ const LoginForm = () => {
   /***** State ******/
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   /***** JS ******/
   const handleLoginSubmit = (e) => {
     e.preventDefault();
-    console.log("ログインSUBMIT");
+  
     // ログイン認証処理
+    if(username == "") {
+      setError(valid_message_usernameEmpty);
+      return;
+    } else if(password == "") {
+      setError(valid_message_passwordEmpty);
+      return;
+    } else {
+      setError("");
+    }
     loginAuth(username, password);
 
     // ログイン成功時処理
