@@ -1,6 +1,6 @@
 package pokedex.pxt.mbo.pokedex.payload;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -16,5 +16,5 @@ public class RegisterDto {
 	private String password;
 	private String email;
 	private String country;
-	private Date birthday;
+	private LocalDate birthday;
 }

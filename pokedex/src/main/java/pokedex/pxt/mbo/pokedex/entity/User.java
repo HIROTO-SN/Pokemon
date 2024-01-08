@@ -1,6 +1,7 @@
 package pokedex.pxt.mbo.pokedex.entity;
 
-import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 
 import org.springframework.data.annotation.LastModifiedDate;
@@ -16,8 +17,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
-import jakarta.persistence.Temporal;
-import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -45,16 +44,28 @@ public class User {
 	private String email;
 
 	private String country;
+
+	private LocalDate birthday;
 	
-	@Temporal(TemporalType.DATE)
-	private Date birthday;
+	@Column(name = "account_enabled")
+	private boolean accountEnabled;
+
+	@Column(name = "account_expiration")
+	private LocalDate accountExpiration;
+
+	@Column(name = "account_password_expiration")
+	private String accountPasswordExpiration;
+
+	@Column(name = "account_login_failure_count")
+	private int accountLoginFailureCount;
+	
 
 	@Column(name = "created_date", updatable = false)
-	private Date createdDate;
+	private LocalDateTime createdDate;
 	
 	@Column(name = "update_date")
 	@LastModifiedDate
-	private Date updateDate;
+	private LocalDateTime updateDate;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL)
 	@JoinTable(name = "users_roles", 
