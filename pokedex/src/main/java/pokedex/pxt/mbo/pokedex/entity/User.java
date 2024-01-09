@@ -21,6 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import lombok.Builder.Default;
 
 @Getter
 @Setter
@@ -54,11 +55,10 @@ public class User {
 	private LocalDate accountExpiration;
 
 	@Column(name = "account_password_expiration")
-	private String accountPasswordExpiration;
+	private LocalDate accountPasswordExpiration;
 
 	@Column(name = "account_login_failure_count")
 	private int accountLoginFailureCount;
-	
 
 	@Column(name = "created_date", updatable = false)
 	private LocalDateTime createdDate;
