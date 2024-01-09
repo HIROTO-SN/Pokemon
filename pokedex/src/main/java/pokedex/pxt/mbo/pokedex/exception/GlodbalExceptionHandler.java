@@ -29,7 +29,7 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
 
 	// 入力チェック関連
 	@ExceptionHandler(PokedexException.class)
-    public ResponseEntity<ErrorDetails> handleBlogAPIException(PokedexException exception,
+    public ResponseEntity<ErrorDetails> handlePokedexAPIException(PokedexException exception,
                                                                         WebRequest webRequest){
         ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
                 webRequest.getDescription(false));
