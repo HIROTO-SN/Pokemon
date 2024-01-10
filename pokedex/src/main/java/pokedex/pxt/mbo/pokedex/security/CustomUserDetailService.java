@@ -10,6 +10,7 @@ import org.springframework.security.authentication.event.AuthenticationFailureDi
 import org.springframework.security.authentication.event.AuthenticationFailureExpiredEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureLockedEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureServiceExceptionEvent;
+import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -54,16 +55,30 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	/*
-	 * アカウント認証失敗（ユーザー名、パスワードなどを間違えた場合）
+	 * アカウント認証成功
+	 */
+	@EventListener
+	public void handleLoginSuccess(AuthenticationSuccessEvent event) {
+		// 入力されたユーザー名
+		String username = event.getAuthentication().getName();
+		// 存在するユーザ名でのログイン失敗（パスワード間違い）
+		userRepository.findByUsername(username).ifPresent(user -> {
+			userRepository.save(user.resetLoginFailureCount());
+		});
+	}
+
+	/*
+	 * アカウント認証失敗（ユーザー名 or パスワードを間違えた場合）
 	 */
 	@EventListener
 	public void handleBadCredentialsEvent(AuthenticationFailureBadCredentialsEvent event) {
-		if (event.getException().getClass().equals(UsernameNotFoundException.class)) {
-			// 存在しないユーザ名でのログイン失敗
-		} else {
-			// 存在するユーザ名でのログイン失敗
-		}
+		// 入力されたユーザー名
 		String username = event.getAuthentication().getName();
+		// 存在するユーザ名でのログイン失敗（パスワード間違い）
+		userRepository.findByUsername(username).ifPresent(user -> {
+			userRepository.save(user.incrementLoginFailureCount());
+		});
+		
 	}
 
 	/*
@@ -75,7 +90,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	/*
-	 * アカウントロック（
+	 * アカウントロック
 	 */
 	@EventListener
 	public void handleBadCredentialsEvent(AuthenticationFailureLockedEvent event) {
@@ -83,7 +98,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	/*
-	 * アカウント有効期限切れ
+	 * パスワード有効期限切れ
 	 */
 	@EventListener
 	public void handleBadCredentialsEvent(AuthenticationFailureCredentialsExpiredEvent event) {
@@ -91,18 +106,10 @@ public class CustomUserDetailService implements UserDetailsService {
 	}
 
 	/*
-	* パスワード有効期限切れ
+	* アカウント有効期限切れ
 	*/
 	@EventListener
 	public void handleBadCredentialsEvent(AuthenticationFailureExpiredEvent event) {
-		String username = event.getAuthentication().getName();
-	}
-
-	/*
-	* パスワード有効期限切れ
-	*/
-	@EventListener
-	public void handleBadCredentialsEvent(AuthenticationFailureServiceExceptionEvent event) {
 		String username = event.getAuthentication().getName();
 	}
 }
