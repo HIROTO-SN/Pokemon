@@ -21,7 +21,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.Builder.Default;
+import pokedex.pxt.mbo.pokedex.common.Constants;
 
 @Getter
 @Setter
@@ -73,5 +73,18 @@ public class User {
 					inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	private Set<Role> roles;
 
+	/*
+	 * ログイン成功時にログイン失敗回数をインクリメントする
+	 */
+	public User resetLoginFailureCount() {
+		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, 0, createdDate, Constants.CURRENT_DATE_TIME, roles);
+	}
+
+	/*
+	 * ログイン失敗時にログイン失敗回数をインクリメントする
+	 */
+	public User incrementLoginFailureCount() {
+		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, accountLoginFailureCount + 1, createdDate, Constants.CURRENT_DATE_TIME, roles);
+	}
 
 }
