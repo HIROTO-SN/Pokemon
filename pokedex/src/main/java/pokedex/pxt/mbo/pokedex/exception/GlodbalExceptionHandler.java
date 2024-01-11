@@ -1,10 +1,14 @@
 package pokedex.pxt.mbo.pokedex.exception;
 
 import java.util.Date;
+import java.util.Locale;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
@@ -15,14 +19,16 @@ import pokedex.pxt.mbo.pokedex.payload.ErrorDetails;
 @ControllerAdvice
 public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
 	
+	@Autowired
+	private MessageSource messageSource;
+
 	/*** Specific Exceptions***/
 	// リソース関連
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception, WebRequest webRequest) {
 
 		ErrorDetails errorDetails = new ErrorDetails(
-			new Date(), exception.getMessage(), webRequest.getDescription(false)
-		);
+			new Date(), exception.getMessage(), webRequest.getDescription(false)		);
 		
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
@@ -42,6 +48,23 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
 
 		ErrorDetails errorDetails = new ErrorDetails(
 			new Date(), exception.getMessage(), webRequest.getDescription(false)
+		);
+		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+	}
+
+	// アカウント認証失敗（ユーザー名 or パスワードを間違えた場合）
+	@ExceptionHandler(BadCredentialsException.class)
+	public ResponseEntity<ErrorDetails> handleBadCredentialsException(BadCredentialsException exception, WebRequest webRequest) {
+
+		ErrorDetails errorDetails = new ErrorDetails(
+			new Date(), 
+			messageSource.getMessage(
+				"error.BadCredentialsException",
+				new Integer[] { 1 } ,
+				null,
+				Locale.ENGLISH
+				), 
+			webRequest.getDescription(false)
 		);
 		
 		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
