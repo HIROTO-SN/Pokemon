@@ -57,6 +57,7 @@ public class SecurityConfig {
 							.requestMatchers(HttpMethod.GET, "/pokeList").permitAll()
 							.requestMatchers(HttpMethod.GET, "/items").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+							.requestMatchers("/session/**").permitAll()
 							.requestMatchers("/api/auth/**").permitAll()
 							.anyRequest().authenticated()
 						).httpBasic(Customizer.withDefaults());
