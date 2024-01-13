@@ -5,6 +5,7 @@ import Alert from "./Alert.js";
 import LoginCreate from "./Login-create.js";
 import LoginForm from "./Login-form.js";
 import { useState } from "react";
+import { LoginErrorProvider, useLoginError } from "../../contexts/LoginContext.js";
 
 const Login = () => {
   /***** CSS ******/
@@ -103,34 +104,36 @@ const Login = () => {
 
   /***** State ******/
   // 入力チェック時エラー内容State
-  const [error, setError] = useState("");
+  const error = useLoginError();
     
   return (
-    <div css={[container]}>
-      {error !== "" && 
-        <Alert section={section} error={error} />
-      }
-      <section css={[useraccount, section]}>
-        <h1 css={[pageMainTitle, push1]}>
-          Welcome to the Pokémon Trainer Club!
-        </h1>
-        <div css={[push1, column6]}>
-          <h2 css={sectionTitle}> Log In </h2>
-          <div css={[colorBlock, dogEar("bl")]}>
-            <LoginForm setError={setError} />
+    <LoginErrorProvider>
+      <div css={[container]}>
+        {error !== "" && 
+          <Alert section={section} />
+        }
+        <section css={[useraccount, section]}>
+          <h1 css={[pageMainTitle, push1]}>
+            Welcome to the Pokémon Trainer Club!
+          </h1>
+          <div css={[push1, column6]}>
+            <h2 css={sectionTitle}> Log In </h2>
+            <div css={[colorBlock, dogEar("bl")]}>
+              <LoginForm />
+            </div>
           </div>
-        </div>
-        <div css={[push7, column6]}>
-          <h2 css={sectionTitle}> Join the Pokémon Trainer Club! </h2>
-          <div css={[colorBlock, dogEar("br")]}>
-            <LoginCreate />
+          <div css={[push7, column6]}>
+            <h2 css={sectionTitle}> Join the Pokémon Trainer Club! </h2>
+            <div css={[colorBlock, dogEar("br")]}>
+              <LoginCreate />
+            </div>
+            <div css={aboutUsCharacters}>
+              <img src="./additional/pokemon-login.png" alt="Characters" width="443" height="248"/>
+            </div>
           </div>
-          <div css={aboutUsCharacters}>
-            <img src="./additional/pokemon-login.png" alt="Characters" width="443" height="248"/>
-          </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </LoginErrorProvider>
   );
 };
 

@@ -61,13 +61,18 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
 	public ResponseEntity<ErrorDetails> handleBadCredentialsException(BadCredentialsException exception, WebRequest webRequest) {
 
 		// ログイン失敗回数をセッションから取得する
-		Integer failCount = sessionService.getLoginUserData().getBody().getUserdata().getAccountLoginFailureCount();
+		Integer failCount = sessionService.getLoginUserData().getBody().getAccountLoginFailureCount();
+		String messageCode = "error.BadCredentialsException.Attempt";
+		// ログイン失敗回数がマックスに達したかどうか判定
+		if (failCount >= Constants.LOGIN_MAX_FAIL_COUNT) {
+			messageCode = "error.BadCredentialsException.Locked";
+		}
 
 		ErrorDetails errorDetails = new ErrorDetails(
 			new Date(), 
 			messageSource.getMessage(
-				"error.BadCredentialsException",
-				new Integer[] { (Constants.LOGIN_MAX_FAIL_COUNT - failCount - 1) } ,
+				messageCode,
+				new Integer[] { (Constants.LOGIN_MAX_FAIL_COUNT - failCount) } ,
 				null,
 				Locale.ENGLISH
 			), 

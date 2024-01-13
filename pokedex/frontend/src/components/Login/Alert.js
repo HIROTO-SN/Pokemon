@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { column12, push1 } from "../CommonCss/Layout";
+import { useLoginError } from "../../contexts/LoginContext";
 
-const Alert = ({ section, error }) => {
+const Alert = ({ section }) => {
 	/***** CSS ******/
 	const validate = css`
 		padding-top: 25px;
@@ -25,6 +26,9 @@ const Alert = ({ section, error }) => {
 			font-family: "Flexo-Medium",arial,sans-serif;
 		}
 	`;
+
+	/***** State ******/
+	const error = useLoginError();
 
 	return (
 		<section css={[validate, section]}>
