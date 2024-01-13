@@ -15,12 +15,16 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import pokedex.pxt.mbo.pokedex.payload.ErrorDetails;
+import pokedex.pxt.mbo.pokedex.services.SessionService;
+import pokedex.pxt.mbo.pokedex.common.Constants;
 
 @ControllerAdvice
 public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
 	
 	@Autowired
 	private MessageSource messageSource;
+	@Autowired
+	private SessionService sessionService;
 
 	/*** Specific Exceptions***/
 	// リソース関連
@@ -56,14 +60,17 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
 	@ExceptionHandler(BadCredentialsException.class)
 	public ResponseEntity<ErrorDetails> handleBadCredentialsException(BadCredentialsException exception, WebRequest webRequest) {
 
+		// ログイン失敗回数をセッションから取得する
+		Integer failCount = sessionService.getLoginUserData().getBody().getUserdata().getAccountLoginFailureCount();
+
 		ErrorDetails errorDetails = new ErrorDetails(
 			new Date(), 
 			messageSource.getMessage(
 				"error.BadCredentialsException",
-				new Integer[] { 1 } ,
+				new Integer[] { (Constants.LOGIN_MAX_FAIL_COUNT - failCount - 1) } ,
 				null,
 				Locale.ENGLISH
-				), 
+			), 
 			webRequest.getDescription(false)
 		);
 		

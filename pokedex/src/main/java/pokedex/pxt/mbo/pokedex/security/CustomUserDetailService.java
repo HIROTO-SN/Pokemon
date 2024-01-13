@@ -3,13 +3,13 @@ package pokedex.pxt.mbo.pokedex.security;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureCredentialsExpiredEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureDisabledEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureExpiredEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureLockedEvent;
-import org.springframework.security.authentication.event.AuthenticationFailureServiceExceptionEvent;
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -18,14 +18,20 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
+import pokedex.pxt.mbo.pokedex.common.Api;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.User;
+import pokedex.pxt.mbo.pokedex.payload.SessionDto;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
+import pokedex.pxt.mbo.pokedex.services.SessionService;
 
 @Service
 public class CustomUserDetailService implements UserDetailsService {
 
 	private UserRepository userRepository;
+	
+	@Autowired
+	private SessionService sessionService;
 
 	public CustomUserDetailService(UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -64,6 +70,7 @@ public class CustomUserDetailService implements UserDetailsService {
 		// 存在するユーザ名でのログイン失敗（パスワード間違い）
 		userRepository.findByUsername(username).ifPresent(user -> {
 			userRepository.save(user.resetLoginFailureCount());
+			sessionService.setLoginUserData(new SessionDto(user));
 		});
 	}
 
@@ -77,6 +84,9 @@ public class CustomUserDetailService implements UserDetailsService {
 		// 存在するユーザ名でのログイン失敗（パスワード間違い）
 		userRepository.findByUsername(username).ifPresent(user -> {
 			userRepository.save(user.incrementLoginFailureCount());
+			SessionDto sessionDto = new SessionDto(new User());
+			sessionDto.setUserFailData(username, user.getAccountLoginFailureCount());
+			sessionService.setLoginUserData(sessionDto);
 		});
 		
 	}
