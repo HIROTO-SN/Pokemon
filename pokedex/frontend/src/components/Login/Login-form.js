@@ -4,11 +4,11 @@ import { accountButton, hiddenMobile, notchBottomCenter } from "./Login";
 import { push1 } from "../CommonCss/Layout";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useLoginInfo, useLoginAction } from "../../contexts/LoginContext";
+import { useLoginInfo, useLoginAction, useLoginErrorSet } from "../../contexts/LoginContext";
 import { loginAuth } from "../api/LoginApi";
 import { valid_message_passwordEmpty, valid_message_usernameEmpty } from "../../constants/ValidationMessage";
 
-const LoginForm = ({ setError }) => {
+const LoginForm = () => {
   /***** CSS ******/
 
   // Form大元
@@ -158,6 +158,8 @@ const LoginForm = ({ setError }) => {
   const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
+  const setError = useLoginErrorSet();
+
   /***** JS ******/
   const handleLoginSubmit = (e) => {
     e.preventDefault();
@@ -172,7 +174,7 @@ const LoginForm = ({ setError }) => {
     } else {
       setError("");
     }
-    loginAuth(username, password);
+    loginAuth(username, password, setError);
 
     // ログイン成功時処理
     userStateAction({username: username, isLogin: true});

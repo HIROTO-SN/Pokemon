@@ -12,7 +12,6 @@ import TradingCard from "./features/TradingCard/Main.js";
 import VideoGames from "./features/VideoGames/Main.js";
 import Login from "./components/Login/Login.js";
 import Backtotop from "./components/BackToTop/Backtotop.js";
-import Head from "./components/Head/Head.js";
 import { LoginProvider } from "./contexts/LoginContext.js";
 import Profile from "./components/Profile/Profile.js";
 

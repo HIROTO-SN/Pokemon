@@ -27,7 +27,7 @@ public class SessionController {
 	public void setLoginInfo(@RequestBody SessionDto sessionDto, HttpServletRequest request) {
 		session.invalidate();
 		session = request.getSession();
-		session.setAttribute("user_data", sessionDto.getUserdata());
+		session.setAttribute("user_data", sessionDto);
 	}
 
 	@GetMapping("/get")

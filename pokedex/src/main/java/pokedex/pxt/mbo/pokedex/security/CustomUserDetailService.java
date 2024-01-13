@@ -18,7 +18,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import pokedex.pxt.mbo.pokedex.common.Api;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.User;
 import pokedex.pxt.mbo.pokedex.payload.SessionDto;
@@ -29,7 +28,6 @@ import pokedex.pxt.mbo.pokedex.services.SessionService;
 public class CustomUserDetailService implements UserDetailsService {
 
 	private UserRepository userRepository;
-	
 	@Autowired
 	private SessionService sessionService;
 
@@ -67,10 +65,17 @@ public class CustomUserDetailService implements UserDetailsService {
 	public void handleLoginSuccess(AuthenticationSuccessEvent event) {
 		// 入力されたユーザー名
 		String username = event.getAuthentication().getName();
+		SessionDto sessionDto = new SessionDto();
 		// 存在するユーザ名でのログイン失敗（パスワード間違い）
 		userRepository.findByUsername(username).ifPresent(user -> {
 			userRepository.save(user.resetLoginFailureCount());
-			sessionService.setLoginUserData(new SessionDto(user));
+			// セッションへ必要なユーザー情報のみセット
+			sessionDto.setUsername(username);
+			sessionDto.setAccountLoginFailureCount(user.getAccountLoginFailureCount());
+			sessionDto.setEmail(user.getEmail());
+			sessionDto.setCountry(user.getCountry());
+			sessionDto.setBirthday(user.getBirthday());
+			sessionService.setLoginUserData(sessionDto);
 		});
 	}
 
@@ -81,11 +86,13 @@ public class CustomUserDetailService implements UserDetailsService {
 	public void handleBadCredentialsEvent(AuthenticationFailureBadCredentialsEvent event) {
 		// 入力されたユーザー名
 		String username = event.getAuthentication().getName();
+		SessionDto sessionDto = new SessionDto();
 		// 存在するユーザ名でのログイン失敗（パスワード間違い）
 		userRepository.findByUsername(username).ifPresent(user -> {
 			userRepository.save(user.incrementLoginFailureCount());
-			SessionDto sessionDto = new SessionDto(new User());
-			sessionDto.setUserFailData(username, user.getAccountLoginFailureCount());
+			// セッションへ必要なユーザー情報のみセット
+			sessionDto.setUsername(username);
+			sessionDto.setAccountLoginFailureCount(user.getAccountLoginFailureCount());
 			sessionService.setLoginUserData(sessionDto);
 		});
 		

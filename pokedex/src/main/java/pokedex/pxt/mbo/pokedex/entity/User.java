@@ -59,6 +59,9 @@ public class User {
 
 	@Column(name = "account_login_failure_count")
 	private int accountLoginFailureCount;
+	
+	@Column(name = "account_locked_date")
+	private LocalDateTime accountLockedDate;
 
 	@Column(name = "created_date", updatable = false)
 	private LocalDateTime createdDate;
@@ -77,14 +80,14 @@ public class User {
 	 * ログイン成功時にログイン失敗回数をインクリメントする
 	 */
 	public User resetLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, 0, createdDate, Constants.CURRENT_DATE_TIME, roles);
+		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, 0, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
 	}
 
 	/*
 	 * ログイン失敗時にログイン失敗回数をインクリメントする
 	 */
 	public User incrementLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, accountLoginFailureCount + 1, createdDate, Constants.CURRENT_DATE_TIME, roles);
+		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, accountLoginFailureCount + 1, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
 	}
 
 }
