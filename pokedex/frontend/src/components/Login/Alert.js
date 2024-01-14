@@ -31,13 +31,17 @@ const Alert = ({ section }) => {
 	const error = useLoginError();
 
 	return (
-		<section css={[validate, section]}>
-			<div css={[push1, column12]}>
-				<div css={alert}>
-					<h3>{error}</h3>
-				</div>
-			</div>
-		</section>
+		<>
+			{error != "" &&
+				<section css={[validate, section]}>
+					<div css={[push1, column12]}>
+						<div css={alert}>
+							<h3>{error}</h3>
+						</div>
+					</div>
+				</section>
+			}
+		</>
 	)
 }
 

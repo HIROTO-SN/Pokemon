@@ -2,6 +2,7 @@ package pokedex.pxt.mbo.pokedex.payload;
 
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import org.springframework.web.context.annotation.SessionScope;
 
@@ -22,9 +23,10 @@ public class SessionDto implements Serializable {
 
 	private static final long serialVersionUID = 1991122005180818L;
 	private String username;
-	private Integer accountLoginFailureCount;
 	private String email;
 	private String country;
 	private LocalDate birthday;
+	private Integer accountLoginFailureCount;
+	private LocalDateTime accountLockedDate;
 
 }
