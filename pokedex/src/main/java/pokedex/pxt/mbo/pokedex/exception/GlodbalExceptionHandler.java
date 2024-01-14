@@ -9,14 +9,15 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.security.authentication.LockedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.payload.ErrorDetails;
 import pokedex.pxt.mbo.pokedex.services.SessionService;
-import pokedex.pxt.mbo.pokedex.common.Constants;
 
 @ControllerAdvice
 public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
@@ -72,13 +73,30 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler{
 			new Date(), 
 			messageSource.getMessage(
 				messageCode,
-				new Integer[] { (Constants.LOGIN_MAX_FAIL_COUNT - failCount) } ,
+				(failCount >= Constants.LOGIN_MAX_FAIL_COUNT) ? null : new Integer[] { (Constants.LOGIN_MAX_FAIL_COUNT - failCount) } ,
 				null,
 				Locale.ENGLISH
 			), 
 			webRequest.getDescription(false)
 		);
 		
+		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
+	}
+
+	// アカウントロック
+	@ExceptionHandler(LockedException.class)
+	public ResponseEntity<ErrorDetails> handleAuthenticationFailureLockedEvent(LockedException exception, WebRequest webRequest) {
+
+		String messageCode = "error.BadCredentialsException.Locked";
+		
+		ErrorDetails errorDetails = new ErrorDetails(
+			new Date(),
+			messageSource.getMessage(
+				messageCode,
+				null,
+				null,
+				Locale.ENGLISH),
+			webRequest.getDescription(false));
 		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
 	}
 

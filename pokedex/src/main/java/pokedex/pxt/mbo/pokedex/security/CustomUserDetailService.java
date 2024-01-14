@@ -1,5 +1,6 @@
 package pokedex.pxt.mbo.pokedex.security;
 
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -93,6 +94,11 @@ public class CustomUserDetailService implements UserDetailsService {
 			// セッションへ必要なユーザー情報のみセット
 			sessionDto.setUsername(username);
 			sessionDto.setAccountLoginFailureCount(user.getAccountLoginFailureCount());
+			if (user.getAccountLoginFailureCount() == Constants.LOGIN_MAX_FAIL_COUNT) {
+				sessionDto.setAccountLockedDate(Constants.CURRENT_DATE_TIME);
+				user.setAccountLockedDate(Constants.CURRENT_DATE_TIME);
+				userRepository.save(user);
+			}
 			sessionService.setLoginUserData(sessionDto);
 		});
 		
@@ -112,6 +118,13 @@ public class CustomUserDetailService implements UserDetailsService {
 	@EventListener
 	public void handleBadCredentialsEvent(AuthenticationFailureLockedEvent event) {
 		String username = event.getAuthentication().getName();
+		// userRepository.findByUsername(username).ifPresent(user -> {
+		// 	LocalDateTime lockedPlus15min = user.getAccountLockedDate().plusMinutes(15);
+		// 	if (lockedPlus15min.isBefore(Constants.CURRENT_DATE_TIME)) {
+		// 		userRepository.save(user.resetLoginFailureCount());
+		// 		loadUserByUsername(username);
+		// 	}
+		// });
 	}
 
 	/*

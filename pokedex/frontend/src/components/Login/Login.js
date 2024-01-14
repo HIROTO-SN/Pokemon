@@ -4,8 +4,7 @@ import { column6, container, push1, push7 } from "../CommonCss/Layout.js";
 import Alert from "./Alert.js";
 import LoginCreate from "./Login-create.js";
 import LoginForm from "./Login-form.js";
-import { useState } from "react";
-import { LoginErrorProvider, useLoginError } from "../../contexts/LoginContext.js";
+import { LoginErrorProvider, useLoginError, useLoginErrorSet } from "../../contexts/LoginContext.js";
 
 const Login = () => {
   /***** CSS ******/
@@ -101,17 +100,11 @@ const Login = () => {
       right: 80px;
     }
   `;
-
-  /***** State ******/
-  // 入力チェック時エラー内容State
-  const error = useLoginError();
     
   return (
     <LoginErrorProvider>
       <div css={[container]}>
-        {error !== "" && 
-          <Alert section={section} />
-        }
+        <Alert section={section} />
         <section css={[useraccount, section]}>
           <h1 css={[pageMainTitle, push1]}>
             Welcome to the Pokémon Trainer Club!
