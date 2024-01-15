@@ -1,6 +1,7 @@
 package pokedex.pxt.mbo.pokedex.security;
 
 import java.time.LocalDateTime;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -43,12 +44,25 @@ public class CustomUserDetailService implements UserDetailsService {
 									new UsernameNotFoundException(
 										("User not found with username: " + username)
 								));
+		// 権限取得
 		Set<GrantedAuthority> authorities = user
 			.getRoles()
 			.stream()
 			.map((role) -> new SimpleGrantedAuthority(role.getName()))
 			.collect(Collectors.toSet());
 
+		// アカウントロック判定(15分経過後解除)
+		Optional<LocalDateTime> lockedTime = Optional.ofNullable(user.getAccountLockedDate());
+		lockedTime.ifPresent((ltime) -> {
+			LocalDateTime lockedPlus15min = ltime.plusMinutes(15);
+	
+			if (lockedPlus15min.isBefore(Constants.CURRENT_DATE_TIME)) {
+				user.setAccountLockedDate(null);
+				user.setAccountLoginFailureCount(0);
+				userRepository.save(user);
+			}
+		});
+		
 		return new org.springframework.security.core.userdetails.User(
 			user.getUsername(),
 			user.getPassword(),
@@ -69,7 +83,8 @@ public class CustomUserDetailService implements UserDetailsService {
 		SessionDto sessionDto = new SessionDto();
 		// 存在するユーザ名でのログイン失敗（パスワード間違い）
 		userRepository.findByUsername(username).ifPresent(user -> {
-			userRepository.save(user.resetLoginFailureCount());
+			user.setAccountLoginFailureCount(0);
+			userRepository.save(user);
 			// セッションへ必要なユーザー情報のみセット
 			sessionDto.setUsername(username);
 			sessionDto.setAccountLoginFailureCount(user.getAccountLoginFailureCount());
@@ -90,7 +105,8 @@ public class CustomUserDetailService implements UserDetailsService {
 		SessionDto sessionDto = new SessionDto();
 		// 存在するユーザ名でのログイン失敗（パスワード間違い）
 		userRepository.findByUsername(username).ifPresent(user -> {
-			userRepository.save(user.incrementLoginFailureCount());
+			user.setAccountLoginFailureCount(user.getAccountLoginFailureCount() + 1);
+			userRepository.save(user);
 			// セッションへ必要なユーザー情報のみセット
 			sessionDto.setUsername(username);
 			sessionDto.setAccountLoginFailureCount(user.getAccountLoginFailureCount());
@@ -118,13 +134,6 @@ public class CustomUserDetailService implements UserDetailsService {
 	@EventListener
 	public void handleBadCredentialsEvent(AuthenticationFailureLockedEvent event) {
 		String username = event.getAuthentication().getName();
-		// userRepository.findByUsername(username).ifPresent(user -> {
-		// 	LocalDateTime lockedPlus15min = user.getAccountLockedDate().plusMinutes(15);
-		// 	if (lockedPlus15min.isBefore(Constants.CURRENT_DATE_TIME)) {
-		// 		userRepository.save(user.resetLoginFailureCount());
-		// 		loadUserByUsername(username);
-		// 	}
-		// });
 	}
 
 	/*
