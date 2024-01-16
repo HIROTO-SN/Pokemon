@@ -14,6 +14,7 @@ import Login from "./components/Login/Login.js";
 import Backtotop from "./components/BackToTop/Backtotop.js";
 import { LoginProvider } from "./contexts/LoginContext.js";
 import Profile from "./components/Profile/Profile.js";
+import Signup from "./components/Login/CreateAccount/Signup.js";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/login" element={<Login />}></Route>
+          <Route path="/sign-up" element={<Signup />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/pokedex" element={<Pokedex />}></Route>

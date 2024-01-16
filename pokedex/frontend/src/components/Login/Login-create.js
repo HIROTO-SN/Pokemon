@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { accountButton, hiddenMobile, notchBottomCenter } from "./Login";
+import { Link } from "react-router-dom";
 
 const LoginCreate = () => {
   /***** CSS ******/
@@ -63,13 +64,12 @@ const LoginCreate = () => {
         </a>
         <span>!</span>
       </p>
-      <a
+      <Link to="../sign-up"
         id="user-account-signup"
-        href="https://club.pokemon.com/us/pokemon-trainer-club/sign-up/"
         css={[accountButton, buttonLightblue]}
       >
         Create an Account!
-      </a>
+      </Link>
       <span css={[notchBottomCenter, hiddenMobile]}></span>
     </>
   );
