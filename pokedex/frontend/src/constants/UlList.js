@@ -18,3 +18,9 @@ export const typeList = [
 	{ name: "Steel", background: "#9eb7b8", color: "#212121" },
 	{ name: "Water", background: "#4592c4" },
 ];
+
+export const stepMenuList = [
+	{ name: "Verify Age", class: "first" },
+	{ name: "Create Account", class: "middle" },
+	{ name: "Verify Email", class: "last"}
+];
