@@ -20,7 +20,7 @@ export const typeList = [
 ];
 
 export const stepMenuList = [
-	{ name: "Verify Age", class: "first" },
-	{ name: "Create Account", class: "middle" },
-	{ name: "Verify Email", class: "last"}
+	{ name: "Verify Age", pageNo: 1, class: "first" },
+	{ name: "Create Account", pageNo: 2,  class: "middle" },
+	{ name: "Verify Email", pageNo: 3,  class: "last"}
 ];

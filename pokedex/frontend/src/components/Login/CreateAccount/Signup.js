@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import { column10, container, push2, section, visibleMobile } from "../../CommonCss/Layout.js";
 import { hiddenMobile } from "../Login.js";
 import StepsMenu from "./StepsMenu.js";
+import { CurrentPageProvider } from "../../../contexts/SignupContext.js";
 
 const Signup = () => {
 	/***** CSS ******/
@@ -75,17 +76,19 @@ const Signup = () => {
 	`;
 
 	return (
-		<div css={[container]}>
-			<section css={[section, useraccount]}>
-				<h1 css={pageMainTitle}>Create Your Pokémon Trainer Club Account</h1>
-				<span css={[notchBottomRightSmall, visibleMobile]}></span>
-				<h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
-				<div css={[column10, push2, hiddenMobile]}>
-					<StepsMenu/>
-				</div>
-			</section>
-			<div></div>
-		</div>
+		<CurrentPageProvider>
+			<div css={[container]}>
+				<section css={[section, useraccount]}>
+					<h1 css={pageMainTitle}>Create Your Pokémon Trainer Club Account</h1>
+					<span css={[notchBottomRightSmall, visibleMobile]}></span>
+					<h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
+					<div css={[column10, push2, hiddenMobile]}>
+						<StepsMenu/>
+					</div>
+				</section>
+				<div></div>
+			</div>
+		</CurrentPageProvider>
 	)
 }
 
