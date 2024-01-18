@@ -184,10 +184,6 @@ const LoginForm = () => {
     // navigate("/profile");
   };
   
-  // Log Inボタン押下処理
-  // const onClickLogin = () => {
-  // };
-
   /***** HTML ******/
   return (
     <div css={[push1, formWrapper]}>
