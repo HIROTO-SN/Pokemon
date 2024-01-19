@@ -52,6 +52,12 @@ export const column12 = css({
 	width: '85.49%',
 });
 
+export const colorBlack = css`
+	color: #313131;
+`;
+
+
+
 export const ttHint = css({
 	display: 'none',
 });
