@@ -1,6 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { Link } from "react-router-dom";
+import {
+  customScrollbar,
+  customSelectMenu,
+  customSelectWrapper,
+  formField,
+} from "../../CommonCss/AccountCss";
+import { IoIosArrowDown } from "react-icons/io";
+import { viewport } from "../../CommonCss/Layout";
 
 const VerifyAge = () => {
   /***** CSS ******/
@@ -40,6 +48,16 @@ const VerifyAge = () => {
   // form囲い
   const formInner = css`
     margin: 2em;
+
+    > label {
+      clear: both;
+      color: #212121;
+      float: left;
+      font-size: 120%;
+      line-height: 100%;
+      margin: 0.875em 0 0.5em 0;
+      width: 38.4375%;
+    }
   `;
 
   // form下注釈囲い
@@ -67,13 +85,18 @@ const VerifyAge = () => {
       font-size: 112.5%;
       line-height: 122%;
       margin: 0.5em 2em 1em;
-      font-family: "Roboto",arial,sans-serif;
+      font-family: "Roboto", arial, sans-serif;
       font-weight: 500;
     }
   `;
 
   const linkLigInNow = css`
-    font-size: 100%!important;
+    font-size: 100% !important;
+  `;
+
+  const countryBar = css`
+    height: 144px;
+    /* display: none; */
   `;
 
   return (
@@ -81,10 +104,32 @@ const VerifyAge = () => {
       <p css={fieldRequired}>ALL FIELDS ARE REQUIRED.</p>
       <form id="verify-age" css={formInner}>
         <label htmlFor="dob">Date of Birth</label>
-        <div>
+        <div css={formField}>
+          <input id="id_dob" type="text" placeholder="yyyy-mm-dd" readOnly />
           <div></div>
         </div>
-        <label htmlFor="country"></label>
+        <label htmlFor="country">Country/Region</label>
+        <div css={formField}>
+          <div css={customSelectWrapper}>
+            <select id="country" style={{ display: "none" }}>
+              <option value="US">United States</option>
+            </select>
+            <div id="country-select" css={customSelectMenu}>
+              <label>
+                United States
+                <IoIosArrowDown viewBox="0 150 412 412"></IoIosArrowDown>
+              </label>
+              <div css={[customScrollbar, countryBar]}>
+                <div css={viewport}>
+                  <ul>
+                    <li>United States</li>
+                  </ul>
+                </div>
+              </div>
+              <input type="hidden" id="hdn-country" value="US" />
+            </div>
+          </div>
+        </div>
       </form>
       <div css={logInRow}>
         <h4>With a Pokémon Trainer Club account, you can:</h4>
