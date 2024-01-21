@@ -31,3 +31,7 @@ a {
   text-decoration: none;
   -webkit-tap-highlight-color: transparent;
 }
+
+ul {
+  list-style: none;
+}
