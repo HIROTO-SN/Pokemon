@@ -10,7 +10,7 @@ import {
 } from "../../CommonCss/Layout.js";
 import { hiddenMobile } from "../Login.js";
 import StepsMenu from "./StepsMenu.js";
-import { CurrentPageProvider } from "../../../contexts/SignupContext.js";
+import { CurrentPageProvider, InputAccountInfoProvider } from "../../../contexts/SignupContext.js";
 import VerifyAge from "./VerifyAge.js";
 
 const Signup = () => {
@@ -127,6 +127,7 @@ const Signup = () => {
     }
   `;
 
+  /***** HTML ******/
   return (
     <CurrentPageProvider>
       <div css={[container]}>
@@ -142,7 +143,9 @@ const Signup = () => {
           <section css={[section, noPaddingTop, useraccount]}>
             <div css={[column10, push2]}>
               <div css={[contentBlockFull, contentBlock]}>
-                <VerifyAge />
+                <InputAccountInfoProvider>
+                  <VerifyAge />
+                </InputAccountInfoProvider>
                 <div css={[characterBanner, hiddenMobile]}>
                   <img
                     src="./icons/pokemon-signup.png"

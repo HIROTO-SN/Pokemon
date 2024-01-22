@@ -20,6 +20,10 @@ export const formField = css`
     text-indent: 0.5em;
     width: 100%;
     height: auto;
+
+    ::placeholder {
+      color: #fff;
+    }
   }
 `;
 
@@ -66,11 +70,28 @@ export const customSelectWrapper = css`
 
     > svg {
       border-radius: 5px;
-      padding: 1em 0.75em 0.425em 0;
+      padding: 1em 0.75em 0.425em 0.425em;
       position: absolute;
       right: 0;
       top: 0;
       z-index: 2;
+
+      :hover {
+        background-color: #1d1d1d;
+      }
+    }
+
+  }
+
+  // リスト部（セレクトボックスでいうOption部）の幅など調整
+  & li {
+    clear: both;
+    width: 93.75%;
+    padding: 0.75em 3.125% 0.675em;
+    cursor: pointer;
+
+    :hover {
+      background-color: #313131;
     }
   }
 `;

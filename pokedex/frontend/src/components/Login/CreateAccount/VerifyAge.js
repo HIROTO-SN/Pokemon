@@ -7,8 +7,11 @@ import {
   customSelectWrapper,
   formField,
 } from "../../CommonCss/AccountCss";
-import { IoIosArrowDown } from "react-icons/io";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { viewport } from "../../CommonCss/Layout";
+import { countryList } from "../../../constants/UlList";
+import { useRef, useState } from "react";
+import { useInputAccountInfo, useSetInputAccountInfo } from "../../../contexts/SignupContext";
 
 const VerifyAge = () => {
   /***** CSS ******/
@@ -94,11 +97,36 @@ const VerifyAge = () => {
     font-size: 100% !important;
   `;
 
-  const countryBar = css`
+  const countryBar = (isListOpened) => css`
     height: 144px;
-    /* display: none; */
+    display: ${isListOpened ? "block" : "none"};
   `;
 
+  /***** context ******/
+  const accountInfo = useInputAccountInfo();
+  const setAccountInfo = useSetInputAccountInfo();
+
+  /***** ref ******/
+  const insideRef = useRef();
+  console.log(insideRef);
+
+  /***** State ******/
+  const [isListOpened, setIsListOpened] = useState(false);
+
+  /***** JS ******/
+  // Countryリスト開閉イベント
+  const arrowClickHandler = () => {
+    setIsListOpened(!isListOpened);
+  };
+
+  // Country名選択イベント
+  const countryItemClickHandler = (selList) => {
+    const newAccountInfo = {...accountInfo, country: { name: selList.name, value: selList.value} };
+    setAccountInfo(newAccountInfo);
+    arrowClickHandler();
+  }
+
+  /***** HTML ******/
   return (
     <div css={[formWrapper, dogEarTl]}>
       <p css={fieldRequired}>ALL FIELDS ARE REQUIRED.</p>
@@ -114,15 +142,23 @@ const VerifyAge = () => {
             <select id="country" style={{ display: "none" }}>
               <option value="US">United States</option>
             </select>
-            <div id="country-select" css={customSelectMenu}>
-              <label>
-                United States
-                <IoIosArrowDown viewBox="0 150 412 412"></IoIosArrowDown>
+            <div id="country-select" css={customSelectMenu} ref={insideRef}>
+              <label onClick={() => arrowClickHandler()}>
+                {accountInfo.country.name}
+                {isListOpened ? (
+                  <IoIosArrowUp viewBox="0 150 412 412"></IoIosArrowUp>
+                ) : (
+                  <IoIosArrowDown viewBox="0 150 412 412"></IoIosArrowDown>
+                )}
               </label>
-              <div css={[customScrollbar, countryBar]}>
+              <div css={[customScrollbar, countryBar(isListOpened)]}>
                 <div css={viewport}>
                   <ul>
-                    <li>United States</li>
+                    {countryList.map((list) => (
+                      <li key={list.name} onClick={() => countryItemClickHandler(list)}>
+                        {list.name}
+                      </li>
+                    ))}
                   </ul>
                 </div>
               </div>
