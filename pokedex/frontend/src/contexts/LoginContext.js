@@ -1,6 +1,9 @@
 import { createContext, useContext, useState } from "react";
 
-/* アプリ全体 */
+/*
+* Context1 - LoginState
+* アプリ全体でログイン状態の管理
+*/ 
 const LoginContext = createContext();
 const LoginActionContext = createContext();
 
@@ -26,7 +29,10 @@ export const LoginProvider = ({ children }) => {
 export const useLoginInfo = () => useContext(LoginContext);
 export const useLoginAction = () => useContext(LoginActionContext);
 
-/* ログイン画面のみエラー管理 */
+/*
+* Context2 - LoginError
+* ログイン画面でのエラー管理
+*/ 
 const LoginErrorContext = createContext();
 const LoginErrorSetContext = createContext();
 

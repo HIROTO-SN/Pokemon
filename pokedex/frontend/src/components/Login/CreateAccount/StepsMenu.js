@@ -115,9 +115,10 @@ const StepsMenu = () => {
 
   /***** JS ******/
 
-  /***** State ******/
+  /***** Context ******/
   const currentPage = useCurrentPage();
-  const currentPageDefine = useCurrentPageDefine();
+  
+  /***** State ******/
 
   /***** HTML ******/
   return (
