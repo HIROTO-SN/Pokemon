@@ -10,7 +10,7 @@ import {
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { viewport } from "../../CommonCss/Layout";
 import { countryList } from "../../../constants/UlList";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useInputAccountInfo, useSetInputAccountInfo } from "../../../contexts/SignupContext";
 
 const VerifyAge = () => {
@@ -106,17 +106,34 @@ const VerifyAge = () => {
   const accountInfo = useInputAccountInfo();
   const setAccountInfo = useSetInputAccountInfo();
 
-  /***** ref ******/
+  /***** State/ref ******/
   const insideRef = useRef();
-  console.log(insideRef);
-
-  /***** State ******/
+  const documentClickHandler = useRef();
   const [isListOpened, setIsListOpened] = useState(false);
-
+  
   /***** JS ******/
+
+  // カスタムセレクトボックス外クリックで閉じる処理
+  useEffect(() => {
+    
+    documentClickHandler.current = e => {
+      const tagJudgeSVG = e.target.tagName === "svg";
+      const tagJudgePath = e.target.tagName === "path";
+
+      if (insideRef.current.contains(e.target) || tagJudgeSVG || tagJudgePath) return
+      arrowOutsideClickHandler();
+    }
+  },[]);
+
+  const arrowOutsideClickHandler = () => {
+    setIsListOpened(false);
+    document.removeEventListener('click', documentClickHandler.current);
+  }
+
   // Countryリスト開閉イベント
   const arrowClickHandler = () => {
     setIsListOpened(!isListOpened);
+    document.addEventListener('click', documentClickHandler.current);
   };
 
   // Country名選択イベント
