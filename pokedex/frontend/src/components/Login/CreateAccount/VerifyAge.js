@@ -1,17 +1,33 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import {
   customScrollbar,
   customSelectMenu,
   customSelectWrapper,
   formField,
+  submitButton,
 } from "../../CommonCss/AccountCss";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import { viewport } from "../../CommonCss/Layout";
+import {
+  picker,
+  pickerBox,
+  pickerFooter,
+  pickerFrame,
+  pickerHeader,
+  pickerHolder,
+  pickerTable,
+  pickerWrap,
+  viewport,
+} from "../../CommonCss/Layout";
 import { countryList } from "../../../constants/UlList";
 import { useEffect, useRef, useState } from "react";
-import { useInputAccountInfo, useSetInputAccountInfo } from "../../../contexts/SignupContext";
+import {
+  useInputAccountInfo,
+  useSetInputAccountInfo,
+} from "../../../contexts/SignupContext";
+import AlertSignUp from "./AlertSignUp";
+import { valid_message_required } from "../../../constants/ValidationMessage";
 
 const VerifyAge = () => {
   /***** CSS ******/
@@ -110,38 +126,62 @@ const VerifyAge = () => {
   const insideRef = useRef();
   const documentClickHandler = useRef();
   const [isListOpened, setIsListOpened] = useState(false);
-  
+  const errorContentInit = {
+    birthday: "",
+  };
+  const [error, setError] = useState(errorContentInit);
+
   /***** JS ******/
 
   // カスタムセレクトボックス外クリックで閉じる処理
   useEffect(() => {
-    
-    documentClickHandler.current = e => {
+    documentClickHandler.current = (e) => {
       const tagJudgeSVG = e.target.tagName === "svg";
       const tagJudgePath = e.target.tagName === "path";
 
-      if (insideRef.current.contains(e.target) || tagJudgeSVG || tagJudgePath) return
+      if (insideRef.current.contains(e.target) || tagJudgeSVG || tagJudgePath)
+        return;
       arrowOutsideClickHandler();
-    }
-  },[]);
+    };
+  }, []);
 
+  // Countryリスト外押下イベント
   const arrowOutsideClickHandler = () => {
     setIsListOpened(false);
-    document.removeEventListener('click', documentClickHandler.current);
-  }
+    document.removeEventListener("click", documentClickHandler.current);
+  };
 
   // Countryリスト開閉イベント
   const arrowClickHandler = () => {
     setIsListOpened(!isListOpened);
-    document.addEventListener('click', documentClickHandler.current);
+    document.addEventListener("click", documentClickHandler.current);
   };
 
   // Country名選択イベント
   const countryItemClickHandler = (selList) => {
-    const newAccountInfo = {...accountInfo, country: { name: selList.name, value: selList.value} };
+    const newAccountInfo = {
+      ...accountInfo,
+      country: { name: selList.name, value: selList.value },
+    };
     setAccountInfo(newAccountInfo);
     arrowClickHandler();
-  }
+  };
+  // Country名選択イベント
+  const birthdayChangeHandler = (e) => {
+    const newAccountInfo = { ...accountInfo, birthday: e.target.value.trim() };
+    setAccountInfo(newAccountInfo);
+  };
+
+  // Continueボタン押下イベント
+  const continueClickHanlder = () => {
+    console.log("continueクリック！");
+    if (accountInfo.birthday.trim() === "") {
+      setError({ birthday: valid_message_required});
+    } else {
+      setError({ birthday: ""});
+    }
+    
+  };
 
   /***** HTML ******/
   return (
@@ -150,8 +190,29 @@ const VerifyAge = () => {
       <form id="verify-age" css={formInner}>
         <label htmlFor="dob">Date of Birth</label>
         <div css={formField}>
-          <input id="id_dob" type="text" placeholder="yyyy-mm-dd" readOnly />
-          <div></div>
+          <input
+            id="id_dob"
+            type="text"
+            placeholder="yyyy-mm-dd"
+            onChange={(e) => birthdayChangeHandler(e)}
+            value={accountInfo.birthday}
+          />
+          <div css={picker}>
+            <div css={pickerHolder}>
+              <div css={pickerFrame}>
+                <div css={pickerWrap}>
+                  <div css={pickerBox}>
+                    <div css={pickerHeader}>
+                      <div css={customSelectWrapper}></div>
+                    </div>
+                    <table css={pickerTable}></table>
+                    <div css={pickerFooter}></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {error.birthday != "" && <AlertSignUp />}
         </div>
         <label htmlFor="country">Country/Region</label>
         <div css={formField}>
@@ -172,17 +233,25 @@ const VerifyAge = () => {
                 <div css={viewport}>
                   <ul>
                     {countryList.map((list) => (
-                      <li key={list.name} onClick={() => countryItemClickHandler(list)}>
+                      <li
+                        key={list.name}
+                        onClick={() => countryItemClickHandler(list)}
+                      >
                         {list.name}
                       </li>
                     ))}
                   </ul>
                 </div>
               </div>
-              <input type="hidden" id="hdn-country" value="US" />
             </div>
           </div>
         </div>
+        <input
+          type="button"
+          css={submitButton}
+          value="Continue"
+          onClick={() => continueClickHanlder()}
+        ></input>
       </form>
       <div css={logInRow}>
         <h4>With a Pokémon Trainer Club account, you can:</h4>

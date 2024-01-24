@@ -80,7 +80,6 @@ export const customSelectWrapper = css`
         background-color: #1d1d1d;
       }
     }
-
   }
 
   // リスト部（セレクトボックスでいうOption部）の幅など調整
@@ -121,4 +120,24 @@ export const customScrollbar = css`
 
 export const buttonBlack = css`
   color: #fff;
+`;
+
+// Submitボタン
+export const submitButton = css`
+  clear: both;
+  margin: 1.5625%;
+  margin-bottom: 1.5em;
+  font-family: "Roboto", arial, sans-serif;
+  float: right;
+  appearance: none;
+  border: none;
+  text-align: center;
+  cursor: pointer;
+  background-color: #4dad5b;
+  color: #fff;
+  font-size: 105%;
+  line-height: 125%;
+  padding: 0.75em 1.25em 0.675em;
+  vertical-align: middle;
+  border-radius: 5px;
 `;
