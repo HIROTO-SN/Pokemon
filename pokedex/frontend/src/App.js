@@ -14,7 +14,7 @@ import Login from "./components/Login/Login.js";
 import Backtotop from "./components/BackToTop/Backtotop.js";
 import { LoginProvider } from "./contexts/LoginContext.js";
 import Profile from "./components/Profile/Profile.js";
-import Signup from "./components/Login/CreateAccount/Signup.js";
+import Signup from "./components/Login/SingupAccount/Signup.js";
 
 function App() {
   return (

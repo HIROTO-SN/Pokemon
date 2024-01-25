@@ -27,7 +27,7 @@ export const CurrentPageProvider = ({ children }) => {
 };
 
 export const useCurrentPage = () => useContext(CurrentPageContext);
-export const useCurrentPageDefine = () => useContext(DefineCurrentPageContext);
+export const useCurrentPageDefiner = () => useContext(DefineCurrentPageContext);
 
 
 /*
