@@ -1,6 +1,39 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+// 全体ラップ
+export const formWrapper = css`
+  float: left;
+  margin-right: -100%;
+  width: 70.98%;
+  background-color: #f2f2f2;
+  border-radius: 5px 0 0 5px;
+  position: relative;
+`;
+export const dogEarTl = css`
+  :before {
+    content: " ";
+    background: url("./background/default-dog-ear.png") no-repeat 0 0;
+    height: 2em;
+    position: absolute;
+    width: 2em;
+    z-index: 3;
+    left: -1px;
+    top: -1px;
+    backface-visibility: hidden;
+  }
+`;
+// All FIELDS ARE REQUIRED 部分
+export const fieldRequired = css`
+  color: #616161;
+  margin: 2em 0 0 2em;
+  text-transform: none;
+  font-family: "Roboto", arial, sans-serif;
+  font-size: 100%;
+  font-weight: 500;
+  line-height: 125%;
+`;
+
 // 各inputタグを囲う
 export const formField = css`
   float: right;

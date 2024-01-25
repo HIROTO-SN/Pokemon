@@ -10,8 +10,9 @@ import {
 } from "../../CommonCss/Layout.js";
 import { hiddenMobile } from "../Login.js";
 import StepsMenu from "./StepsMenu.js";
-import { CurrentPageProvider, InputAccountInfoProvider } from "../../../contexts/SignupContext.js";
+import { CurrentPageProvider, InputAccountInfoProvider, useCurrentPage } from "../../../contexts/SignupContext.js";
 import VerifyAge from "./VerifyAge.js";
+import PageController from "./PageController.js";
 
 const Signup = () => {
   /***** CSS ******/
@@ -144,7 +145,7 @@ const Signup = () => {
             <div css={[column10, push2]}>
               <div css={[contentBlockFull, contentBlock]}>
                 <InputAccountInfoProvider>
-                  <VerifyAge />
+                  <PageController/>
                 </InputAccountInfoProvider>
                 <div css={[characterBanner, hiddenMobile]}>
                   <img

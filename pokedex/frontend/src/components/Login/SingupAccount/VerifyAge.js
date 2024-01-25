@@ -1,12 +1,15 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Link, Navigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
+  formWrapper,
+  dogEarTl,
+  fieldRequired,
   customScrollbar,
   customSelectMenu,
   customSelectWrapper,
   formField,
-  submitButton,
+  submitButton
 } from "../../CommonCss/AccountCss";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import {
@@ -23,6 +26,7 @@ import {
 import { countryList } from "../../../constants/UlList";
 import { useEffect, useRef, useState } from "react";
 import {
+  useCurrentPageDefiner,
   useInputAccountInfo,
   useSetInputAccountInfo,
 } from "../../../contexts/SignupContext";
@@ -31,39 +35,7 @@ import { valid_message_required } from "../../../constants/ValidationMessage";
 
 const VerifyAge = () => {
   /***** CSS ******/
-  // 全体ラップ
-  const formWrapper = css`
-    float: left;
-    margin-right: -100%;
-    width: 70.98%;
-    background-color: #f2f2f2;
-    border-radius: 5px 0 0 5px;
-    position: relative;
-  `;
-  const dogEarTl = css`
-    :before {
-      content: " ";
-      background: url("./background/default-dog-ear.png") no-repeat 0 0;
-      height: 2em;
-      position: absolute;
-      width: 2em;
-      z-index: 3;
-      left: -1px;
-      top: -1px;
-      backface-visibility: hidden;
-    }
-  `;
-  // All FIELDS ARE REQUIRED 部分
-  const fieldRequired = css`
-    color: #616161;
-    margin: 2em 0 0 2em;
-    text-transform: none;
-    font-family: "Roboto", arial, sans-serif;
-    font-size: 100%;
-    font-weight: 500;
-    line-height: 125%;
-  `;
-
+  
   // form囲い
   const formInner = css`
     margin: 2em;
@@ -121,6 +93,7 @@ const VerifyAge = () => {
   /***** context ******/
   const accountInfo = useInputAccountInfo();
   const setAccountInfo = useSetInputAccountInfo();
+  const redefineCurrentPage = useCurrentPageDefiner();
 
   /***** State/ref ******/
   const insideRef = useRef();
@@ -132,7 +105,6 @@ const VerifyAge = () => {
   const [error, setError] = useState(errorContentInit);
 
   /***** JS ******/
-
   // カスタムセレクトボックス外クリックで閉じる処理
   useEffect(() => {
     documentClickHandler.current = (e) => {
@@ -166,8 +138,9 @@ const VerifyAge = () => {
     setAccountInfo(newAccountInfo);
     arrowClickHandler();
   };
-  // Country名選択イベント
+  // Birth入力後チェンジイベント
   const birthdayChangeHandler = (e) => {
+    console.log("change起動")
     const newAccountInfo = { ...accountInfo, birthday: e.target.value.trim() };
     setAccountInfo(newAccountInfo);
   };
@@ -177,12 +150,16 @@ const VerifyAge = () => {
     console.log("continueクリック！");
     if (accountInfo.birthday.trim() === "") {
       setError({ birthday: valid_message_required});
+      return
     } else {
       setError({ birthday: ""});
     }
-    
+    redefineCurrentPage({
+      name: "Create Account",
+      pageNo: 2
+    })
   };
-
+  
   /***** HTML ******/
   return (
     <div css={[formWrapper, dogEarTl]}>

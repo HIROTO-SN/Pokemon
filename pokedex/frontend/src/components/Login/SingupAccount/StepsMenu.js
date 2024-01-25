@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { stepMenuList } from "../../../constants/UlList";
-import { useCurrentPage, useCurrentPageDefine } from "../../../contexts/SignupContext";
+import { useCurrentPage } from "../../../contexts/SignupContext";
 
 const StepsMenu = () => {
   /***** CSS ******/
