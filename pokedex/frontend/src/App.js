@@ -24,7 +24,9 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/login" element={<Login />}></Route>
-          <Route path="/sign-up" element={<Signup />}></Route>
+          <Route path="/verifyage" element={<Signup pageNo={1} />}></Route>
+          <Route path="/verifyaccount" element={<Signup pageNo={2} />}></Route>
+          <Route path="/verifyemail" element={<Signup pageNo={3} />}></Route>
           <Route path="/profile" element={<Profile />}></Route>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/pokedex" element={<Pokedex />}></Route>

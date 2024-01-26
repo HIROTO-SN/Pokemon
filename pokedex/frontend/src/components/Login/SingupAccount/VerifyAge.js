@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   formWrapper,
   dogEarTl,
@@ -9,10 +9,16 @@ import {
   customSelectMenu,
   customSelectWrapper,
   formField,
-  submitButton
+  submitButton,
+  formInner,
+  contentBlockFull,
+  contentBlock,
+  buttonBlack
 } from "../../CommonCss/AccountCss";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import {
+  column10,
+  noPaddingTop,
   picker,
   pickerBox,
   pickerFooter,
@@ -21,33 +27,43 @@ import {
   pickerHolder,
   pickerTable,
   pickerWrap,
+  push2,
+  section,
   viewport,
 } from "../../CommonCss/Layout";
 import { countryList } from "../../../constants/UlList";
 import { useEffect, useRef, useState } from "react";
 import {
-  useCurrentPageDefiner,
   useInputAccountInfo,
   useSetInputAccountInfo,
 } from "../../../contexts/SignupContext";
 import AlertSignUp from "./AlertSignUp";
 import { valid_message_required } from "../../../constants/ValidationMessage";
 
-const VerifyAge = () => {
+const VerifyAge = ({ Banner }) => {
   /***** CSS ******/
-  
-  // form囲い
-  const formInner = css`
-    margin: 2em;
+  // セクション下隙間補正
+  const sectionUserAccount = css`
+    padding-bottom: 60px;
+  `
 
-    > label {
-      clear: both;
-      color: #212121;
-      float: left;
-      font-size: 120%;
-      line-height: 100%;
-      margin: 0.875em 0 0.5em 0;
-      width: 38.4375%;
+  // 誕生日欄INPUT
+  const birthdayInput = css`
+    background: #888;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 100%;
+    font-family: "Roboto", arial, sans-serif;
+    line-height: 1.5;
+    padding: 0.5em 0;
+    text-indent: 0.5em;
+    width: 100%;
+    height: auto;
+
+    ::placeholder {
+      color: #fff;
     }
   `;
 
@@ -93,9 +109,8 @@ const VerifyAge = () => {
   /***** context ******/
   const accountInfo = useInputAccountInfo();
   const setAccountInfo = useSetInputAccountInfo();
-  const redefineCurrentPage = useCurrentPageDefiner();
 
-  /***** State/ref ******/
+  /***** Definition ******/
   const insideRef = useRef();
   const documentClickHandler = useRef();
   const [isListOpened, setIsListOpened] = useState(false);
@@ -103,6 +118,7 @@ const VerifyAge = () => {
     birthday: "",
   };
   const [error, setError] = useState(errorContentInit);
+  const navigate = useNavigate();
 
   /***** JS ******/
   // カスタムセレクトボックス外クリックで閉じる処理
@@ -140,105 +156,108 @@ const VerifyAge = () => {
   };
   // Birth入力後チェンジイベント
   const birthdayChangeHandler = (e) => {
-    console.log("change起動")
     const newAccountInfo = { ...accountInfo, birthday: e.target.value.trim() };
     setAccountInfo(newAccountInfo);
   };
 
   // Continueボタン押下イベント
   const continueClickHanlder = () => {
-    console.log("continueクリック！");
     if (accountInfo.birthday.trim() === "") {
       setError({ birthday: valid_message_required});
       return
     } else {
       setError({ birthday: ""});
     }
-    redefineCurrentPage({
-      name: "Create Account",
-      pageNo: 2
-    })
+    navigate("/verifyaccount");
   };
   
   /***** HTML ******/
   return (
-    <div css={[formWrapper, dogEarTl]}>
-      <p css={fieldRequired}>ALL FIELDS ARE REQUIRED.</p>
-      <form id="verify-age" css={formInner}>
-        <label htmlFor="dob">Date of Birth</label>
-        <div css={formField}>
-          <input
-            id="id_dob"
-            type="text"
-            placeholder="yyyy-mm-dd"
-            onChange={(e) => birthdayChangeHandler(e)}
-            value={accountInfo.birthday}
-          />
-          <div css={picker}>
-            <div css={pickerHolder}>
-              <div css={pickerFrame}>
-                <div css={pickerWrap}>
-                  <div css={pickerBox}>
-                    <div css={pickerHeader}>
-                      <div css={customSelectWrapper}></div>
+    <section css={[noPaddingTop, section, sectionUserAccount]}>
+      <div css={[column10, push2]}>
+        <div css={[contentBlockFull, contentBlock]}>
+          <div css={[formWrapper, dogEarTl]}>
+            <p css={fieldRequired}> ALL FIELDS ARE REQUIRED. </p>
+            <form id="verify-age" css={formInner}>
+              <label htmlFor="dob">Date of Birth</label>
+              <div css={formField}>
+                <input
+                  id="id_dob"
+                  type="text"
+                  placeholder="yyyy-mm-dd"
+                  onChange={(e) => birthdayChangeHandler(e)}
+                  value={accountInfo.birthday}
+                  css={birthdayInput}
+                />
+                <div css={picker}>
+                  <div css={pickerHolder}>
+                    <div css={pickerFrame}>
+                      <div css={pickerWrap}>
+                        <div css={pickerBox}>
+                          <div css={pickerHeader}>
+                            <div css={customSelectWrapper}></div>
+                          </div>
+                          <table css={pickerTable}></table>
+                          <div css={pickerFooter}></div>
+                        </div>
+                      </div>
                     </div>
-                    <table css={pickerTable}></table>
-                    <div css={pickerFooter}></div>
+                  </div>
+                </div>
+                {error.birthday != "" && <AlertSignUp />}
+              </div>
+              <label htmlFor="country">Country/Region</label>
+              <div css={formField}>
+                <div css={customSelectWrapper}>
+                  <select id="country" style={{ display: "none" }}>
+                    <option value="US">United States</option>
+                  </select>
+                  <div id="country-select" css={customSelectMenu} ref={insideRef}>
+                    <label css={buttonBlack} onClick={() => arrowClickHandler()}>
+                      {accountInfo.country.name}
+                      {isListOpened ? (
+                        <IoIosArrowUp viewBox="0 150 412 412"></IoIosArrowUp>
+                      ) : (
+                        <IoIosArrowDown viewBox="0 150 412 412"></IoIosArrowDown>
+                      )}
+                    </label>
+                    <div css={[customScrollbar, countryBar(isListOpened)]}>
+                      <div css={viewport}>
+                        <ul>
+                          {countryList.map((list) => (
+                            <li
+                              key={list.name}
+                              onClick={() => countryItemClickHandler(list)}
+                            >
+                              {list.name}
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
                   </div>
                 </div>
               </div>
+              <input
+                type="button"
+                css={submitButton}
+                value="Continue"
+                onClick={() => continueClickHanlder()}
+              ></input>
+            </form>
+            <div css={logInRow}>
+              <h4>With a Pokémon Trainer Club account, you can:</h4>
+              <p>Log in to Pokémon apps, sign up for newsletters, and more!</p>
+              <p css={linkLigInNow}>
+                If you already have an account, please
+                <Link to="/login"> log in now.</Link>
+              </p>
             </div>
           </div>
-          {error.birthday != "" && <AlertSignUp />}
+          <Banner/>
         </div>
-        <label htmlFor="country">Country/Region</label>
-        <div css={formField}>
-          <div css={customSelectWrapper}>
-            <select id="country" style={{ display: "none" }}>
-              <option value="US">United States</option>
-            </select>
-            <div id="country-select" css={customSelectMenu} ref={insideRef}>
-              <label onClick={() => arrowClickHandler()}>
-                {accountInfo.country.name}
-                {isListOpened ? (
-                  <IoIosArrowUp viewBox="0 150 412 412"></IoIosArrowUp>
-                ) : (
-                  <IoIosArrowDown viewBox="0 150 412 412"></IoIosArrowDown>
-                )}
-              </label>
-              <div css={[customScrollbar, countryBar(isListOpened)]}>
-                <div css={viewport}>
-                  <ul>
-                    {countryList.map((list) => (
-                      <li
-                        key={list.name}
-                        onClick={() => countryItemClickHandler(list)}
-                      >
-                        {list.name}
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <input
-          type="button"
-          css={submitButton}
-          value="Continue"
-          onClick={() => continueClickHanlder()}
-        ></input>
-      </form>
-      <div css={logInRow}>
-        <h4>With a Pokémon Trainer Club account, you can:</h4>
-        <p>Log in to Pokémon apps, sign up for newsletters, and more!</p>
-        <p css={linkLigInNow}>
-          If you already have an account, please
-          <Link to="/login"> log in now.</Link>
-        </p>
       </div>
-    </div>
+    </section>
   );
 };
 
