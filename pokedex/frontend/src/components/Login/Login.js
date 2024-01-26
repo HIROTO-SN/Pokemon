@@ -198,13 +198,3 @@ export const notchBottomCenter = css`
 		bottom: 0;
 	}
 `;
-
-export const hiddenMobile = css`
-	@media (min-width: 461px) and (max-width: 960px) {
-		display: none !important;
-	}
-	@media (min-width: 961px) and (max-width: 9999px) {
-		display: inherit !important;
-	}
-`;
-

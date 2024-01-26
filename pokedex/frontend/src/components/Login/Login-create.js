@@ -1,7 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { accountButton, hiddenMobile, notchBottomCenter } from "./Login";
-import { Link } from "react-router-dom";
+import { accountButton, notchBottomCenter } from "./Login";
+import { Link, useNavigate } from "react-router-dom";
+import { hiddenMobile } from "../CommonCss/Layout";
 
 const LoginCreate = () => {
   /***** CSS ******/
@@ -48,6 +49,9 @@ const LoginCreate = () => {
     }
   `;
 
+  /***** Definition ******/
+  const navigate = useNavigate();
+  
   return (
     <>
       <p css={colorBlockP}>
@@ -64,12 +68,13 @@ const LoginCreate = () => {
         </a>
         <span>!</span>
       </p>
-      <Link to="../sign-up"
+      <button 
         id="user-account-signup"
         css={[accountButton, buttonLightblue]}
+        onClick={() => navigate("/verifyage")}
       >
         Create an Account!
-      </Link>
+      </button>
       <span css={[notchBottomCenter, hiddenMobile]}></span>
     </>
   );

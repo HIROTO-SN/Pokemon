@@ -1,6 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+// コンテント全体を囲う
+export const contentBlockFull = css`
+  clear: both;
+  display: block;
+  width: 100%;
+`;
+export const contentBlock = css`
+  float: left;
+  margin: 1em 0 0 0;
+  position: relative;
+
+  @media (min-width: 461px) and (max-width: 960px) {
+    float: left;
+    margin-right: -100%;
+    width: 89.12%;
+    margin-left: 5.4425%;
+  }
+`;
+
 // 全体ラップ
 export const formWrapper = css`
   float: left;
@@ -21,6 +40,17 @@ export const dogEarTl = css`
     left: -1px;
     top: -1px;
     backface-visibility: hidden;
+
+    @media (min-width: 461px) and (max-width: 960px) {
+      background: none;
+    }
+  }
+
+  @media (min-width: 461px) and (max-width: 960px) {
+    border-radius: 5px;
+    padding-bottom: 0;
+    width: 96.875%;
+    margin: 0 1.5625%;
   }
 `;
 // All FIELDS ARE REQUIRED 部分
@@ -34,29 +64,36 @@ export const fieldRequired = css`
   line-height: 125%;
 `;
 
+// form囲い
+export const formInner = css`
+  margin: 2em;
+
+  & label {
+    clear: both;
+    color: #212121;
+    float: left;
+    font-size: 120%;
+    line-height: 100%;
+    margin: 0.875em 0 0.5em 0;
+    width: 38.4375%;
+
+    @media (min-width: 461px) and (max-width: 960px) {
+      width: 96.875%;
+      margin: 0 1.5625%;
+    }
+  }
+`;
+
 // 各inputタグを囲う
 export const formField = css`
   float: right;
   margin-bottom: 1em;
   width: 58.4375%;
 
-  > input[type="text"] {
-    background: #888;
-    box-sizing: border-box;
-    border: none;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 100%;
-    font-family: "Roboto", arial, sans-serif;
-    line-height: 1.5;
-    padding: 0.5em 0;
-    text-indent: 0.5em;
-    width: 100%;
-    height: auto;
-
-    ::placeholder {
-      color: #fff;
-    }
+  @media (min-width: 461px) and (max-width: 960px) {
+    margin-top: 0.25em;
+    margin-bottom: 0.75em;
+    width: 96.875%;
   }
 `;
 
@@ -152,7 +189,7 @@ export const customScrollbar = css`
 `;
 
 export const buttonBlack = css`
-  color: #fff;
+  color: #fff !important;
 `;
 
 // Submitボタン
@@ -173,4 +210,36 @@ export const submitButton = css`
   padding: 0.75em 1.25em 0.675em;
   vertical-align: middle;
   border-radius: 5px;
+`;
+
+// テキストボックスのレイアウトカスタマイズ
+export const customFormElements = css`
+  box-sizing: border-box!;
+  background-color: #313131;
+  border: none;
+  border-radius: 5px;
+  color: #fff;
+  display: block;
+  font-size: 100%;
+  font-family: "Roboto", arial, sans-serif;
+  line-height: 1.5;
+  padding: 0.5em 0;
+  text-indent: 0.5em;
+  width: 100%;
+  height: auto;
+`;
+
+// ボタンレイアウト
+export const buttonRight = css`
+  float: right;
+`;
+
+// ボタン薄い青色
+export const buttonLightblue = css`
+  background-color: #30a7d7;
+  color: #fff;
+
+  :hover {
+    background-color: #1b82b1;
+  }
 `;

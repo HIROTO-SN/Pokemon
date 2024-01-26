@@ -1,6 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
+/* 
+* 縦/横調整
+*/
 export const push1 = css`
   margin-left: 7.2525%;
   @media (min-width: 461px) and (max-width: 960px) {
@@ -10,6 +13,10 @@ export const push1 = css`
 `;
 export const push2 = css`
   margin-left: 14.5125%;
+  @media (min-width: 461px) and (max-width: 960px) {
+    margin: 0;
+    margin-left: 7.2525%;
+  }
 `;
 export const push7 = css`
   margin-left: 50.7825%;
@@ -45,6 +52,11 @@ export const column10 = css`
   float: left;
   margin-right: -100%;
   width: 70.98%;
+
+  @media (min-width: 461px) and (max-width: 960px) {
+    float: left;
+    width: 85.49%;
+  }
 `;
 export const column12 = css({
   float: "left",
@@ -52,6 +64,13 @@ export const column12 = css({
   width: "85.49%",
 });
 
+export const noPaddingTop = css`
+  padding-top: 0!important;
+`;
+
+/*
+*　色/ディスプレイ要素調整系
+*/
 export const colorBlack = css`
   color: #313131;
 `;
@@ -60,6 +79,27 @@ export const ttHint = css({
   display: "none",
 });
 
+export const visibleMobile = css`
+  text-transform: none;
+  @media (min-width: 461px) and (max-width: 960px) {
+    display: inherit !important;
+  }
+  @media (min-width: 961px) and (max-width: 9999px) {
+    display: none;
+  }
+`;
+export const hiddenMobile = css`
+  @media (min-width: 461px) and (max-width: 960px) {
+    display: none;
+  }
+  @media (min-width: 961px) and (max-width: 9999px) {
+    display: inherit !important;
+  }
+`;
+
+/*
+*　セクション区切りや枠構成
+*/
 export const container = css`
   box-sizing: border-box;
   background: #fff url("./background/container_bg.png");
@@ -86,23 +126,6 @@ export const section = css`
   }
 `;
 
-export const visibleMobile = css`
-  text-transform: none;
-  @media (min-width: 461px) and (max-width: 960px) {
-    display: inherit !important;
-  }
-  @media (min-width: 961px) and (max-width: 9999px) {
-    display: none;
-  }
-`;
-export const hiddenMobile = css`
-  @media (min-width: 461px) and (max-width: 960px) {
-    display: none;
-  }
-  @media (min-width: 961px) and (max-width: 9999px) {
-    display: inherit !important;
-  }
-`;
 // カスタムセレクトボックス スクロール制御
 export const viewport = css`
   position: absolute;
