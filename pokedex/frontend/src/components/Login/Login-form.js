@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { accountButton, hiddenMobile, notchBottomCenter } from "./Login";
-import { push1 } from "../CommonCss/Layout";
+import { accountButton, notchBottomCenter } from "./Login";
+import { hiddenMobile, push1 } from "../CommonCss/Layout";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useLoginInfo, useLoginAction, useLoginErrorSet } from "../../contexts/LoginContext";
@@ -156,7 +156,6 @@ const LoginForm = () => {
   /***** State ******/
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const navigate = useNavigate();
 
   const setError = useLoginErrorSet();
 

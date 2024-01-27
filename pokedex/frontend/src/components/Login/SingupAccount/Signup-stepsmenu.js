@@ -1,9 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { stepMenuList } from "../../../constants/UlList";
-import { useCurrentPage, useCurrentPageDefine } from "../../../contexts/SignupContext";
 
-const StepsMenu = () => {
+const StepsMenu = ({ pageNo }) => {
   /***** CSS ******/
   // メニュー全体
   const stepMenu = css`
@@ -71,11 +70,11 @@ const StepsMenu = () => {
   const listClass = ({ list }, currentPage) => {
     switch (list.class) {
       case "first":
-        return first(list.pageNo === currentPage.pageNo);
+        return first(list.pageNo === currentPage);
       case "middle":
-        return middle(list.pageNo === currentPage.pageNo);
+        return middle(list.pageNo === currentPage);
       case "last":
-        return last(list.pageNo === currentPage.pageNo);
+        return last(list.pageNo === currentPage);
     }
   };
 
@@ -113,12 +112,8 @@ const StepsMenu = () => {
     }
   `;
 
-  /***** JS ******/
-
-  /***** Context ******/
-  const currentPage = useCurrentPage();
-  
-  /***** State ******/
+  /***** Definition ******/
+  const currentPage = pageNo;
 
   /***** HTML ******/
   return (

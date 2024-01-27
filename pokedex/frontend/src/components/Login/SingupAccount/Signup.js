@@ -4,24 +4,24 @@ import {
   colorBlack,
   column10,
   container,
+  hiddenMobile,
   push2,
   section,
   visibleMobile,
 } from "../../CommonCss/Layout.js";
-import { hiddenMobile } from "../Login.js";
-import StepsMenu from "./StepsMenu.js";
-import { CurrentPageProvider, InputAccountInfoProvider } from "../../../contexts/SignupContext.js";
+import StepsMenu from "./Signup-stepsmenu.js";
+import {
+  CurrentPageProvider,
+  InputAccountInfoProvider,
+} from "../../../contexts/SignupContext.js";
 import VerifyAge from "./VerifyAge.js";
+import CreateAccount from "./VerifyAccount.js";
+import VerifyEmail from "./VerifyEmail";
 
-const Signup = () => {
+const Signup = ({ pageNo }) => {
   /***** CSS ******/
   const useraccount = css`
     position: relative;
-  `;
-
-  const noPaddingTop = css`
-    padding-bottom: 60px;
-    padding-top: 0;
   `;
 
   const pageMainTitle = css`
@@ -90,18 +90,58 @@ const Signup = () => {
     }
   `;
 
-  const contentBlockFull = css`
-    clear: both;
-    display: block;
-    width: 100%;
-  `;
-  const contentBlock = css`
-    float: left;
-    margin: 1em 0 0 0;
-    position: relative;
-  `;
+  /***** HTML ******/
+  return (
+    <CurrentPageProvider>
+      <div css={[container]}>
+        <section css={[section, useraccount]}>
+          <h1 css={pageMainTitle}>Create Your Pokémon Trainer Club Account</h1>
+          <span css={[notchBottomRightSmall, visibleMobile]}></span>
+          <h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
+          <div css={[column10, push2, hiddenMobile]}>
+            <StepsMenu pageNo={pageNo} />
+          </div>
+        </section>
+        <div css={colorBlack}>
+          <InputAccountInfoProvider>
+            <PageController pageNo={pageNo} />
+          </InputAccountInfoProvider>
+        </div>
+      </div>
+    </CurrentPageProvider>
+  );
+};
 
-  // 画面右ポケモンイラストバナー
+/*
+ * 現在のページをコントロールする
+ * pageNo = 1: Verify Age
+ * pageNo = 2: Create Account
+ * pageNo = 3: Verify Email
+ */
+const PageController = ({ pageNo }) => {
+
+  /***** HTML ******/
+  return (
+    <>
+      {pageNo === 1 ? (
+        <VerifyAge Banner={Banner} />
+      ) : pageNo === 2 ? (
+        <CreateAccount Banner={Banner} />
+      ) : pageNo === 3 ? (
+        <VerifyEmail Banner={Banner} />
+      ) : (
+        <div>ページが見つかりません</div>
+      )}
+    </>
+  );
+};
+
+/*
+ * ページ右ポケモンイラストバナー
+ */
+const Banner = () => {
+
+  /***** CSS ******/
   const characterBanner = css`
     float: left;
     margin-right: -100%;
@@ -123,41 +163,14 @@ const Signup = () => {
       right: 0;
       left: 0;
       bottom: 0;
-			border-radius: 5px 5px 0 0;
+      border-radius: 5px 5px 0 0;
     }
   `;
 
-  /***** HTML ******/
   return (
-    <CurrentPageProvider>
-      <div css={[container]}>
-        <section css={[section, useraccount]}>
-          <h1 css={pageMainTitle}>Create Your Pokémon Trainer Club Account</h1>
-          <span css={[notchBottomRightSmall, visibleMobile]}></span>
-          <h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
-          <div css={[column10, push2, hiddenMobile]}>
-            <StepsMenu />
-          </div>
-        </section>
-        <div css={colorBlack}>
-          <section css={[section, noPaddingTop, useraccount]}>
-            <div css={[column10, push2]}>
-              <div css={[contentBlockFull, contentBlock]}>
-                <InputAccountInfoProvider>
-                  <VerifyAge />
-                </InputAccountInfoProvider>
-                <div css={[characterBanner, hiddenMobile]}>
-                  <img
-                    src="./icons/pokemon-signup.png"
-                    alt="Create Your Account"
-                  />
-                </div>
-              </div>
-            </div>
-          </section>
-        </div>
-      </div>
-    </CurrentPageProvider>
+    <div css={[characterBanner, hiddenMobile]}>
+      <img src="./icons/pokemon-signup.png" alt="Create Your Account" />
+    </div>
   );
 };
 
