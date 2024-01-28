@@ -243,3 +243,34 @@ export const buttonLightblue = css`
     background-color: #1b82b1;
   }
 `;
+
+// カスタムチェックボックス
+export const checkBox = css`
+  cursor: pointer;
+  position: relative;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: none;
+  background-color: #313131;
+  border-radius: 5px;
+`;
+
+// 前までの浮動要素の下に配置するための処理
+export const clear = css`
+  clear: both;
+  before: {
+    content: "";
+    display: table;
+  }
+  after: {
+    content: "";
+    display: table;
+  }
+`;
+
+// ラジオボタン、セレクトボックスなどを囲うpタグなどに用いる
+export const inRowSelect = css`
+  float: left;
+  margin-left: 2em;
+`;
