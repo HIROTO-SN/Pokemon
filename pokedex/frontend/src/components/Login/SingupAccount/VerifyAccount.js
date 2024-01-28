@@ -5,9 +5,10 @@ import {
   useSetInputAccountInfo,
 } from "../../../contexts/SignupContext";
 import {
-  buttonCustom,
   buttonLightblue,
   buttonRight,
+  checkBox,
+  clear,
   contentBlock,
   contentBlockFull,
   customFormElements,
@@ -16,10 +17,13 @@ import {
   formField,
   formInner,
   formWrapper,
+  iconCheckmark,
+  inRowSelect,
 } from "../../CommonCss/AccountCss";
-import { column10, noPaddingTop, push2, section } from "../../CommonCss/Layout";
+import { column10, hiddenMobile, noPaddingTop, push2, section } from "../../CommonCss/Layout";
 import { MdOutlineCatchingPokemon } from "react-icons/md";
-
+import { GiCheckMark } from "react-icons/gi";
+import { useEffect, useState } from "react";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -56,32 +60,123 @@ const VerifyAccount = ({ Banner }) => {
     text-transform: none;
     font-family: "Flexo-Demi", arial, sans-serif;
   `;
-	// pタグ説明文
-	const nameFieldDesc = css`
-		color: #616161;
+  // pタグ説明文
+  const nameFieldDesc = css`
+    color: #616161;
     font-size: 87.5%;
     margin-top: 0.5em;
-		font-family: "Roboto",arial,sans-serif;
-		font-weight: 500;
+    font-family: "Roboto", arial, sans-serif;
+    font-weight: 500;
     line-height: 125%;
-	`
+  `;
+
+  // pタグ注意書き（ラジオ選択部）
+  const dispField = css`
+    font-family: "Roboto", arial, sans-serif;
+    font-size: 100%;
+    font-weight: 500;
+    line-height: 125%;
+    margin: 0.5em 0;
+  `;
+
+  //　必須サイン（ポケモンボールSVG）
+  const requiredSVG = css`
+    height: 0.5em;
+    width: 0.5em;
+    margin-right: 0.2em;
+    margin-bottom: 0.3em;
+  `;
   // チェックボックス加工DIV用
-	const acceptInfo = css`
-		float: left;
+  const acceptInfo = css`
+    float: left;
     margin: 1em 0;
     position: relative;
     width: 100%;
-	`
+    & input {
+      position: absolute;
+      top: 0;
+      left: 0;
+      top: 0;
+      opacity: 0;
+    }
+    & label {
+      float: left;
+      margin-right: -100%;
+      width: 85.49%;
+      color: #616161;
+      font-size: 87.5%;
+      line-height: 180%;
+      margin-left: 40px;
+      margin-top: 0;
+    }
+    & svg {
+      position: absolute;
+      color: #313131;
+      padding: 0.25em;
+      border: none;
+      background-color: transparent;
+    }
+  `;
+
+  // Newsチェックボックス背景色動的変化
+  const boxGeneral = (flg) => css`
+    background-color: ${flg ? "#4dad5b" : "#313131"};
+  `;
+
+  // Pokemon Center チェックボックス背景色動的変化
+  const boxPcenter = (flg) => css`
+    background-color: ${flg ? "#4dad5b" : "#313131"};
+  `;
+
+  // Terms&Condition囲い
+  const termsAgreement = css`
+    padding-top: 1em!important;
+  `
 
   /***** context ******/
   const accountInfo = useInputAccountInfo();
   const setAccountInfo = useSetInputAccountInfo();
 
+  /***** Definition ******/
+
   /***** JS ******/
+  // 初期表示時処理
+  useEffect(() => {}, []);
+
+  // メール受信するかしないかの判定
+  const checkClickHandler = (e) => {
+    const id = e.target.id;
+    let flg = false;
+
+    if (id === "email-general") {
+      setAccountInfo({
+        ...accountInfo,
+        newsInfoReceiveFlg: !accountInfo.newsInfoReceiveFlg,
+      });
+      flg = !accountInfo.newsInfoReceiveFlg;
+    } else if (id === "email-pcenter") {
+      setAccountInfo({
+        ...accountInfo,
+        updateCenterReceiveFlg: !accountInfo.updateCenterReceiveFlg,
+      });
+      flg = !accountInfo.updateCenterReceiveFlg;
+    } else {
+      return;
+    }
+    const el = document.querySelector("#" + id);
+    el.parentNode.style.backgroundColor = flg ? "#4dad5b" : "#313131";
+  };
+
+  // ポケモンクラブプロファイル開示有無
+
+  console.log(accountInfo);
+  const radioChange = (e) => {
+    console.log(e.target.value);
+  };
 
   /***** HTML ******/
   return (
-    <form>
+    <>
       <fieldset css={[section, noPaddingTop, sectionUserAccount]}>
         <div css={[column10, push2]}>
           <div css={[contentBlock, contentBlockFull]}>
@@ -90,7 +185,7 @@ const VerifyAccount = ({ Banner }) => {
               <div css={formInner}>
                 <label htmlFor="username"> Username </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} maxlength="16" />
+                  <input type="text" css={customFormElements} maxLength={16} />
                   <input
                     type="button"
                     value="Check Availability"
@@ -107,7 +202,7 @@ const VerifyAccount = ({ Banner }) => {
                   </p>
                 </div>
                 <label htmlFor="password">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Password
                 </label>
                 <div css={formField}>
@@ -121,82 +216,138 @@ const VerifyAccount = ({ Banner }) => {
                   </p>
                 </div>
                 <label htmlFor="confirm_password">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Confirm Password
                 </label>
                 <div css={formField}>
                   <input type="text" css={customFormElements} />
                 </div>
                 <label htmlFor="email">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Email Address
                 </label>
                 <div css={formField}>
                   <input type="text" css={customFormElements} />
-									<p css={nameFieldDesc}>
-										Your Email will be used to verify your account.
-									</p>
+                  <p css={nameFieldDesc}>
+                    Your Email will be used to verify your account.
+                  </p>
                 </div>
                 <label htmlFor="confirm_email">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Confirm Email
                 </label>
                 <div css={formField}>
                   <input type="text" css={customFormElements} />
                 </div>
                 <div></div>
-                <label style={{width: "100%"}}>
+                <label style={{ width: "100%" }}>
                   I would like to receive email updates from The Pokémon Company
                   International regarding:
                 </label>
                 <div css={acceptInfo}>
                   <span>
                     <input type="checkbox" />
-                    <span></span>
+                    <span
+                      css={[
+                        checkBox,
+                        boxGeneral(accountInfo.newsInfoReceiveFlg),
+                      ]}
+                    >
+                      <GiCheckMark
+                        id="email-general"
+                        onClick={(e) => checkClickHandler(e)}
+                      />
+                    </span>
                   </span>
-                  <label> News and information about Pokémon </label>
+                  <label>News and information about Pokémon</label>
                 </div>
                 <div css={acceptInfo}>
                   <span>
                     <input type="checkbox" />
-                    <span></span>
+                    <span
+                      css={[
+                        checkBox,
+                        boxPcenter(accountInfo.updateCenterReceiveFlg),
+                      ]}
+                    >
+                      <GiCheckMark
+                        id="email-pcenter"
+                        onClick={(e) => checkClickHandler(e)}
+                      />
+                    </span>
                   </span>
                   <label>
-                    {" "}
                     News and updates about Pokémon Center (our official online
-                    shop){" "}
+                    shop)
                   </label>
                 </div>
-                {/* <div>
-                  <p>
+                <div css={clear}></div>
+                <div>
+                  <p css={dispField}>
                     Do you want to display your Pokémon Trainer Club profile
                     publicly? This includes content such as your screen name.
                     Personal information such as your real name is always kept
                     private.
                   </p>
-                  <p>
-                    <input type="radio" name="public_profile_opt_in" />
+                  <p css={inRowSelect}>
+                    <input
+                      type="radio"
+                      name="public_profile_opt_in"
+                      value="true"
+                      onChange={() => setAccountInfo({ ...accountInfo, displayPokeClubProfile: true })}
+                      checked={accountInfo.displayPokeClubProfile}
+                    />{" "}
                     Yes
                   </p>
-                  <p>
-                    <input type="radio" name="public_profile_opt_in" />
+                  <p css={inRowSelect}>
+                    <input
+                      type="radio"
+                      name="public_profile_opt_in"
+                      value="false"
+                      onChange={() => setAccountInfo({ ...accountInfo, displayPokeClubProfile: false })}
+                      checked={!accountInfo.displayPokeClubProfile}
+                    />{" "}
                     No
                   </p>
-                </div> */}
+                </div>
+                <div css={clear}></div>
                 <label htmlFor="screen_name"> Screen Name </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
+                  <input type="text" css={customFormElements} maxLength={15} />
                   <p></p>
-                  <input />
+                  <input
+                    type="button"
+                    value="Check Availability"
+                    css={[
+                      checkAvailability,
+                      buttonCustom,
+                      buttonRight,
+                      buttonLightblue,
+                    ]}
+                  />
                 </div>
               </div>
             </div>
             <Banner />
           </div>
+          <div css={hiddenMobile}>
+            <p css={dispField}>
+              For further information, please see our {" "}
+              <a href="http://www.pokemon.com/us/privacy-notice/">Privacy Notice.</a>
+            </p>
+          </div>
         </div>
       </fieldset>
-      <fieldset></fieldset>
-    </form>
+      <fieldset css={[section, termsAgreement]}>
+        <div css={[push2, column10]}>
+          <h2>Pokémon Website Terms of Use</h2>
+          <p>Please scroll through the Terms of Use and click Submit to accept.</p>
+        </div>
+        <div></div>
+        <div></div>
+        <div></div>
+      </fieldset>
+    </>
   );
 };
 
