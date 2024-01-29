@@ -41,7 +41,9 @@ const SetInputAccountInfoContext = createContext();
 const initAccountInfoState = { 
 	username: "",
 	password: "",
+	confirmPassword: "",
 	email: "",
+	confirmEmail: "",
 	country: { name: "United States", code: "US"},
 	birthday: "",
 	newsInfoReceiveFlg: false,

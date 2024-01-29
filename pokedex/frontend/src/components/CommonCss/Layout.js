@@ -126,6 +126,11 @@ export const section = css`
   }
 `;
 
+export const customScrollBar = css`
+  position: relative;
+  overflow: visible;
+`
+
 // カスタムセレクトボックス スクロール制御
 export const viewport = css`
   position: absolute;

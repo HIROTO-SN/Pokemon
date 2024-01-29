@@ -17,13 +17,24 @@ import {
   formField,
   formInner,
   formWrapper,
-  iconCheckmark,
   inRowSelect,
+  submitButton,
 } from "../../CommonCss/AccountCss";
-import { column10, hiddenMobile, noPaddingTop, push2, section } from "../../CommonCss/Layout";
+import {
+  column10,
+  customScrollBar,
+  hiddenMobile,
+  noPaddingTop,
+  push2,
+  section,
+  viewport,
+} from "../../CommonCss/Layout";
 import { MdOutlineCatchingPokemon } from "react-icons/md";
 import { GiCheckMark } from "react-icons/gi";
 import { useEffect, useState } from "react";
+import AlertSignUp from "./AlertSignUp";
+import { valid_message_required } from "../../../constants/ValidationMessage";
+import { useNavigate } from "react-router-dom";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -128,16 +139,55 @@ const VerifyAccount = ({ Banner }) => {
     background-color: ${flg ? "#4dad5b" : "#313131"};
   `;
 
+  // Terms チェックボックス背景色動的変化
+  const boxTerms = (flg) => css`
+    background-color: ${flg ? "#4dad5b" : "#313131"};
+  `;
+
   // Terms&Condition囲い
   const termsAgreement = css`
-    padding-top: 1em!important;
-  `
+    padding-top: 1em !important;
+
+    > h2 {
+      color: #212121;
+      font-size: 130%;
+      line-height: 125%;
+      text-transform: none;
+      font-family: "Flexo-Medium", arial, sans-serif;
+      margin: 0.75em 0;
+    }
+
+    & p {
+      color: #616161;
+      margin: 0.5em 0 1em;
+      font-family: "Roboto", arial, sans-serif;
+      font-size: 100%;
+      font-weight: 500;
+      line-height: 125%;
+    }
+  `;
+
+  const termWrapper = css`
+    background-color: #616161;
+    border-radius: 5px;
+    height: 300px;
+  `;
 
   /***** context ******/
   const accountInfo = useInputAccountInfo();
   const setAccountInfo = useSetInputAccountInfo();
 
   /***** Definition ******/
+  const [isTermsCheck, setTermsCheck] = useState(false);
+  const errorContentInit = {
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    confirmEmail: "",
+  };
+  const [error, setError] = useState(errorContentInit);
+  const navigate = useNavigate();
 
   /***** JS ******/
   // 初期表示時処理
@@ -160,6 +210,9 @@ const VerifyAccount = ({ Banner }) => {
         updateCenterReceiveFlg: !accountInfo.updateCenterReceiveFlg,
       });
       flg = !accountInfo.updateCenterReceiveFlg;
+    } else if (id === "terms") {
+      setTermsCheck(!isTermsCheck);
+      flg = !isTermsCheck;
     } else {
       return;
     }
@@ -167,11 +220,16 @@ const VerifyAccount = ({ Banner }) => {
     el.parentNode.style.backgroundColor = flg ? "#4dad5b" : "#313131";
   };
 
-  // ポケモンクラブプロファイル開示有無
-
-  console.log(accountInfo);
-  const radioChange = (e) => {
-    console.log(e.target.value);
+  // Continueボタン押下イベント
+  const continueClickHanlder = () => {
+    for (var item in accountInfo) {
+      console.log(item);
+      if (accountInfo[item] == "") {
+        setError( {...error, item: accountInfo[item] } );
+      }
+      console.log(error);
+    }
+    navigate("/verifyemail");
   };
 
   /***** HTML ******/
@@ -200,6 +258,7 @@ const VerifyAccount = ({ Banner }) => {
                     Your username is the name you will use to log in to your
                     account. Only you will see this name.
                   </p>
+                  {error.birthday != "" && <AlertSignUp />}
                 </div>
                 <label htmlFor="password">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -294,7 +353,12 @@ const VerifyAccount = ({ Banner }) => {
                       type="radio"
                       name="public_profile_opt_in"
                       value="true"
-                      onChange={() => setAccountInfo({ ...accountInfo, displayPokeClubProfile: true })}
+                      onChange={() =>
+                        setAccountInfo({
+                          ...accountInfo,
+                          displayPokeClubProfile: true,
+                        })
+                      }
                       checked={accountInfo.displayPokeClubProfile}
                     />{" "}
                     Yes
@@ -304,7 +368,12 @@ const VerifyAccount = ({ Banner }) => {
                       type="radio"
                       name="public_profile_opt_in"
                       value="false"
-                      onChange={() => setAccountInfo({ ...accountInfo, displayPokeClubProfile: false })}
+                      onChange={() =>
+                        setAccountInfo({
+                          ...accountInfo,
+                          displayPokeClubProfile: false,
+                        })
+                      }
                       checked={!accountInfo.displayPokeClubProfile}
                     />{" "}
                     No
@@ -332,8 +401,10 @@ const VerifyAccount = ({ Banner }) => {
           </div>
           <div css={hiddenMobile}>
             <p css={dispField}>
-              For further information, please see our {" "}
-              <a href="http://www.pokemon.com/us/privacy-notice/">Privacy Notice.</a>
+              For further information, please see our{" "}
+              <a href="http://www.pokemon.com/us/privacy-notice/">
+                Privacy Notice.
+              </a>
             </p>
           </div>
         </div>
@@ -341,11 +412,37 @@ const VerifyAccount = ({ Banner }) => {
       <fieldset css={[section, termsAgreement]}>
         <div css={[push2, column10]}>
           <h2>Pokémon Website Terms of Use</h2>
-          <p>Please scroll through the Terms of Use and click Submit to accept.</p>
+          <p>
+            Please scroll through the Terms of Use and click Submit to accept.
+          </p>
+          <div css={[termWrapper, customScrollBar]}>
+            <div css={viewport}>
+              <div></div>
+            </div>
+          </div>
+          <div css={acceptInfo}>
+            <span>
+              <input type="checkbox" />
+              <span css={[checkBox, boxTerms(accountInfo.newsInfoReceiveFlg)]}>
+                <GiCheckMark id="terms" onClick={(e) => checkClickHandler(e)} />
+              </span>
+            </span>
+            <label> I accept the Pokemon.com Terms of Use. </label>
+            <p style={{ paddingTop: "20px" }}>
+              By continuing to use the Services, you acknowledge that you have
+              rea, understood, and agree to our{" "}
+              <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>
+              .
+            </p>
+          </div>
+          <div></div>
+          <input
+            type="button"
+            css={submitButton}
+            value="Continue"
+            onClick={() => continueClickHanlder()}
+          ></input>
         </div>
-        <div></div>
-        <div></div>
-        <div></div>
       </fieldset>
     </>
   );
