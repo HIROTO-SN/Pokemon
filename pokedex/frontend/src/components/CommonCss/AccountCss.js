@@ -210,6 +210,10 @@ export const submitButton = css`
   padding: 0.75em 1.25em 0.675em;
   vertical-align: middle;
   border-radius: 5px;
+
+  :hover {
+    background-color: #44884e;
+  }
 `;
 
 // テキストボックスのレイアウトカスタマイズ
