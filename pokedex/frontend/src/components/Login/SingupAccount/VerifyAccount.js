@@ -33,8 +33,8 @@ import { MdOutlineCatchingPokemon } from "react-icons/md";
 import { GiCheckMark } from "react-icons/gi";
 import { useEffect, useState } from "react";
 import AlertSignUp from "./AlertSignUp";
-import { valid_message_required } from "../../../constants/ValidationMessage";
 import { useNavigate } from "react-router-dom";
+import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -219,17 +219,19 @@ const VerifyAccount = ({ Banner }) => {
     const el = document.querySelector("#" + id);
     el.parentNode.style.backgroundColor = flg ? "#4dad5b" : "#313131";
   };
-
   // Continueボタン押下イベント
   const continueClickHanlder = () => {
-    for (var item in accountInfo) {
-      console.log(item);
-      if (accountInfo[item] == "") {
-        setError( {...error, item: accountInfo[item] } );
+    // 入力エラーチェック
+    const newError = fieldInputEmptyCheck(accountInfo, error);
+    setError(newError);
+
+    Object.values(newError).forEach((val) => {
+      if (val != "") {
+        return;
+      } else {
+        navigate("/verifyaccount");
       }
-      console.log(error);
-    }
-    navigate("/verifyemail");
+    });
   };
 
   /***** HTML ******/
@@ -258,7 +260,7 @@ const VerifyAccount = ({ Banner }) => {
                     Your username is the name you will use to log in to your
                     account. Only you will see this name.
                   </p>
-                  {error.birthday != "" && <AlertSignUp />}
+                  {error.username != "" && <AlertSignUp />}
                 </div>
                 <label htmlFor="password">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -273,6 +275,7 @@ const VerifyAccount = ({ Banner }) => {
                     recommend inserting numbers and symbols into the beginning,
                     middle, and end to make your password difficult to guess.
                   </p>
+                  {error.password != "" && <AlertSignUp />}
                 </div>
                 <label htmlFor="confirm_password">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -280,6 +283,7 @@ const VerifyAccount = ({ Banner }) => {
                 </label>
                 <div css={formField}>
                   <input type="text" css={customFormElements} />
+                  {error.confirmPassword != "" && <AlertSignUp />}
                 </div>
                 <label htmlFor="email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -290,6 +294,7 @@ const VerifyAccount = ({ Banner }) => {
                   <p css={nameFieldDesc}>
                     Your Email will be used to verify your account.
                   </p>
+                  {error.email != "" && <AlertSignUp />}
                 </div>
                 <label htmlFor="confirm_email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -297,6 +302,7 @@ const VerifyAccount = ({ Banner }) => {
                 </label>
                 <div css={formField}>
                   <input type="text" css={customFormElements} />
+                  {error.confirmEmail != "" && <AlertSignUp />}
                 </div>
                 <div></div>
                 <label style={{ width: "100%" }}>
