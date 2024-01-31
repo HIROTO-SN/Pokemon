@@ -166,6 +166,7 @@ const VerifyAge = ({ Banner }) => {
     const newError = fieldInputEmptyCheck(accountInfo, error) 
     setError(newError);
 
+    // エラーがなければAccount認証ページへ遷移
     Object.values(newError).forEach((val) => {
       if (val != "") {
         return;
@@ -208,7 +209,7 @@ const VerifyAge = ({ Banner }) => {
                     </div>
                   </div>
                 </div>
-                {error.birthday != "" && <AlertSignUp />}
+                {error.birthday != "" && <AlertSignUp error={error.birthday} />}
               </div>
               <label htmlFor="country">Country/Region</label>
               <div css={formField}>

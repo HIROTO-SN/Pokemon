@@ -34,7 +34,7 @@ import { GiCheckMark } from "react-icons/gi";
 import { useEffect, useState } from "react";
 import AlertSignUp from "./AlertSignUp";
 import { useNavigate } from "react-router-dom";
-import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
+import { fieldInputEmptyCheck, passwordCheck } from "../../CommonFunc/CommonAlert";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -219,12 +219,21 @@ const VerifyAccount = ({ Banner }) => {
     const el = document.querySelector("#" + id);
     el.parentNode.style.backgroundColor = flg ? "#4dad5b" : "#313131";
   };
+
   // Continueボタン押下イベント
   const continueClickHanlder = () => {
-    // 入力エラーチェック
-    const newError = fieldInputEmptyCheck(accountInfo, error);
+    
+    let newError;
+    // 入力チェック
+    newError = fieldInputEmptyCheck(accountInfo, error);
+    // パスワードチェック
+    if (accountInfo.password != "") {
+      newError = { ...newError, password: passwordCheck(accountInfo.password) }
+    }
+    // エラー内容セット
     setError(newError);
 
+    // エラーがなければEmail認証ページへ遷移
     Object.values(newError).forEach((val) => {
       if (val != "") {
         return;
@@ -245,7 +254,18 @@ const VerifyAccount = ({ Banner }) => {
               <div css={formInner}>
                 <label htmlFor="username"> Username </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} maxLength={16} />
+                  <input
+                    id="username"
+                    type="text"
+                    css={customFormElements}
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        username: e.target.value,
+                      })
+                    }
+                    maxLength={16}
+                  />
                   <input
                     type="button"
                     value="Check Availability"
@@ -260,14 +280,26 @@ const VerifyAccount = ({ Banner }) => {
                     Your username is the name you will use to log in to your
                     account. Only you will see this name.
                   </p>
-                  {error.username != "" && <AlertSignUp />}
+                  {error.username != "" && <AlertSignUp error={error.username}/>}
                 </div>
                 <label htmlFor="password">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
                   Password
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
+                  <input
+                    id="password"
+                    // type="password"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        password: e.target.value,
+                      })
+                    }
+                    css={customFormElements}
+                    minLength={8}
+                    maxLength={50}
+                  />
                   <p css={nameFieldDesc}>
                     Your password must include at least one uppercase and one
                     lowercase letter, a number, and at least one other character
@@ -275,34 +307,66 @@ const VerifyAccount = ({ Banner }) => {
                     recommend inserting numbers and symbols into the beginning,
                     middle, and end to make your password difficult to guess.
                   </p>
-                  {error.password != "" && <AlertSignUp />}
+                  {error.password != "" && <AlertSignUp error={error.password} />}
                 </div>
                 <label htmlFor="confirm_password">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
                   Confirm Password
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
-                  {error.confirmPassword != "" && <AlertSignUp />}
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    css={customFormElements}
+                    minLength={8}
+                    maxLength={50}
+                  />
+                  {error.confirmPassword != "" && <AlertSignUp error={error.confirmPassword}/>}
                 </div>
                 <label htmlFor="email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
                   Email Address
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
+                  <input
+                    type="text"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        email: e.target.value,
+                      })
+                    }
+                    css={customFormElements}
+                    maxLength={75}
+                  />
                   <p css={nameFieldDesc}>
                     Your Email will be used to verify your account.
                   </p>
-                  {error.email != "" && <AlertSignUp />}
+                  {error.email != "" && <AlertSignUp error={error.email}/>}
                 </div>
                 <label htmlFor="confirm_email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
                   Confirm Email
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
-                  {error.confirmEmail != "" && <AlertSignUp />}
+                  <input
+                    type="text"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        confirmEmail: e.target.value,
+                      })
+                    }
+                    css={customFormElements}
+                    maxLength={75}
+                  />
+                  {error.confirmEmail != "" && <AlertSignUp error={error.confirmEmail}/>}
                 </div>
                 <div></div>
                 <label style={{ width: "100%" }}>

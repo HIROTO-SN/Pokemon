@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const AlertSignUp = () => {
+const AlertSignUp = ({ error }) => {
   /***** CSS ******/
   const inlineFormError = css`
     background-color: #616161;
@@ -61,7 +61,7 @@ const AlertSignUp = () => {
 		<div css={inlineFormError}>
 			<span>
 				<ul css={errorList}>
-					<li>This field is required.</li>
+					<li>{error}</li>
 				</ul>
 			</span>
 		</div>
