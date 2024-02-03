@@ -46,6 +46,7 @@ const initAccountInfoState = {
 	confirmEmail: "",
 	country: { name: "United States", code: "US"},
 	birthday: "",
+	screenName: "",
 	newsInfoReceiveFlg: false,
 	updateCenterReceiveFlg: false,
 	displayPokeClubProfile: true,
