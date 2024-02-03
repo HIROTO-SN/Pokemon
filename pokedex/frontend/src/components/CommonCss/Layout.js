@@ -130,6 +130,10 @@ export const customScrollBar = css`
   position: relative;
   overflow: visible;
 `
+// アラート系
+export const alertError = (flg) => css`
+  border: ${flg ? "2px solid #E3350D" : "none"};
+`
 
 // カスタムセレクトボックス スクロール制御
 export const viewport = css`

@@ -1,4 +1,4 @@
-import { passMaxLength, passMinLength, regexPass, valid_message_passInclude, valid_message_passLength, valid_message_required } from "../../constants/ValidationMessage";
+import { passMaxLength, passMinLength, regexEmailProblem, regexEmailValid, regexPass, valid_message_emailNoValid, valid_message_emailWithProblem, valid_message_passInclude, valid_message_passLength, valid_message_required } from "../../constants/ValidationMessage";
 
 /*
  * 必須入力項目が入力されているかチェック
@@ -20,17 +20,36 @@ export const fieldInputEmptyCheck = (inputs, error) => {
 /*
  * パスワードチェック
  * @param pass: パスワード - String
- * @return newError:  入力チェック結果エラー内容 - Object
+ * @return errStr:  入力チェック結果エラー内容 - String
  */
 export const passwordCheck = (pass) => {
-	console.log("pass: " + pass);
-	let newError = "";
+	let errStr = "";
 
 	// 最低1つの大文字、小文字、数値、記号を含むかチェック
-	newError = !regexPass.test(pass) ? valid_message_passInclude : "";
+	errStr = !regexPass.test(pass) ? valid_message_passInclude : "";
 	// 文字数8文字から50文字かチェック
-	newError += (!(pass.length >= passMinLength && pass.length <= passMaxLength)) && "\n" + valid_message_passLength;
+	errStr += (!(pass.length >= passMinLength && pass.length <= passMaxLength)) ? "\n" + valid_message_passLength : "";
 
-	console.log("newError: " + newError);
-	return newError;
+	return errStr;
+}
+
+/*
+ * メールアドレスチェック
+ * @param email: メールアドレス - String
+ * @param flg: 純粋なメールアドレス or 確認用メールアドレス を区別する - Boolean
+ * @return errStr:  入力チェック結果エラー内容 - String
+ */
+export const emailCheck = (email, flg = true) => {
+	let errStr = "";
+
+	// メールアドレスの形式チェック
+	if (!regexEmailValid.test(email)) {
+		// 半角英数字記号1文字以上 + @ + 半角英数字1文字以上 + . + 半角英数字2文字以上
+		errStr = valid_message_emailNoValid;
+	} else if (!regexEmailProblem.test(email) && flg) {
+		// アドレスの形式は不正ではないが、
+		// @の左側にメールアドレスに使用できない文字が使用されている、または5文字以下
+		errStr = valid_message_emailWithProblem;
+	} 
+	return errStr;
 }

@@ -5,6 +5,7 @@ import {
   useSetInputAccountInfo,
 } from "../../../contexts/SignupContext";
 import {
+  acceptInfo,
   buttonLightblue,
   buttonRight,
   checkBox,
@@ -21,6 +22,7 @@ import {
   submitButton,
 } from "../../CommonCss/AccountCss";
 import {
+  alertError,
   column10,
   customScrollBar,
   hiddenMobile,
@@ -34,7 +36,18 @@ import { GiCheckMark } from "react-icons/gi";
 import { useEffect, useState } from "react";
 import AlertSignUp from "./AlertSignUp";
 import { useNavigate } from "react-router-dom";
-import { fieldInputEmptyCheck, passwordCheck } from "../../CommonFunc/CommonAlert";
+import {
+  emailCheck,
+  fieldInputEmptyCheck,
+  passwordCheck,
+} from "../../CommonFunc/CommonAlert";
+import {
+  valid_message_emailNoMatch,
+  valid_message_passInclude,
+  valid_message_passNoMatch,
+  valid_message_required,
+} from "../../../constants/ValidationMessage";
+import { lal_email_receive_title, lal_news_check, lal_term_check, lal_updates_check, p_continue_warning, p_disp_question_title, p_email, p_password, p_username } from "../../../constants/ConstantsGeneral";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -97,52 +110,21 @@ const VerifyAccount = ({ Banner }) => {
     margin-right: 0.2em;
     margin-bottom: 0.3em;
   `;
-  // チェックボックス加工DIV用
-  const acceptInfo = css`
-    float: left;
-    margin: 1em 0;
-    position: relative;
-    width: 100%;
-    & input {
-      position: absolute;
-      top: 0;
-      left: 0;
-      top: 0;
-      opacity: 0;
-    }
-    & label {
-      float: left;
-      margin-right: -100%;
-      width: 85.49%;
-      color: #616161;
-      font-size: 87.5%;
-      line-height: 180%;
-      margin-left: 40px;
-      margin-top: 0;
-    }
-    & svg {
-      position: absolute;
-      color: #313131;
-      padding: 0.25em;
-      border: none;
-      background-color: transparent;
-    }
-  `;
 
-  // Newsチェックボックス背景色動的変化
-  const boxGeneral = (flg) => css`
-    background-color: ${flg ? "#4dad5b" : "#313131"};
-  `;
+  // // Newsチェックボックス背景色動的変化
+  // const boxGeneral = (flg) => css`
+  //   background-color: ${flg ? "#4dad5b" : "#313131"};
+  // `;
 
-  // Pokemon Center チェックボックス背景色動的変化
-  const boxPcenter = (flg) => css`
-    background-color: ${flg ? "#4dad5b" : "#313131"};
-  `;
+  // // Pokemon Center チェックボックス背景色動的変化
+  // const boxPcenter = (flg) => css`
+  //   background-color: ${flg ? "#4dad5b" : "#313131"};
+  // `;
 
-  // Terms チェックボックス背景色動的変化
-  const boxTerms = (flg) => css`
-    background-color: ${flg ? "#4dad5b" : "#313131"};
-  `;
+  // // Terms チェックボックス背景色動的変化
+  // const boxTerms = (flg) => css`
+  //   background-color: ${flg ? "#4dad5b" : "#313131"};
+  // `;
 
   // Terms&Condition囲い
   const termsAgreement = css`
@@ -179,6 +161,7 @@ const VerifyAccount = ({ Banner }) => {
 
   /***** Definition ******/
   const [isTermsCheck, setTermsCheck] = useState(false);
+  const [termAlert, setTermAlert] = useState(false);
   const errorContentInit = {
     username: "",
     password: "",
@@ -198,44 +181,81 @@ const VerifyAccount = ({ Banner }) => {
     const id = e.target.id;
     let flg = false;
 
-    if (id === "email-general") {
-      setAccountInfo({
-        ...accountInfo,
-        newsInfoReceiveFlg: !accountInfo.newsInfoReceiveFlg,
-      });
-      flg = !accountInfo.newsInfoReceiveFlg;
-    } else if (id === "email-pcenter") {
-      setAccountInfo({
-        ...accountInfo,
-        updateCenterReceiveFlg: !accountInfo.updateCenterReceiveFlg,
-      });
-      flg = !accountInfo.updateCenterReceiveFlg;
-    } else if (id === "terms") {
-      setTermsCheck(!isTermsCheck);
-      flg = !isTermsCheck;
-    } else {
-      return;
+    switch (id) {
+      case "email-general":
+        setAccountInfo({
+          ...accountInfo,
+          newsInfoReceiveFlg: !accountInfo.newsInfoReceiveFlg,
+        });
+        flg = !accountInfo.newsInfoReceiveFlg;
+        break;
+      case "email-pcenter":
+        setAccountInfo({
+          ...accountInfo,
+          updateCenterReceiveFlg: !accountInfo.updateCenterReceiveFlg,
+        });
+        flg = !accountInfo.updateCenterReceiveFlg;
+        break;
+      case "terms":
+        setTermsCheck(!isTermsCheck);
+        flg = !isTermsCheck;
+        break;
+      default:
+        break;
     }
     const el = document.querySelector("#" + id);
-    el.parentNode.style.backgroundColor = flg ? "#4dad5b" : "#313131";
+    el.nextElementSibling.style.backgroundColor = flg ? "#4dad5b" : "#313131";
   };
 
   // Continueボタン押下イベント
   const continueClickHanlder = () => {
-    
     let newError;
     // 入力チェック
     newError = fieldInputEmptyCheck(accountInfo, error);
-    // パスワードチェック
-    if (accountInfo.password != "") {
-      newError = { ...newError, password: passwordCheck(accountInfo.password) }
+    // パスワード文字列チェック
+    if (newError.password != valid_message_required) {
+      newError = { ...newError, password: passwordCheck(accountInfo.password) };
+
+      // 確認用パスワードチェック
+      // パスワード文字列チェックOK && 確認パスワード入力している時
+      if (
+        newError.confirmPassword != valid_message_required &&
+        newError.password != valid_message_passInclude &&
+        accountInfo.password !== accountInfo.confirmPassword
+      ) {
+        newError = { ...newError, confirmPassword: valid_message_passNoMatch };
+      }
     }
+
+    // Emailチェック
+    if (newError.email != valid_message_required) {
+      newError = { ...newError, email: emailCheck(accountInfo.email) };
+    }
+
+    // 確認用Emailチェック
+    // 確認Email入力している時
+    if (newError.confirmEmail != valid_message_required) {
+      newError = {
+        ...newError,
+        confirmEmail: emailCheck(accountInfo.confirmEmail, false),
+      };
+      if (
+        newError.email == "" &&
+        accountInfo.email !== accountInfo.confirmEmail
+      ) {
+        newError = { ...newError, confirmEmail: valid_message_emailNoMatch };
+      }
+    }
+    // Termチェック
+    !isTermsCheck ? setTermAlert(true) : setTermAlert(false);
+
     // エラー内容セット
     setError(newError);
 
     // エラーがなければEmail認証ページへ遷移
     Object.values(newError).forEach((val) => {
       if (val != "") {
+        setAccountInfo({ ...accountInfo, password: "", confirmPassword: "" });
         return;
       } else {
         navigate("/verifyaccount");
@@ -245,7 +265,7 @@ const VerifyAccount = ({ Banner }) => {
 
   /***** HTML ******/
   return (
-    <>
+    <form>
       <fieldset css={[section, noPaddingTop, sectionUserAccount]}>
         <div css={[column10, push2]}>
           <div css={[contentBlock, contentBlockFull]}>
@@ -276,11 +296,10 @@ const VerifyAccount = ({ Banner }) => {
                       buttonLightblue,
                     ]}
                   />
-                  <p css={nameFieldDesc}>
-                    Your username is the name you will use to log in to your
-                    account. Only you will see this name.
-                  </p>
-                  {error.username != "" && <AlertSignUp error={error.username}/>}
+                  <p css={nameFieldDesc}>{p_username}</p>
+                  {error.username != "" && (
+                    <AlertSignUp error={error.username} />
+                  )}
                 </div>
                 <label htmlFor="password">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -289,25 +308,22 @@ const VerifyAccount = ({ Banner }) => {
                 <div css={formField}>
                   <input
                     id="password"
-                    // type="password"
+                    type="password"
                     onChange={(e) =>
                       setAccountInfo({
                         ...accountInfo,
                         password: e.target.value,
                       })
                     }
+                    value={accountInfo.password}
                     css={customFormElements}
                     minLength={8}
                     maxLength={50}
                   />
-                  <p css={nameFieldDesc}>
-                    Your password must include at least one uppercase and one
-                    lowercase letter, a number, and at least one other character
-                    that is not a letter or digit, such as *, ', (, etc. We
-                    recommend inserting numbers and symbols into the beginning,
-                    middle, and end to make your password difficult to guess.
-                  </p>
-                  {error.password != "" && <AlertSignUp error={error.password} />}
+                  <p css={nameFieldDesc}>{p_password}</p>
+                  {error.password != "" && (
+                    <AlertSignUp error={error.password} />
+                  )}
                 </div>
                 <label htmlFor="confirm_password">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -323,11 +339,14 @@ const VerifyAccount = ({ Banner }) => {
                         confirmPassword: e.target.value,
                       })
                     }
+                    value={accountInfo.confirmPassword}
                     css={customFormElements}
                     minLength={8}
                     maxLength={50}
                   />
-                  {error.confirmPassword != "" && <AlertSignUp error={error.confirmPassword}/>}
+                  {error.confirmPassword != "" && (
+                    <AlertSignUp error={error.confirmPassword} />
+                  )}
                 </div>
                 <label htmlFor="email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -335,7 +354,7 @@ const VerifyAccount = ({ Banner }) => {
                 </label>
                 <div css={formField}>
                   <input
-                    type="text"
+                    type="email"
                     onChange={(e) =>
                       setAccountInfo({
                         ...accountInfo,
@@ -345,10 +364,8 @@ const VerifyAccount = ({ Banner }) => {
                     css={customFormElements}
                     maxLength={75}
                   />
-                  <p css={nameFieldDesc}>
-                    Your Email will be used to verify your account.
-                  </p>
-                  {error.email != "" && <AlertSignUp error={error.email}/>}
+                  <p css={nameFieldDesc}>{p_email}</p>
+                  {error.email != "" && <AlertSignUp error={error.email} />}
                 </div>
                 <label htmlFor="confirm_email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -356,7 +373,7 @@ const VerifyAccount = ({ Banner }) => {
                 </label>
                 <div css={formField}>
                   <input
-                    type="text"
+                    type="email"
                     onChange={(e) =>
                       setAccountInfo({
                         ...accountInfo,
@@ -366,58 +383,25 @@ const VerifyAccount = ({ Banner }) => {
                     css={customFormElements}
                     maxLength={75}
                   />
-                  {error.confirmEmail != "" && <AlertSignUp error={error.confirmEmail}/>}
+                  {error.confirmEmail != "" && (
+                    <AlertSignUp error={error.confirmEmail} />
+                  )}
                 </div>
                 <div></div>
-                <label style={{ width: "100%" }}>
-                  I would like to receive email updates from The Pokémon Company
-                  International regarding:
-                </label>
-                <div css={acceptInfo}>
-                  <span>
-                    <input type="checkbox" />
-                    <span
-                      css={[
-                        checkBox,
-                        boxGeneral(accountInfo.newsInfoReceiveFlg),
-                      ]}
-                    >
-                      <GiCheckMark
-                        id="email-general"
-                        onClick={(e) => checkClickHandler(e)}
-                      />
-                    </span>
-                  </span>
-                  <label>News and information about Pokémon</label>
-                </div>
-                <div css={acceptInfo}>
-                  <span>
-                    <input type="checkbox" />
-                    <span
-                      css={[
-                        checkBox,
-                        boxPcenter(accountInfo.updateCenterReceiveFlg),
-                      ]}
-                    >
-                      <GiCheckMark
-                        id="email-pcenter"
-                        onClick={(e) => checkClickHandler(e)}
-                      />
-                    </span>
-                  </span>
-                  <label>
-                    News and updates about Pokémon Center (our official online
-                    shop)
-                  </label>
-                </div>
+                <label style={{ width: "100%" }}>{lal_email_receive_title}</label>
+                <AcceptInfo
+                  id="email-general"
+                  lal={lal_news_check}
+                  handler={checkClickHandler}
+                />
+                <AcceptInfo
+                  id="email-pcenter"
+                  lal={lal_updates_check}
+                  handler={checkClickHandler}
+                />
                 <div css={clear}></div>
                 <div>
-                  <p css={dispField}>
-                    Do you want to display your Pokémon Trainer Club profile
-                    publicly? This includes content such as your screen name.
-                    Personal information such as your real name is always kept
-                    private.
-                  </p>
+                  <p css={dispField}>{p_disp_question_title}</p>
                   <p css={inRowSelect}>
                     <input
                       type="radio"
@@ -463,6 +447,12 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        screenName: e.target.value,
+                      })
+                    }
                   />
                 </div>
               </div>
@@ -490,21 +480,16 @@ const VerifyAccount = ({ Banner }) => {
               <div></div>
             </div>
           </div>
-          <div css={acceptInfo}>
-            <span>
-              <input type="checkbox" />
-              <span css={[checkBox, boxTerms(accountInfo.newsInfoReceiveFlg)]}>
-                <GiCheckMark id="terms" onClick={(e) => checkClickHandler(e)} />
-              </span>
-            </span>
-            <label> I accept the Pokemon.com Terms of Use. </label>
-            <p style={{ paddingTop: "20px" }}>
-              By continuing to use the Services, you acknowledge that you have
-              rea, understood, and agree to our{" "}
-              <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>
-              .
-            </p>
-          </div>
+          <AcceptInfo
+            id="terms"
+            lal={lal_term_check}
+            handler={checkClickHandler}
+            termAlert={termAlert}
+          />
+          <p style={{ paddingTop: "20px" }}>{p_continue_warning}
+            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>
+            .
+          </p>
           <div></div>
           <input
             type="button"
@@ -514,8 +499,28 @@ const VerifyAccount = ({ Banner }) => {
           ></input>
         </div>
       </fieldset>
-    </>
+    </form>
   );
 };
 
 export default VerifyAccount;
+
+/**
+ * チェックボックス付きラベル項目
+ * @param {string} id - idの名前
+ * @param {string} lal - label部コンテント
+ * @param {Function} handler - ☑クリック時イベント処理関数
+ * @param {Boolean} termAlert - 本要素全体を入力チェック対象にするかどうか
+ * @returns
+ */
+const AcceptInfo = ({ id, lal, handler, termAlert }) => {
+  return (
+    <div css={acceptInfo}>
+      <span>
+        <span id={id} css={[checkBox]} onClick={(e) => handler(e)}></span>
+        <GiCheckMark />
+      </span>
+      <label css={alertError(termAlert)}>{lal}</label>
+    </div>
+  );
+};
