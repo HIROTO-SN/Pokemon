@@ -5,7 +5,7 @@ import axios from "axios";
 // axiosでリクエストを送信
 export function loginAuth (username, password, setError) {
   axios
-    .post(signinUrl, { username, password })
+    .get(signinUrl, { username, password })
     .then(res => console.log(res))
     .catch((e) => {
       // サーバー側からのエラーメッセージをセット

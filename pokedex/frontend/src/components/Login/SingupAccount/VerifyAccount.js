@@ -22,7 +22,9 @@ import {
   submitButton,
 } from "../../CommonCss/AccountCss";
 import {
+  alertBox,
   alertError,
+  alertH3,
   column10,
   customScrollBar,
   hiddenMobile,
@@ -42,12 +44,26 @@ import {
   passwordCheck,
 } from "../../CommonFunc/CommonAlert";
 import {
+  available_message,
   valid_message_emailNoMatch,
   valid_message_passInclude,
   valid_message_passNoMatch,
   valid_message_required,
+  valid_message_screenName,
+  valid_message_username,
 } from "../../../constants/ValidationMessage";
-import { lal_email_receive_title, lal_news_check, lal_term_check, lal_updates_check, p_continue_warning, p_disp_question_title, p_email, p_password, p_username } from "../../../constants/ConstantsGeneral";
+import {
+  lal_email_receive_title,
+  lal_news_check,
+  lal_term_check,
+  lal_updates_check,
+  p_continue_warning,
+  p_disp_question_title,
+  p_email,
+  p_password,
+  p_username,
+} from "../../../constants/ConstantsGeneral";
+import { nameAvailabilityCheck } from "../../api/SignUpApi";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -111,21 +127,6 @@ const VerifyAccount = ({ Banner }) => {
     margin-bottom: 0.3em;
   `;
 
-  // // Newsチェックボックス背景色動的変化
-  // const boxGeneral = (flg) => css`
-  //   background-color: ${flg ? "#4dad5b" : "#313131"};
-  // `;
-
-  // // Pokemon Center チェックボックス背景色動的変化
-  // const boxPcenter = (flg) => css`
-  //   background-color: ${flg ? "#4dad5b" : "#313131"};
-  // `;
-
-  // // Terms チェックボックス背景色動的変化
-  // const boxTerms = (flg) => css`
-  //   background-color: ${flg ? "#4dad5b" : "#313131"};
-  // `;
-
   // Terms&Condition囲い
   const termsAgreement = css`
     padding-top: 1em !important;
@@ -168,13 +169,42 @@ const VerifyAccount = ({ Banner }) => {
     confirmPassword: "",
     email: "",
     confirmEmail: "",
+    screenName: "",
   };
   const [error, setError] = useState(errorContentInit);
+  const objLength = [
+    { name: "username", minLength: 6, maxLength: 16 },
+    { name: "screenName", minLength: 3, axLength: 15 },
+  ];
+  const availableContentInit = [
+    { name: "username", content: "" },
+    { name: "screenName", content: "" },
+  ];
+  const [available, setAvailability] = useState(availableContentInit);
   const navigate = useNavigate();
 
   /***** JS ******/
   // 初期表示時処理
   useEffect(() => {}, []);
+
+  const checkAvailHandler = (target, set) => {
+    const obj = objLength.find((el) => el.name === target);
+    const newAvailability = available.map((el) => {
+      const val = accountInfo[target];
+      const val_length = val.length
+      if (el.name === target) {
+        if (val_length < obj.minLength || val_length > obj.maxLength) {
+          el.content = available_message.find((e) => e.name === target).invalid;
+        } else {
+          nameAvailabilityCheck(target, val);
+          el.content = "";
+        }
+      }
+      return el;
+    });
+    set(newAvailability);
+    return;
+  };
 
   // メール受信するかしないかの判定
   const checkClickHandler = (e) => {
@@ -212,6 +242,12 @@ const VerifyAccount = ({ Banner }) => {
     let newError;
     // 入力チェック
     newError = fieldInputEmptyCheck(accountInfo, error);
+    // ユーザー名文字列チェック
+    if (newError.username != valid_message_required) {
+      if (accountInfo.username.length < 6 || accountInfo.username.length > 16) {
+        newError.username = valid_message_username;
+      }
+    }
     // パスワード文字列チェック
     if (newError.password != valid_message_required) {
       newError = { ...newError, password: passwordCheck(accountInfo.password) };
@@ -246,11 +282,16 @@ const VerifyAccount = ({ Banner }) => {
         newError = { ...newError, confirmEmail: valid_message_emailNoMatch };
       }
     }
+    // ユーザー名文字列チェック
+    if (accountInfo.screenName.length < 3 || accountInfo.username.length > 15) {
+      newError.screenName = valid_message_screenName;
+    }
     // Termチェック
     !isTermsCheck ? setTermAlert(true) : setTermAlert(false);
 
     // エラー内容セット
     setError(newError);
+    setAvailability(availableContentInit);
 
     // エラーがなければEmail認証ページへ遷移
     Object.values(newError).forEach((val) => {
@@ -265,7 +306,7 @@ const VerifyAccount = ({ Banner }) => {
 
   /***** HTML ******/
   return (
-    <form>
+    <>
       <fieldset css={[section, noPaddingTop, sectionUserAccount]}>
         <div css={[column10, push2]}>
           <div css={[contentBlock, contentBlockFull]}>
@@ -286,6 +327,11 @@ const VerifyAccount = ({ Banner }) => {
                     }
                     maxLength={16}
                   />
+                  <AvailableAlert
+                    message={
+                      available.find((el) => el.name === "username").content
+                    }
+                  />
                   <input
                     type="button"
                     value="Check Availability"
@@ -295,6 +341,9 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
+                    onClick={() =>
+                      checkAvailHandler("username", setAvailability)
+                    }
                   />
                   <p css={nameFieldDesc}>{p_username}</p>
                   {error.username != "" && (
@@ -388,7 +437,9 @@ const VerifyAccount = ({ Banner }) => {
                   )}
                 </div>
                 <div></div>
-                <label style={{ width: "100%" }}>{lal_email_receive_title}</label>
+                <label style={{ width: "100%" }}>
+                  {lal_email_receive_title}
+                </label>
                 <AcceptInfo
                   id="email-general"
                   lal={lal_news_check}
@@ -436,8 +487,22 @@ const VerifyAccount = ({ Banner }) => {
                 <div css={clear}></div>
                 <label htmlFor="screen_name"> Screen Name </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} maxLength={15} />
-                  <p></p>
+                  <input
+                    type="text"
+                    css={customFormElements}
+                    maxLength={15}
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        screenName: e.target.value,
+                      })
+                    }
+                  />
+                  <AvailableAlert
+                    message={
+                      available.find((el) => el.name === "screenName").content
+                    }
+                  />
                   <input
                     type="button"
                     value="Check Availability"
@@ -447,11 +512,8 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
-                    onChange={(e) =>
-                      setAccountInfo({
-                        ...accountInfo,
-                        screenName: e.target.value,
-                      })
+                    onClick={() =>
+                      checkAvailHandler("screenName", setAvailability)
                     }
                   />
                 </div>
@@ -486,9 +548,9 @@ const VerifyAccount = ({ Banner }) => {
             handler={checkClickHandler}
             termAlert={termAlert}
           />
-          <p style={{ paddingTop: "20px" }}>{p_continue_warning}
-            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>
-            .
+          <p style={{ paddingTop: "20px" }}>
+            {p_continue_warning}
+            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>.
           </p>
           <div></div>
           <input
@@ -499,7 +561,7 @@ const VerifyAccount = ({ Banner }) => {
           ></input>
         </div>
       </fieldset>
-    </form>
+    </>
   );
 };
 
@@ -521,6 +583,22 @@ const AcceptInfo = ({ id, lal, handler, termAlert }) => {
         <GiCheckMark />
       </span>
       <label css={alertError(termAlert)}>{lal}</label>
+    </div>
+  );
+};
+
+/**
+ * Check Availability 押下時の入力チェック
+ *
+ */
+const AvailableAlert = ({ message }) => {
+  const showFlg = message === "" ? true : false;
+  return (
+    <div
+      css={[alertBox, alertError(true)]}
+      style={{ display: showFlg && "none" }}
+    >
+      <h3 css={alertH3}>{message}</h3>
     </div>
   );
 };
