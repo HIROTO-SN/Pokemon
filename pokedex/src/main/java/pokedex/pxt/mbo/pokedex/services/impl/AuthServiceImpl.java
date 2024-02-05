@@ -2,6 +2,9 @@ package pokedex.pxt.mbo.pokedex.services.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.Random;
+import java.util.List;
+import java.util.ArrayList;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,6 +17,7 @@ import org.springframework.stereotype.Service;
 import pokedex.pxt.mbo.pokedex.entity.Role;
 import pokedex.pxt.mbo.pokedex.entity.User;
 import pokedex.pxt.mbo.pokedex.exception.PokedexException;
+import pokedex.pxt.mbo.pokedex.payload.CheckNamesDto;
 import pokedex.pxt.mbo.pokedex.payload.LoginDto;
 import pokedex.pxt.mbo.pokedex.payload.RegisterDto;
 import pokedex.pxt.mbo.pokedex.repository.RoleRepository;
@@ -75,5 +79,36 @@ public class AuthServiceImpl implements AuthService {
 		userRepository.save(user);
 
 		return "User registered successfully!";
+	}
+
+	@Override
+	public List<String> checkNames(CheckNamesDto CheckNamesDto) {
+		// targetがUsernameかScreennameかを判定
+		String target = CheckNamesDto.getTarget();
+		String val = CheckNamesDto.getValue().strip();
+		List<String> suggestNames = new ArrayList<String>();
+		switch (target) {
+			case "username":
+				if (userRepository.existsByUsername(val)) {
+					Random random = new Random();
+					for (int i = 1; i <= 3; i ++) {
+						suggestNames.add(val + String.valueOf(random.nextInt(1000000)));
+					}
+				}
+				break;
+			case "screenName":
+				if (userRepository.existsByScreenName(val)) {
+					Random random = new Random();
+					for (int i = 1; i <= 3; i ++) {
+						suggestNames.add(val + String.valueOf(random.nextInt(1000000)));
+					}
+				}
+				break;
+			default:
+				suggestNames = null;
+				break;
+		}
+		
+		return suggestNames;
 	}
 }
