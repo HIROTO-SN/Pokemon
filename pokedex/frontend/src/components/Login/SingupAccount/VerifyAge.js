@@ -38,7 +38,7 @@ import {
   useSetInputAccountInfo,
 } from "../../../contexts/SignupContext";
 import AlertSignUp from "./AlertSignUp";
-import { valid_message_required } from "../../../constants/ValidationMessage";
+import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
 
 const VerifyAge = ({ Banner }) => {
   /***** CSS ******/
@@ -114,8 +114,8 @@ const VerifyAge = ({ Banner }) => {
   const insideRef = useRef();
   const documentClickHandler = useRef();
   const [isListOpened, setIsListOpened] = useState(false);
-  const errorContentInit = {
-    birthday: "",
+  const errorContentInit = { 
+    birthday: ""
   };
   const [error, setError] = useState(errorContentInit);
   const navigate = useNavigate();
@@ -156,21 +156,26 @@ const VerifyAge = ({ Banner }) => {
   };
   // Birth入力後チェンジイベント
   const birthdayChangeHandler = (e) => {
-    const newAccountInfo = { ...accountInfo, birthday: e.target.value.trim() };
+    const newAccountInfo = { ...accountInfo, birthday: e.target.value };
     setAccountInfo(newAccountInfo);
   };
 
   // Continueボタン押下イベント
   const continueClickHanlder = () => {
-    if (accountInfo.birthday.trim() === "") {
-      setError({ birthday: valid_message_required});
-      return
-    } else {
-      setError({ birthday: ""});
-    }
-    navigate("/verifyaccount");
+    // 入力エラーチェック
+    const newError = fieldInputEmptyCheck(accountInfo, error) 
+    setError(newError);
+
+    // エラーがなければAccount認証ページへ遷移
+    Object.values(newError).forEach((val) => {
+      if (val != "") {
+        return;
+      } else {
+        navigate("/verifyaccount");
+      }
+    })
   };
-  
+
   /***** HTML ******/
   return (
     <section css={[noPaddingTop, section, sectionUserAccount]}>
@@ -204,7 +209,7 @@ const VerifyAge = ({ Banner }) => {
                     </div>
                   </div>
                 </div>
-                {error.birthday != "" && <AlertSignUp />}
+                {error.birthday != "" && <AlertSignUp error={error.birthday} />}
               </div>
               <label htmlFor="country">Country/Region</label>
               <div css={formField}>

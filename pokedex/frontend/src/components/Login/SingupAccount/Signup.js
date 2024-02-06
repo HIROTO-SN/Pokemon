@@ -11,7 +11,6 @@ import {
 } from "../../CommonCss/Layout.js";
 import StepsMenu from "./Signup-stepsmenu.js";
 import {
-  CurrentPageProvider,
   InputAccountInfoProvider,
 } from "../../../contexts/SignupContext.js";
 import VerifyAge from "./VerifyAge.js";
@@ -92,23 +91,21 @@ const Signup = ({ pageNo }) => {
 
   /***** HTML ******/
   return (
-    <CurrentPageProvider>
-      <div css={[container]}>
-        <section css={[section, useraccount]}>
-          <h1 css={pageMainTitle}>Create Your Pokémon Trainer Club Account</h1>
-          <span css={[notchBottomRightSmall, visibleMobile]}></span>
-          <h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
-          <div css={[column10, push2, hiddenMobile]}>
-            <StepsMenu pageNo={pageNo} />
-          </div>
-        </section>
-        <div css={colorBlack}>
-          <InputAccountInfoProvider>
-            <PageController pageNo={pageNo} />
-          </InputAccountInfoProvider>
+    <div css={[container]}>
+      <section css={[section, useraccount]}>
+        <h1 css={pageMainTitle}>Create Your Pokémon Trainer Club Account</h1>
+        <span css={[notchBottomRightSmall, visibleMobile]}></span>
+        <h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
+        <div css={[column10, push2, hiddenMobile]}>
+          <StepsMenu pageNo={pageNo} />
         </div>
+      </section>
+      <div css={colorBlack}>
+        <InputAccountInfoProvider>
+          <PageController pageNo={pageNo} />
+        </InputAccountInfoProvider>
       </div>
-    </CurrentPageProvider>
+    </div>
   );
 };
 
@@ -119,7 +116,6 @@ const Signup = ({ pageNo }) => {
  * pageNo = 3: Verify Email
  */
 const PageController = ({ pageNo }) => {
-
   /***** HTML ******/
   return (
     <>
@@ -140,7 +136,6 @@ const PageController = ({ pageNo }) => {
  * ページ右ポケモンイラストバナー
  */
 const Banner = () => {
-
   /***** CSS ******/
   const characterBanner = css`
     float: left;

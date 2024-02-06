@@ -5,9 +5,11 @@ import {
   useSetInputAccountInfo,
 } from "../../../contexts/SignupContext";
 import {
-  buttonCustom,
+  acceptInfo,
   buttonLightblue,
   buttonRight,
+  checkBox,
+  clear,
   contentBlock,
   contentBlockFull,
   customFormElements,
@@ -16,10 +18,52 @@ import {
   formField,
   formInner,
   formWrapper,
+  inRowSelect,
+  submitButton,
 } from "../../CommonCss/AccountCss";
-import { column10, noPaddingTop, push2, section } from "../../CommonCss/Layout";
+import {
+  alertBox,
+  alertError,
+  alertH3,
+  column10,
+  customScrollBar,
+  hiddenMobile,
+  noPaddingTop,
+  push2,
+  section,
+  viewport,
+} from "../../CommonCss/Layout";
 import { MdOutlineCatchingPokemon } from "react-icons/md";
-
+import { GiCheckMark } from "react-icons/gi";
+import { useEffect, useState } from "react";
+import AlertSignUp from "./AlertSignUp";
+import { useNavigate } from "react-router-dom";
+import {
+  emailCheck,
+  fieldInputEmptyCheck,
+  passwordCheck,
+} from "../../CommonFunc/CommonAlert";
+import {
+  available_message,
+  valid_message_emailNoMatch,
+  valid_message_passInclude,
+  valid_message_passNoMatch,
+  valid_message_required,
+  valid_message_screenName,
+  valid_message_username,
+} from "../../../constants/ValidationMessage";
+import {
+  lal_email_receive_title,
+  lal_news_check,
+  lal_term_check,
+  lal_updates_check,
+  p_continue_warning,
+  p_disp_question_title,
+  p_email,
+  p_password,
+  p_username,
+} from "../../../constants/ConstantsGeneral";
+import { nameAvailabilityCheck } from "../../api/SignUpApi";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -56,32 +100,213 @@ const VerifyAccount = ({ Banner }) => {
     text-transform: none;
     font-family: "Flexo-Demi", arial, sans-serif;
   `;
-	// pタグ説明文
-	const nameFieldDesc = css`
-		color: #616161;
+  // pタグ説明文
+  const nameFieldDesc = css`
+    color: #616161;
     font-size: 87.5%;
     margin-top: 0.5em;
-		font-family: "Roboto",arial,sans-serif;
-		font-weight: 500;
+    font-family: "Roboto", arial, sans-serif;
+    font-weight: 500;
     line-height: 125%;
-	`
-  // チェックボックス加工DIV用
-	const acceptInfo = css`
-		float: left;
-    margin: 1em 0;
-    position: relative;
-    width: 100%;
-	`
+  `;
+
+  // pタグ注意書き（ラジオ選択部）
+  const dispField = css`
+    font-family: "Roboto", arial, sans-serif;
+    font-size: 100%;
+    font-weight: 500;
+    line-height: 125%;
+    margin: 0.5em 0;
+  `;
+
+  //　必須サイン（ポケモンボールSVG）
+  const requiredSVG = css`
+    height: 0.5em;
+    width: 0.5em;
+    margin-right: 0.2em;
+    margin-bottom: 0.3em;
+  `;
+
+  // Terms&Condition囲い
+  const termsAgreement = css`
+    padding-top: 1em !important;
+
+    > h2 {
+      color: #212121;
+      font-size: 130%;
+      line-height: 125%;
+      text-transform: none;
+      font-family: "Flexo-Medium", arial, sans-serif;
+      margin: 0.75em 0;
+    }
+
+    & p {
+      color: #616161;
+      margin: 0.5em 0 1em;
+      font-family: "Roboto", arial, sans-serif;
+      font-size: 100%;
+      font-weight: 500;
+      line-height: 125%;
+    }
+  `;
+
+  const termWrapper = css`
+    background-color: #616161;
+    border-radius: 5px;
+    height: 300px;
+  `;
 
   /***** context ******/
   const accountInfo = useInputAccountInfo();
   const setAccountInfo = useSetInputAccountInfo();
 
+  /***** Definition ******/
+  const [isTermsCheck, setTermsCheck] = useState(false);
+  const [termAlert, setTermAlert] = useState(false);
+  const errorContentInit = {
+    username: "",
+    password: "",
+    confirmPassword: "",
+    email: "",
+    confirmEmail: "",
+    screenName: "",
+  };
+  const [error, setError] = useState(errorContentInit);
+  const objLength = [
+    { name: "username", minLength: 6, maxLength: 16 },
+    { name: "screenName", minLength: 3, axLength: 15 },
+  ];
+  const availableContentInit = [
+    { name: "username", content: "" },
+    { name: "screenName", content: "" },
+  ];
+  const [available, setAvailability] = useState(availableContentInit);
+  const navigate = useNavigate();
+
   /***** JS ******/
+  // 初期表示時処理
+  useEffect(() => {}, []);
+
+  const checkAvailHandler = (target, set) => {
+    const obj = objLength.find((el) => el.name === target);
+    const newAvailability = available.map((el) => {
+      const val = accountInfo[target];
+      const val_length = val.length
+      if (el.name === target) {
+        if (val_length < obj.minLength || val_length > obj.maxLength) {
+          el.content = available_message.find((e) => e.name === target).invalid;
+        } else {
+          nameAvailabilityCheck(target, val);
+          el.content = "";
+        }
+      }
+      return el;
+    });
+    set(newAvailability);
+    return;
+  };
+
+  // メール受信するかしないかの判定
+  const checkClickHandler = (e) => {
+    const id = e.target.id;
+    let flg = false;
+
+    switch (id) {
+      case "email-general":
+        setAccountInfo({
+          ...accountInfo,
+          newsInfoReceiveFlg: !accountInfo.newsInfoReceiveFlg,
+        });
+        flg = !accountInfo.newsInfoReceiveFlg;
+        break;
+      case "email-pcenter":
+        setAccountInfo({
+          ...accountInfo,
+          updateCenterReceiveFlg: !accountInfo.updateCenterReceiveFlg,
+        });
+        flg = !accountInfo.updateCenterReceiveFlg;
+        break;
+      case "terms":
+        setTermsCheck(!isTermsCheck);
+        flg = !isTermsCheck;
+        break;
+      default:
+        break;
+    }
+    const el = document.querySelector("#" + id);
+    el.nextElementSibling.style.backgroundColor = flg ? "#4dad5b" : "#313131";
+  };
+
+  // Continueボタン押下イベント
+  const continueClickHanlder = () => {
+    let newError;
+    // 入力チェック
+    newError = fieldInputEmptyCheck(accountInfo, error);
+    // ユーザー名文字列チェック
+    if (newError.username != valid_message_required) {
+      if (accountInfo.username.length < 6 || accountInfo.username.length > 16) {
+        newError.username = valid_message_username;
+      }
+    }
+    // パスワード文字列チェック
+    if (newError.password != valid_message_required) {
+      newError = { ...newError, password: passwordCheck(accountInfo.password) };
+
+      // 確認用パスワードチェック
+      // パスワード文字列チェックOK && 確認パスワード入力している時
+      if (
+        newError.confirmPassword != valid_message_required &&
+        newError.password != valid_message_passInclude &&
+        accountInfo.password !== accountInfo.confirmPassword
+      ) {
+        newError = { ...newError, confirmPassword: valid_message_passNoMatch };
+      }
+    }
+
+    // Emailチェック
+    if (newError.email != valid_message_required) {
+      newError = { ...newError, email: emailCheck(accountInfo.email) };
+    }
+
+    // 確認用Emailチェック
+    // 確認Email入力している時
+    if (newError.confirmEmail != valid_message_required) {
+      newError = {
+        ...newError,
+        confirmEmail: emailCheck(accountInfo.confirmEmail, false),
+      };
+      if (
+        newError.email == "" &&
+        accountInfo.email !== accountInfo.confirmEmail
+      ) {
+        newError = { ...newError, confirmEmail: valid_message_emailNoMatch };
+      }
+    }
+    // ユーザー名文字列チェック
+    if (accountInfo.screenName.length < 3 || accountInfo.username.length > 15) {
+      newError.screenName = valid_message_screenName;
+    }
+    // Termチェック
+    !isTermsCheck ? setTermAlert(true) : setTermAlert(false);
+
+    // エラー内容セット
+    setError(newError);
+    setAvailability(availableContentInit);
+
+    // エラーがなければEmail認証ページへ遷移
+    Object.values(newError).forEach((val) => {
+      if (val != "") {
+        setAccountInfo({ ...accountInfo, password: "", confirmPassword: "" });
+        return;
+      } else {
+        navigate("/verifyaccount");
+      }
+    });
+  };
 
   /***** HTML ******/
   return (
-    <form>
+    <>
       <fieldset css={[section, noPaddingTop, sectionUserAccount]}>
         <div css={[column10, push2]}>
           <div css={[contentBlock, contentBlockFull]}>
@@ -90,7 +315,23 @@ const VerifyAccount = ({ Banner }) => {
               <div css={formInner}>
                 <label htmlFor="username"> Username </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} maxlength="16" />
+                  <input
+                    id="username"
+                    type="text"
+                    css={customFormElements}
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        username: e.target.value,
+                      })
+                    }
+                    maxLength={16}
+                  />
+                  <AvailableAlert
+                    message={
+                      available.find((el) => el.name === "username").content
+                    }
+                  />
                   <input
                     type="button"
                     value="Check Availability"
@@ -100,104 +341,264 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
+                    onClick={() =>
+                      checkAvailHandler("username", setAvailability)
+                    }
                   />
-                  <p css={nameFieldDesc}>
-                    Your username is the name you will use to log in to your
-                    account. Only you will see this name.
-                  </p>
+                  <p css={nameFieldDesc}>{p_username}</p>
+                  {error.username != "" && (
+                    <AlertSignUp error={error.username} />
+                  )}
                 </div>
                 <label htmlFor="password">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Password
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
-                  <p css={nameFieldDesc}>
-                    Your password must include at least one uppercase and one
-                    lowercase letter, a number, and at least one other character
-                    that is not a letter or digit, such as *, ', (, etc. We
-                    recommend inserting numbers and symbols into the beginning,
-                    middle, and end to make your password difficult to guess.
-                  </p>
+                  <input
+                    id="password"
+                    type="password"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        password: e.target.value,
+                      })
+                    }
+                    value={accountInfo.password}
+                    css={customFormElements}
+                    minLength={8}
+                    maxLength={50}
+                  />
+                  <p css={nameFieldDesc}>{p_password}</p>
+                  {error.password != "" && (
+                    <AlertSignUp error={error.password} />
+                  )}
                 </div>
                 <label htmlFor="confirm_password">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Confirm Password
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
+                  <input
+                    id="confirmPassword"
+                    type="password"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        confirmPassword: e.target.value,
+                      })
+                    }
+                    value={accountInfo.confirmPassword}
+                    css={customFormElements}
+                    minLength={8}
+                    maxLength={50}
+                  />
+                  {error.confirmPassword != "" && (
+                    <AlertSignUp error={error.confirmPassword} />
+                  )}
                 </div>
                 <label htmlFor="email">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Email Address
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
-									<p css={nameFieldDesc}>
-										Your Email will be used to verify your account.
-									</p>
+                  <input
+                    type="email"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        email: e.target.value,
+                      })
+                    }
+                    css={customFormElements}
+                    maxLength={75}
+                  />
+                  <p css={nameFieldDesc}>{p_email}</p>
+                  {error.email != "" && <AlertSignUp error={error.email} />}
                 </div>
                 <label htmlFor="confirm_email">
-									<MdOutlineCatchingPokemon />
+                  <MdOutlineCatchingPokemon css={requiredSVG} />
                   Confirm Email
                 </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
+                  <input
+                    type="email"
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        confirmEmail: e.target.value,
+                      })
+                    }
+                    css={customFormElements}
+                    maxLength={75}
+                  />
+                  {error.confirmEmail != "" && (
+                    <AlertSignUp error={error.confirmEmail} />
+                  )}
                 </div>
                 <div></div>
-                <label style={{width: "100%"}}>
-                  I would like to receive email updates from The Pokémon Company
-                  International regarding:
+                <label style={{ width: "100%" }}>
+                  {lal_email_receive_title}
                 </label>
-                <div css={acceptInfo}>
-                  <span>
-                    <input type="checkbox" />
-                    <span></span>
-                  </span>
-                  <label> News and information about Pokémon </label>
-                </div>
-                <div css={acceptInfo}>
-                  <span>
-                    <input type="checkbox" />
-                    <span></span>
-                  </span>
-                  <label>
-                    {" "}
-                    News and updates about Pokémon Center (our official online
-                    shop){" "}
-                  </label>
-                </div>
-                {/* <div>
-                  <p>
-                    Do you want to display your Pokémon Trainer Club profile
-                    publicly? This includes content such as your screen name.
-                    Personal information such as your real name is always kept
-                    private.
-                  </p>
-                  <p>
-                    <input type="radio" name="public_profile_opt_in" />
+                <AcceptInfo
+                  id="email-general"
+                  lal={lal_news_check}
+                  handler={checkClickHandler}
+                />
+                <AcceptInfo
+                  id="email-pcenter"
+                  lal={lal_updates_check}
+                  handler={checkClickHandler}
+                />
+                <div css={clear}></div>
+                <div>
+                  <p css={dispField}>{p_disp_question_title}</p>
+                  <p css={inRowSelect}>
+                    <input
+                      type="radio"
+                      name="public_profile_opt_in"
+                      value="true"
+                      onChange={() =>
+                        setAccountInfo({
+                          ...accountInfo,
+                          displayPokeClubProfile: true,
+                        })
+                      }
+                      checked={accountInfo.displayPokeClubProfile}
+                    />{" "}
                     Yes
                   </p>
-                  <p>
-                    <input type="radio" name="public_profile_opt_in" />
+                  <p css={inRowSelect}>
+                    <input
+                      type="radio"
+                      name="public_profile_opt_in"
+                      value="false"
+                      onChange={() =>
+                        setAccountInfo({
+                          ...accountInfo,
+                          displayPokeClubProfile: false,
+                        })
+                      }
+                      checked={!accountInfo.displayPokeClubProfile}
+                    />{" "}
                     No
                   </p>
-                </div> */}
+                </div>
+                <div css={clear}></div>
                 <label htmlFor="screen_name"> Screen Name </label>
                 <div css={formField}>
-                  <input type="text" css={customFormElements} />
-                  <p></p>
-                  <input />
+                  <input
+                    type="text"
+                    css={customFormElements}
+                    maxLength={15}
+                    onChange={(e) =>
+                      setAccountInfo({
+                        ...accountInfo,
+                        screenName: e.target.value,
+                      })
+                    }
+                  />
+                  <AvailableAlert
+                    message={
+                      available.find((el) => el.name === "screenName").content
+                    }
+                  />
+                  <input
+                    type="button"
+                    value="Check Availability"
+                    css={[
+                      checkAvailability,
+                      buttonCustom,
+                      buttonRight,
+                      buttonLightblue,
+                    ]}
+                    onClick={() =>
+                      checkAvailHandler("screenName", setAvailability)
+                    }
+                  />
                 </div>
               </div>
             </div>
             <Banner />
           </div>
+          <div css={hiddenMobile}>
+            <p css={dispField}>
+              For further information, please see our{" "}
+              <a href="http://www.pokemon.com/us/privacy-notice/">
+                Privacy Notice.
+              </a>
+            </p>
+          </div>
         </div>
       </fieldset>
-      <fieldset></fieldset>
-    </form>
+      <fieldset css={[section, termsAgreement]}>
+        <div css={[push2, column10]}>
+          <h2>Pokémon Website Terms of Use</h2>
+          <p>
+            Please scroll through the Terms of Use and click Submit to accept.
+          </p>
+          <div css={[termWrapper, customScrollBar]}>
+            <div css={viewport}>
+              <div></div>
+            </div>
+          </div>
+          <AcceptInfo
+            id="terms"
+            lal={lal_term_check}
+            handler={checkClickHandler}
+            termAlert={termAlert}
+          />
+          <p style={{ paddingTop: "20px" }}>
+            {p_continue_warning}
+            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>.
+          </p>
+          <div></div>
+          <input
+            type="button"
+            css={submitButton}
+            value="Continue"
+            onClick={() => continueClickHanlder()}
+          ></input>
+        </div>
+      </fieldset>
+    </>
   );
 };
 
 export default VerifyAccount;
+
+/**
+ * チェックボックス付きラベル項目
+ * @param {string} id - idの名前
+ * @param {string} lal - label部コンテント
+ * @param {Function} handler - ☑クリック時イベント処理関数
+ * @param {Boolean} termAlert - 本要素全体を入力チェック対象にするかどうか
+ * @returns
+ */
+const AcceptInfo = ({ id, lal, handler, termAlert }) => {
+  return (
+    <div css={acceptInfo}>
+      <span>
+        <span id={id} css={[checkBox]} onClick={(e) => handler(e)}></span>
+        <GiCheckMark />
+      </span>
+      <label css={alertError(termAlert)}>{lal}</label>
+    </div>
+  );
+};
+
+/**
+ * Check Availability 押下時の入力チェック
+ *
+ */
+const AvailableAlert = ({ message }) => {
+  const showFlg = message === "" ? true : false;
+  return (
+    <div
+      css={[alertBox, alertError(true)]}
+      style={{ display: showFlg && "none" }}
+    >
+      <h3 css={alertH3}>{message}</h3>
+    </div>
+  );
+};

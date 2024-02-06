@@ -48,6 +48,18 @@ public class User {
 
 	private LocalDate birthday;
 	
+	@Column(name = "screen_name")
+	private String screenName;
+
+	@Column(name = "news_receive_flg")
+	private boolean newsInfoReceiveFlg;
+	
+	@Column(name = "update_receive_flg")
+	private boolean updateCenterReceiveFlg;
+
+	@Column(name = "disp_profile_flg")
+	private boolean displayPokeClubProfile;
+	
 	@Column(name = "account_enabled")
 	private boolean accountEnabled;
 
@@ -80,14 +92,14 @@ public class User {
 	 * ログイン成功時にログイン失敗回数をインクリメントする
 	 */
 	public User resetLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, 0, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
+		return new User(user_id, username, password, email, country, birthday, screenName, newsInfoReceiveFlg, updateCenterReceiveFlg, displayPokeClubProfile, accountEnabled, accountExpiration, accountPasswordExpiration, 0, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
 	}
 
 	/*
 	 * ログイン失敗時にログイン失敗回数をインクリメントする
 	 */
 	public User incrementLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, accountEnabled, accountExpiration, accountPasswordExpiration, accountLoginFailureCount + 1, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
+		return new User(user_id, username, password, email, country, birthday, screenName, newsInfoReceiveFlg, updateCenterReceiveFlg, displayPokeClubProfile, accountEnabled, accountExpiration, accountPasswordExpiration, accountLoginFailureCount + 1, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
 	}
 
 }

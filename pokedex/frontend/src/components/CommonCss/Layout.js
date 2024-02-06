@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-/* 
-* 縦/横調整
-*/
+/*
+ * 縦/横調整
+ */
 export const push1 = css`
   margin-left: 7.2525%;
   @media (min-width: 461px) and (max-width: 960px) {
@@ -65,12 +65,12 @@ export const column12 = css({
 });
 
 export const noPaddingTop = css`
-  padding-top: 0!important;
+  padding-top: 0 !important;
 `;
 
 /*
-*　色/ディスプレイ要素調整系
-*/
+ *　色/ディスプレイ要素調整系
+ */
 export const colorBlack = css`
   color: #313131;
 `;
@@ -98,8 +98,8 @@ export const hiddenMobile = css`
 `;
 
 /*
-*　セクション区切りや枠構成
-*/
+ *　セクション区切りや枠構成
+ */
 export const container = css`
   box-sizing: border-box;
   background: #fff url("./background/container_bg.png");
@@ -124,6 +124,30 @@ export const section = css`
   :first-of-type {
     padding-top: 25px;
   }
+`;
+
+export const customScrollBar = css`
+  position: relative;
+  overflow: visible;
+`;
+// アラート系
+export const alertError = (flg) => css`
+  border: ${flg ? "2px solid #E3350D" : "none"};
+`;
+export const alertBox = () => css`
+  border: 2px solid #30a7d7;
+  border-radius: 10px;
+  clear: both;
+  color: #616161;
+  margin-top: 0.5em;
+`;
+export const alertH3 = css`
+  color: #e3350d;
+  margin: 0.5em 1em;
+  text-transform: none;
+  font-size: 125%;
+  line-height: 125%;
+  font-family: "Flexo-Medium",arial,sans-serif;
 `;
 
 // カスタムセレクトボックス スクロール制御

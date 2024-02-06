@@ -210,6 +210,10 @@ export const submitButton = css`
   padding: 0.75em 1.25em 0.675em;
   vertical-align: middle;
   border-radius: 5px;
+
+  :hover {
+    background-color: #44884e;
+  }
 `;
 
 // テキストボックスのレイアウトカスタマイズ
@@ -242,4 +246,73 @@ export const buttonLightblue = css`
   :hover {
     background-color: #1b82b1;
   }
+`;
+
+/*
+*カスタムチェックボックス
+*/
+
+// チェックボックスとそのラベルを囲うDIV用CSS
+export const acceptInfo = css`
+  float: left;
+  margin: 1em 0;
+  position: relative;
+  width: 100%;
+  & input {
+    position: absolute;
+    top: 0;
+    left: 0;
+    top: 0;
+    opacity: 0;
+  }
+  & label {
+    float: left;
+    margin-right: -100%;
+    width: 85.49%;
+    color: #616161;
+    font-size: 87.5%;
+    line-height: 180%;
+    margin-left: 40px;
+    margin-top: 0;
+  }
+  & svg {
+    position: absolute;
+    color: #313131;
+    padding: 0.25em;
+    border: none;
+    background-color: #313131;
+    border-radius: 5px;
+    z-index: 1;
+  }
+`;
+// カスタムチェックボックス（中の「☑」などのSVGはこの中で定義する必要あり）
+export const checkBox = css`
+  cursor: pointer;
+  position: absolute;
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border: none;
+  border-radius: 5px;
+  background-color: transparent;
+  z-index: 2;
+`;
+
+// 前までの浮動要素の下に配置するための処理
+export const clear = css`
+  clear: both;
+  before: {
+    content: "";
+    display: table;
+  }
+  after: {
+    content: "";
+    display: table;
+  }
+`;
+
+// ラジオボタン、セレクトボックスなどを囲うpタグなどに用いる
+export const inRowSelect = css`
+  float: left;
+  margin-left: 2em;
 `;

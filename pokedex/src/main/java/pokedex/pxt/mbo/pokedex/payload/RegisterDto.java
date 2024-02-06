@@ -17,4 +17,8 @@ public class RegisterDto {
 	private String email;
 	private String country;
 	private LocalDate birthday;
+	private String screenName;
+	private boolean newsInfoReceiveFlg;
+	private boolean updateCenterReceiveFlg;
+	private boolean displayPokeClubProfile;
 }
