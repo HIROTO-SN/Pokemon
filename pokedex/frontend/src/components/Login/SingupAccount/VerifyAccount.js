@@ -574,7 +574,7 @@ const VerifyAccount = ({ Banner }) => {
                 </div>
               </div>
             </div>
-            <Banner />
+            <Banner icon={1}/>
           </div>
           <div css={hiddenMobile}>
             <p css={dispField}>
