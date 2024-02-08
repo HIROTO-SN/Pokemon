@@ -176,64 +176,79 @@ const VerifyAccount = ({ Banner }) => {
     { name: "username", minLength: 6, maxLength: 16 },
     { name: "screenName", minLength: 3, axLength: 15 },
   ];
+  // check Availability ボタン押下時用
   const availableContentInit = [
-    { name: "username", message: "", status: 0 },
-    { name: "screenName", message: "", status: 0 },
+    { name: "username", message: "" },
+    { name: "screenName", message: "" },
   ];
   const [available, setAvailability] = useState(availableContentInit);
   // APIレスポンス受け取り用
-  const [response, setResponse] = useState([
-    { name: "username", data: [] },
-    { name: "screenName", data: [] },
-  ]); 
-  console.log("response 始め: ");
-  console.log(response);
+  const responseContentInit = [
+    { name: "username", status: 0, data: [] },
+    { name: "screenName", status: 0, data: [] },
+  ];
+  const [response, setResponse] = useState(responseContentInit);
   const navigate = useNavigate();
 
   /***** JS ******/
   // 初期表示時処理
   useEffect(() => {}, []);
 
-  const checkAvailHandler = async (target, set) => {
-    const scaler = lengCheck.find(el => el.name === target);
-    const newAvailability = available.find(el => el.name === target);
+  const checkAvailHandler = async (target) => {
+    const scaler = lengCheck.find((el) => el.name === target);
+    const newAvailability = available.find((el) => el.name === target);
+    const newResponse = response.find((el) => el.name === target);
     const val = accountInfo[target];
-    
+
     if (val.length < scaler.minLength || val.length > scaler.maxLength) {
-      newAvailability.message = available_message.find((e) => e.name === target).invalid;
+      newAvailability.message = available_message.find(
+        (e) => e.name === target
+      ).invalid;
+      newResponse.data = [];
+      newResponse.status = 0;
     } else {
       // 非同期処理 ターゲット（ユーザー名 or スクリーン名）の重複チェック
       const res = await nameAvailabilityCheck(target, val);
       switch (res.status) {
-        case 202 : {
+        case 202: {
           // 重複なし
-          newAvailability.message = available_message.find((e) => e.name === target).valid;
-          newAvailability.status = res.status;
+          newAvailability.message = available_message.find(
+            (e) => e.name === target
+          ).valid;
+          newResponse.status = res.status;
+          newResponse.data = [];
           break;
         }
-        case 226 : {
+        case 226: {
           // 重複あり
-          newAvailability.message = available_message.find((e) => e.name === target).exists;
-          newAvailability.status = res.status;
+          newAvailability.message = available_message.find(
+            (e) => e.name === target
+          ).exists;
+          newResponse.status = res.status;
+          newResponse.data = res.data;
           break;
         }
-        default :
+        default:
           break;
       }
-      const newResponse = response.map((el) => {
-        el.data = el.name === target ? res.data : el.data;
-        return el;
-      })
-      setResponse(newResponse);
     }
+    // レスポンス結果をステートにセット
+    const _response = setState(response, newResponse)
+    setResponse(_response);
     // 重複チェック結果をステートにセット
-    set(available.map((el) => {
-      if (el.name === target) {
-        return newAvailability;
-      } else {
-        return el;
-      }
-    }));
+    const _available = setState(available, newAvailability)
+    setAvailability(_available);
+
+    // セット関数
+    function setState(arr, newObj) {
+      return arr.map((el) => {
+        if (el.name === target) {
+          return newObj;
+        } else {
+          return el;
+        }
+      });
+    }
   };
 
   // メール受信するかしないかの判定
@@ -276,6 +291,9 @@ const VerifyAccount = ({ Banner }) => {
     if (newError.username != valid_message_required) {
       if (accountInfo.username.length < 6 || accountInfo.username.length > 16) {
         newError.username = valid_message_username;
+      } else {
+        // 重複チェック
+        checkAvailHandler("username");
       }
     }
     // パスワード文字列チェック
@@ -312,16 +330,18 @@ const VerifyAccount = ({ Banner }) => {
         newError = { ...newError, confirmEmail: valid_message_emailNoMatch };
       }
     }
-    // ユーザー名文字列チェック
+    // スクリーン名文字列チェック
     if (accountInfo.screenName.length < 3 || accountInfo.username.length > 15) {
       newError.screenName = valid_message_screenName;
+    } else {
+      // 重複チェック
+      checkAvailHandler("screenName");
     }
     // Termチェック
     !isTermsCheck ? setTermAlert(true) : setTermAlert(false);
 
     // エラー内容セット
     setError(newError);
-    setAvailability(availableContentInit);
 
     // エラーがなければEmail認証ページへ遷移
     Object.values(newError).forEach((val) => {
@@ -329,9 +349,21 @@ const VerifyAccount = ({ Banner }) => {
         setAccountInfo({ ...accountInfo, password: "", confirmPassword: "" });
         return;
       } else {
-        navigate("/verifyaccount");
+        navigate("/verifyemail");
       }
     });
+  };
+
+  // Continueボタン押下時の重複チェックとメッセージ作成
+  const checkDuplicateForContinue = (target, currentErr) => {
+    const _available = available.find((el) => el.name === target);
+    const _response = response.find((el) => el.name === target);
+    // 重複があるとき
+    if (_response.status === 226) {
+      return "That " + _available.message + "\n" + _response.data.join("\n");
+    } else {
+      return currentErr;
+    }
   };
 
   /***** HTML ******/
@@ -348,7 +380,7 @@ const VerifyAccount = ({ Banner }) => {
                   <input
                     id="username"
                     type="text"
-                    css={customFormElements}
+                    css={error.username == "" ? customFormElements : [customFormElements, alertError(1)]}                    minLength={8}
                     onChange={(e) =>
                       setAccountInfo({
                         ...accountInfo,
@@ -358,12 +390,8 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={16}
                   />
                   <AvailableAlert
-                    available={
-                      available.find((el) => el.name === "username")
-                    }
-                    response={
-                      response.find((el) => el.name === "username")
-                    }
+                    available={available.find((el) => el.name === "username")}
+                    response={response.find((el) => el.name === "username")}
                   />
                   <input
                     type="button"
@@ -374,9 +402,7 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
-                    onClick={() =>
-                      checkAvailHandler("username", setAvailability)
-                    }
+                    onClick={() => checkAvailHandler("username")}
                   />
                   <p css={nameFieldDesc}>{p_username}</p>
                   {error.username != "" && (
@@ -398,7 +424,7 @@ const VerifyAccount = ({ Banner }) => {
                       })
                     }
                     value={accountInfo.password}
-                    css={customFormElements}
+                    css={error.password == "" ? customFormElements : [customFormElements, alertError(1)]}
                     minLength={8}
                     maxLength={50}
                   />
@@ -422,8 +448,7 @@ const VerifyAccount = ({ Banner }) => {
                       })
                     }
                     value={accountInfo.confirmPassword}
-                    css={customFormElements}
-                    minLength={8}
+                    css={error.confirmPassword == "" ? customFormElements : [customFormElements, alertError(1)]}                    minLength={8}
                     maxLength={50}
                   />
                   {error.confirmPassword != "" && (
@@ -443,7 +468,7 @@ const VerifyAccount = ({ Banner }) => {
                         email: e.target.value,
                       })
                     }
-                    css={customFormElements}
+                    css={error.email == "" ? customFormElements : [customFormElements, alertError(1)]}                    minLength={8}
                     maxLength={75}
                   />
                   <p css={nameFieldDesc}>{p_email}</p>
@@ -462,7 +487,7 @@ const VerifyAccount = ({ Banner }) => {
                         confirmEmail: e.target.value,
                       })
                     }
-                    css={customFormElements}
+                    css={error.confirmEmail == "" ? customFormElements : [customFormElements, alertError(1)]}                    minLength={8}
                     maxLength={75}
                   />
                   {error.confirmEmail != "" && (
@@ -532,12 +557,8 @@ const VerifyAccount = ({ Banner }) => {
                     }
                   />
                   <AvailableAlert
-                    available={
-                      available.find((el) => el.name === "screenName")
-                    }
-                    response={
-                      response.find((el) => el.name === "screenName")
-                    }
+                    available={available.find((el) => el.name === "screenName")}
+                    response={response.find((el) => el.name === "screenName")}
                   />
                   <input
                     type="button"
@@ -548,9 +569,7 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
-                    onClick={() =>
-                      checkAvailHandler("screenName", setAvailability)
-                    }
+                    onClick={() => checkAvailHandler("screenName")}
                   />
                 </div>
               </div>
@@ -609,7 +628,7 @@ export default VerifyAccount;
  * @param {string} lal - label部コンテント
  * @param {Function} handler - ☑クリック時イベント処理関数
  * @param {Boolean} termAlert - 本要素全体を入力チェック対象にするかどうか
- * @returns
+ * @return
  */
 const AcceptInfo = ({ id, lal, handler, termAlert }) => {
   const color = termAlert && 1;
@@ -626,37 +645,34 @@ const AcceptInfo = ({ id, lal, handler, termAlert }) => {
 
 /**
  * Check Availability 押下時の入力チェック
- *
+ * @param {Object} available - 重複チェックの結果オブジェクト
+ * @param {Object} response - チェック結果での重複回避サジェストリスト格納オブジェクト
  */
 const AvailableAlert = ({ available, response }) => {
   const showFlg = available.message === "" ? true : false;
   const colorNo = (status) => {
     switch (status) {
-      case 202 :
+      case 202:
         return 3;
-      case 226 : 
+      case 226:
         return 2;
-      default :
+      default:
         return 1;
     }
-  }
+  };
   return (
     <div
-      css={[alertBox, alertError(colorNo(available.status))]}
+      css={[alertBox, alertError(colorNo(response.status))]}
       style={{ display: showFlg && "none" }}
     >
-      <h3 css={alertH3(colorNo(available.status))}>{available.message}</h3>
-      {available.status === 226 && 
-        (
-          <ul>
-            {response.data.map((val) => {
-              return (
-                <li>{val}</li>
-              )
-            })}
-          </ul>
-        )
-      }
+      <h3 css={alertH3(colorNo(response.status))}>{available.message}</h3>
+      {response.status === 226 && (
+        <ul>
+          {response.data.map((val) => {
+            return <li key={val}>{val}</li>;
+          })}
+        </ul>
+      )}
     </div>
   );
 };
