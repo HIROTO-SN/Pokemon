@@ -83,7 +83,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public List<String> checkNames(CheckNamesDto CheckNamesDto) {
-		// targetがUsernameかScreennameかを判定
+		// targetがusernameかscreennameかを判定
 		String target = CheckNamesDto.getTarget();
 		String val = CheckNamesDto.getValue().strip();
 		List<String> suggestNames = new ArrayList<String>();

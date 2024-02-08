@@ -130,25 +130,51 @@ export const customScrollBar = css`
   position: relative;
   overflow: visible;
 `;
+
 // アラート系
-export const alertError = (flg) => css`
-  border: ${flg ? "2px solid #E3350D" : "none"};
+export const alertError = (color) => css`
+  border: 2px solid ${colorCtrl(color)};
 `;
-export const alertBox = () => css`
-  border: 2px solid #30a7d7;
+
+export const alertBox = css`
   border-radius: 10px;
   clear: both;
   color: #616161;
   margin-top: 0.5em;
+
+  > ul {
+    margin: 0.5em;
+    list-style-type: disc;
+
+    & li {
+      margin: 0.5em 0.5em 0.5em 1.5em;
+      list-style-type: disc;
+    }
+  }
 `;
-export const alertH3 = css`
-  color: #e3350d;
+export const alertH3 = (color) => css`
+  color: ${colorCtrl(color)};
   margin: 0.5em 1em;
   text-transform: none;
   font-size: 125%;
   line-height: 125%;
   font-family: "Flexo-Medium",arial,sans-serif;
 `;
+
+// アラートボックス色定義
+const colorCtrl = (color) => {
+  // 1 = 赤色、2 = 青色、3 = 緑、それ以外はnone
+  switch (color) {
+    case 1:
+      return "#E3350D";
+    case 2:
+      return "#30a7d7";
+    case 3:
+      return "#4dad5b";
+    default:
+      return "none";
+  }
+}
 
 // カスタムセレクトボックス スクロール制御
 export const viewport = css`
