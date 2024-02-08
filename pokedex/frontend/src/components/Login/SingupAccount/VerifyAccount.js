@@ -172,38 +172,68 @@ const VerifyAccount = ({ Banner }) => {
     screenName: "",
   };
   const [error, setError] = useState(errorContentInit);
-  const objLength = [
+  const lengCheck = [
     { name: "username", minLength: 6, maxLength: 16 },
     { name: "screenName", minLength: 3, axLength: 15 },
   ];
   const availableContentInit = [
-    { name: "username", content: "" },
-    { name: "screenName", content: "" },
+    { name: "username", message: "", status: 0 },
+    { name: "screenName", message: "", status: 0 },
   ];
   const [available, setAvailability] = useState(availableContentInit);
+  // APIレスポンス受け取り用
+  const [response, setResponse] = useState([
+    { name: "username", data: [] },
+    { name: "screenName", data: [] },
+  ]); 
+  console.log("response 始め: ");
+  console.log(response);
   const navigate = useNavigate();
 
   /***** JS ******/
   // 初期表示時処理
   useEffect(() => {}, []);
 
-  const checkAvailHandler = (target, set) => {
-    const obj = objLength.find((el) => el.name === target);
-    const newAvailability = available.map((el) => {
-      const val = accountInfo[target];
-      const val_length = val.length
-      if (el.name === target) {
-        if (val_length < obj.minLength || val_length > obj.maxLength) {
-          el.content = available_message.find((e) => e.name === target).invalid;
-        } else {
-          nameAvailabilityCheck(target, val);
-          el.content = "";
+  const checkAvailHandler = async (target, set) => {
+    const scaler = lengCheck.find(el => el.name === target);
+    const newAvailability = available.find(el => el.name === target);
+    const val = accountInfo[target];
+    
+    if (val.length < scaler.minLength || val.length > scaler.maxLength) {
+      newAvailability.message = available_message.find((e) => e.name === target).invalid;
+    } else {
+      // 非同期処理 ターゲット（ユーザー名 or スクリーン名）の重複チェック
+      const res = await nameAvailabilityCheck(target, val);
+      switch (res.status) {
+        case 202 : {
+          // 重複なし
+          newAvailability.message = available_message.find((e) => e.name === target).valid;
+          newAvailability.status = res.status;
+          break;
         }
+        case 226 : {
+          // 重複あり
+          newAvailability.message = available_message.find((e) => e.name === target).exists;
+          newAvailability.status = res.status;
+          break;
+        }
+        default :
+          break;
       }
-      return el;
-    });
-    set(newAvailability);
-    return;
+      const newResponse = response.map((el) => {
+        el.data = el.name === target ? res.data : el.data;
+        return el;
+      })
+      setResponse(newResponse);
+    }
+    // 重複チェック結果をステートにセット
+    set(available.map((el) => {
+      if (el.name === target) {
+        return newAvailability;
+      } else {
+        return el;
+      }
+    }));
   };
 
   // メール受信するかしないかの判定
@@ -328,8 +358,11 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={16}
                   />
                   <AvailableAlert
-                    message={
-                      available.find((el) => el.name === "username").content
+                    available={
+                      available.find((el) => el.name === "username")
+                    }
+                    response={
+                      response.find((el) => el.name === "username")
                     }
                   />
                   <input
@@ -499,8 +532,11 @@ const VerifyAccount = ({ Banner }) => {
                     }
                   />
                   <AvailableAlert
-                    message={
-                      available.find((el) => el.name === "screenName").content
+                    available={
+                      available.find((el) => el.name === "screenName")
+                    }
+                    response={
+                      response.find((el) => el.name === "screenName")
                     }
                   />
                   <input
@@ -576,13 +612,14 @@ export default VerifyAccount;
  * @returns
  */
 const AcceptInfo = ({ id, lal, handler, termAlert }) => {
+  const color = termAlert && 1;
   return (
     <div css={acceptInfo}>
       <span>
         <span id={id} css={[checkBox]} onClick={(e) => handler(e)}></span>
         <GiCheckMark />
       </span>
-      <label css={alertError(termAlert)}>{lal}</label>
+      <label css={alertError(color)}>{lal}</label>
     </div>
   );
 };
@@ -591,14 +628,35 @@ const AcceptInfo = ({ id, lal, handler, termAlert }) => {
  * Check Availability 押下時の入力チェック
  *
  */
-const AvailableAlert = ({ message }) => {
-  const showFlg = message === "" ? true : false;
+const AvailableAlert = ({ available, response }) => {
+  const showFlg = available.message === "" ? true : false;
+  const colorNo = (status) => {
+    switch (status) {
+      case 202 :
+        return 3;
+      case 226 : 
+        return 2;
+      default :
+        return 1;
+    }
+  }
   return (
     <div
-      css={[alertBox, alertError(true)]}
+      css={[alertBox, alertError(colorNo(available.status))]}
       style={{ display: showFlg && "none" }}
     >
-      <h3 css={alertH3}>{message}</h3>
+      <h3 css={alertH3(colorNo(available.status))}>{available.message}</h3>
+      {available.status === 226 && 
+        (
+          <ul>
+            {response.data.map((val) => {
+              return (
+                <li>{val}</li>
+              )
+            })}
+          </ul>
+        )
+      }
     </div>
   );
 };

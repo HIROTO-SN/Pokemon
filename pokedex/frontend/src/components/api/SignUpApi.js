@@ -7,12 +7,14 @@ import { nameAvailabilityCheckUrl } from "../../constants/ApiUrls";
  * @param {String} target - チェック対象
  * @param {String} value - 対象の値
  */
-export function nameAvailabilityCheck (target, value) {
-  axios
-    .post(nameAvailabilityCheckUrl, { target, value })
-    .then(res => res)
-    .catch((e) => {
-      // エラー時の処理
-			console.log("サーバー通信エラー")
-    });
+export async function nameAvailabilityCheck (target, value) {
+  
+  try {
+    const res = await axios.post(nameAvailabilityCheckUrl, { target, value });
+    const result = { data: res.data, status: res.status };
+    console.log(result);
+    return result;
+  } catch(e) {
+    console.log("error:" + e);
+  }
 };
