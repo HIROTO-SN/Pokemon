@@ -12,7 +12,6 @@ export async function nameAvailabilityCheck (target, value) {
   try {
     const res = await axios.post(nameAvailabilityCheckUrl, { target, value });
     const result = { data: res.data, status: res.status };
-    console.log(result);
     return result;
   } catch(e) {
     console.log("error:" + e);
