@@ -108,7 +108,7 @@ const StepsMenu = ({ pageNo }) => {
 
     :after {
       right: -26px;
-      border-color: #fff #fff #fff #616161;
+      border-color: #fff #fff #fff ${isCurrentPage ? "#30a7d7" : "#616161"};
     }
   `;
 

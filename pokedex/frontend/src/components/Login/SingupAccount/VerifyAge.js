@@ -259,7 +259,7 @@ const VerifyAge = ({ Banner }) => {
               </p>
             </div>
           </div>
-          <Banner/>
+          <Banner icon={1}/>
         </div>
       </div>
     </section>

@@ -10,9 +10,7 @@ import {
   visibleMobile,
 } from "../../CommonCss/Layout.js";
 import StepsMenu from "./Signup-stepsmenu.js";
-import {
-  InputAccountInfoProvider,
-} from "../../../contexts/SignupContext.js";
+import { InputAccountInfoProvider } from "../../../contexts/SignupContext.js";
 import VerifyAge from "./VerifyAge.js";
 import CreateAccount from "./VerifyAccount.js";
 import VerifyEmail from "./VerifyEmail";
@@ -135,36 +133,63 @@ const PageController = ({ pageNo }) => {
 /*
  * ページ右ポケモンイラストバナー
  */
-const Banner = () => {
+const Banner = ({ icon }) => {
   /***** CSS ******/
-  const characterBanner = css`
+  const characterBanner = (icon) => css`
     float: left;
     margin-right: -100%;
     width: 29.0225%;
     margin-left: 70.98%;
-    background: -webkit-linear-gradient(left top, #e6bc2f 50%, #ebc855 50%);
+    background: ${icon === 1 ?
+      "-webkit-linear-gradient(left top, #e6bc2f 50%, #ebc855 50%)"
+      :
+      "-webkit-linear-gradient(left top, #ee6b2f 50%, #f18553 50%)"
+    };
     border-radius: 0 5px 5px 0;
     height: 100%;
     position: absolute;
 
     > img {
-      margin: auto;
-      max-width: 185px;
       position: absolute;
-      width: 100%;
-      display: block;
-      float: none;
-      top: 0;
-      right: 0;
-      left: 0;
-      bottom: 0;
       border-radius: 5px 5px 0 0;
+      width: 100%;
     }
   `;
 
+  const customImg1 = css`
+    margin: auto;
+    max-width: 185px;
+    display: block;
+    float: none;
+    top: 0;
+    right: 0;
+    left: 0;
+    bottom: 0;
+  `;
+
+  const customImg2 = css`
+    bottom: -20px;
+    right: -20px;
+    width: 100%;
+    z-index: 3;
+    float: left;
+  `;
+
   return (
-    <div css={[characterBanner, hiddenMobile]}>
-      <img src="./icons/pokemon-signup.png" alt="Create Your Account" />
+    <div css={[characterBanner(icon), hiddenMobile]}>
+      {icon === 1 ? (
+        <img
+          src="./icons/pokemon-signup.png"
+          alt="Create Your Account"
+          css={customImg1}
+        />
+      ) : (
+        <img
+          src="./icons/picachu.png"
+          alt="Create Your Account"
+          css={customImg2}
+        />
+      )}
     </div>
   );
 };
