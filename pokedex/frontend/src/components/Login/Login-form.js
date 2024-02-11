@@ -1,8 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { accountButton, hiddenMobile, notchBottomCenter } from "./Login";
-import { push1 } from "../CommonCss/Layout";
+import { accountButton, notchBottomCenter } from "./Login";
+import { hiddenMobile, push1 } from "../CommonCss/Layout";
 import { useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { useLoginInfo, useLoginAction, useLoginErrorSet } from "../../contexts/LoginContext";
+import { loginAuth } from "../api/LoginApi";
+import { valid_message_passwordEmpty, valid_message_usernameEmpty } from "../../constants/ValidationMessage";
 
 const LoginForm = () => {
   /***** CSS ******/
@@ -145,19 +149,40 @@ const LoginForm = () => {
 
   // const pblock = css``;
 
+  /***** context ******/
+  const userState = useLoginInfo();
+  const userStateAction = useLoginAction();
+
   /***** State ******/
-  const [username, setUserName] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
 
+  const setError = useLoginErrorSet();
+
   /***** JS ******/
-  const handleLoginSubmit = () => {
-    console.log("ログインSUBMIT");
-  };
+  const handleLoginSubmit = (e) => {
+    e.preventDefault();
+  
+    // ログイン認証処理
+    if(username == "") {
+      setError(valid_message_usernameEmpty);
+      return;
+    } else if(password == "") {
+      setError(valid_message_passwordEmpty);
+      return;
+    } else {
+      setError("");
+    }
+    loginAuth(username, password, setError);
 
-  const onClickLogin = () => {
-    console.log("Log Inボタン押下");
+    // ログイン成功時処理
+    userStateAction({username: username, isLogin: true});
+    console.log("userState.username: " + userState.username);
+    console.log("userState.isLogin: " + userState.isLogin);
+    console.log("username: " + username);
+    // navigate("/profile");
   };
-
+  
   /***** HTML ******/
   return (
     <div css={[push1, formWrapper]}>
@@ -172,7 +197,7 @@ const LoginForm = () => {
             tabIndex={1}
             autoComplete="false"
             value={username}
-            onChange={(e) => setUserName(e.target.value)}
+            onChange={(e) => setUsername(e.target.value)}
           ></input>
           <a css={roboto}>Forgot your username?</a>
         </div>
@@ -194,10 +219,10 @@ const LoginForm = () => {
         <input
           id="login"
           name="login"
-          type="button"
+          type="submit"
           css={[accountButton, buttonGreen]}
           value="Log In"
-          onClick={onClickLogin}
+          // onClick={onClickLogin}
         ></input>
       </form>
       <p css={pblock}> &nbsp; </p>

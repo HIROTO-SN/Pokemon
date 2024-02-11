@@ -1,15 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { push1, push7, column6, container } from "../CommonCss/Layout.js";
-import LoginForm from "./Login-form.js";
+import { column6, container, push1, push7 } from "../CommonCss/Layout.js";
+import Alert from "./AlertLogin.js";
 import LoginCreate from "./Login-create.js";
+import LoginForm from "./Login-form.js";
+import { LoginErrorProvider } from "../../contexts/LoginContext.js";
 
 const Login = () => {
   /***** CSS ******/
-  const section = css`
+  const useraccount = css`
     padding-bottom: 4em;
     padding-top: 25px;
     position: relative;
+  `;
+
+  const section = css`
     background: transparent url("./background/content_bg.png") left top;
     background-size: 100% 1px;
     display: block;
@@ -95,30 +100,33 @@ const Login = () => {
       right: 80px;
     }
   `;
-
+    
   return (
-    <div css={[container]}>
-      <section css={section}>
-        <h1 css={[pageMainTitle, push1]}>
-          Welcome to the Pokémon Trainer Club!
-        </h1>
-        <div css={[push1, column6]}>
-          <h2 css={sectionTitle}> Log In </h2>
-          <div css={[colorBlock, dogEar("bl")]}>
-            <LoginForm />
+    <LoginErrorProvider>
+      <div css={[container]}>
+        <Alert section={section} />
+        <section css={[useraccount, section]}>
+          <h1 css={[pageMainTitle, push1]}>
+            Welcome to the Pokémon Trainer Club!
+          </h1>
+          <div css={[push1, column6]}>
+            <h2 css={sectionTitle}> Log In </h2>
+            <div css={[colorBlock, dogEar("bl")]}>
+              <LoginForm />
+            </div>
           </div>
-        </div>
-        <div css={[push7, column6]}>
-          <h2 css={sectionTitle}> Join the Pokémon Trainer Club! </h2>
-          <div css={[colorBlock, dogEar("br")]}>
-            <LoginCreate />
+          <div css={[push7, column6]}>
+            <h2 css={sectionTitle}> Join the Pokémon Trainer Club! </h2>
+            <div css={[colorBlock, dogEar("br")]}>
+              <LoginCreate />
+            </div>
+            <div css={aboutUsCharacters}>
+              <img src="./additional/pokemon-login.png" alt="Characters" width="443" height="248"/>
+            </div>
           </div>
-          <div css={aboutUsCharacters}>
-            <img src="./additional/pokemon-login.png" alt="Characters" width="443" height="248"/>
-          </div>
-        </div>
-      </section>
-    </div>
+        </section>
+      </div>
+    </LoginErrorProvider>
   );
 };
 
@@ -190,13 +198,3 @@ export const notchBottomCenter = css`
 		bottom: 0;
 	}
 `;
-
-export const hiddenMobile = css`
-	@media (min-width: 461px) and (max-width: 960px) {
-		display: none !important;
-	}
-	@media (min-width: 961px) and (max-width: 9999px) {
-		display: inherit !important;
-	}
-`;
-

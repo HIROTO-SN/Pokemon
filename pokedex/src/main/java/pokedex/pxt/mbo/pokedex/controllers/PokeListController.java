@@ -4,11 +4,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import pokedex.pxt.mbo.pokedex.entity.PokeDto;
 import pokedex.pxt.mbo.pokedex.services.PokeListService;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@CrossOrigin(origins = "http://localhost:3000")
 public class PokeListController {
 	
 	@Autowired
