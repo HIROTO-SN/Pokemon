@@ -1,18 +1,36 @@
 // import axios from "axios";
 import axios from "axios";
-import { nameAvailabilityCheckUrl } from "../../constants/ApiUrls";
+import { nameAvailabilityCheckUrl, singupUrl } from "../../constants/ApiUrls";
 
 /**
  * ユーザー名とスクリーン名のAvailabilityをチェック
  * @param {String} target - チェック対象
  * @param {String} value - 対象の値
  */
-export function nameAvailabilityCheck (target, value) {
-  axios
-    .post(nameAvailabilityCheckUrl, { target, value })
-    .then(res => res)
+export async function nameAvailabilityCheck (target, value) {
+  
+  try {
+    const res = await axios.post(nameAvailabilityCheckUrl, { target, value });
+    const result = { data: res.data, status: res.status };
+    return result;
+  } catch(e) {
+    console.log("error:" + e);
+  }
+};
+
+/**
+ * サインアップ
+ * @param {Object} accountInfo - 画面入力アカウント内容
+ */
+export async function singUp (accountInfo) {
+  const newCountry = accountInfo.country.name;
+  accountInfo.country = newCountry;
+  
+  await axios
+    .post(singupUrl, accountInfo )
+    .then(res => console.log(res))
     .catch((e) => {
-      // エラー時の処理
-			console.log("サーバー通信エラー")
+      console.log("error:" + e);
     });
 };
+

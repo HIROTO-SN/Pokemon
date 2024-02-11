@@ -63,7 +63,7 @@ import {
   p_password,
   p_username,
 } from "../../../constants/ConstantsGeneral";
-import { nameAvailabilityCheck } from "../../api/SignUpApi";
+import { nameAvailabilityCheck, singUp } from "../../api/SignUpApi";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -172,38 +172,87 @@ const VerifyAccount = ({ Banner }) => {
     screenName: "",
   };
   const [error, setError] = useState(errorContentInit);
-  const objLength = [
+  const lengCheck = [
     { name: "username", minLength: 6, maxLength: 16 },
     { name: "screenName", minLength: 3, axLength: 15 },
   ];
+  // check Availability ボタン押下時用
   const availableContentInit = [
-    { name: "username", content: "" },
-    { name: "screenName", content: "" },
+    { name: "username", message: "" },
+    { name: "screenName", message: "" },
   ];
   const [available, setAvailability] = useState(availableContentInit);
+  // APIレスポンス受け取り用
+  const responseContentInit = [
+    { name: "username", status: 0, data: [] },
+    { name: "screenName", status: 0, data: [] },
+  ];
+  const [response, setResponse] = useState(responseContentInit);
   const navigate = useNavigate();
 
   /***** JS ******/
   // 初期表示時処理
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const newBirth = sessionStorage.getItem('birth');
+    const newCountry = JSON.parse(sessionStorage.getItem('country'));
+    setAccountInfo({ ...accountInfo, birth: newBirth, country: newCountry});
+  }, []);
 
-  const checkAvailHandler = (target, set) => {
-    const obj = objLength.find((el) => el.name === target);
-    const newAvailability = available.map((el) => {
-      const val = accountInfo[target];
-      const val_length = val.length
-      if (el.name === target) {
-        if (val_length < obj.minLength || val_length > obj.maxLength) {
-          el.content = available_message.find((e) => e.name === target).invalid;
-        } else {
-          nameAvailabilityCheck(target, val);
-          el.content = "";
+  const checkAvailHandler = async (target) => {
+    const scaler = lengCheck.find((el) => el.name === target);
+    const newAvailability = available.find((el) => el.name === target);
+    const newResponse = response.find((el) => el.name === target);
+    const val = accountInfo[target];
+
+    if (val.length < scaler.minLength || val.length > scaler.maxLength) {
+      newAvailability.message = available_message.find(
+        (e) => e.name === target
+      ).invalid;
+      newResponse.data = [];
+      newResponse.status = 0;
+    } else {
+      // 非同期処理 ターゲット（ユーザー名 or スクリーン名）の重複チェック
+      const res = await nameAvailabilityCheck(target, val);
+      switch (res.status) {
+        case 202: {
+          // 重複なし
+          newAvailability.message = available_message.find(
+            (e) => e.name === target
+          ).valid;
+          newResponse.status = res.status;
+          newResponse.data = [];
+          break;
         }
+        case 226: {
+          // 重複あり
+          newAvailability.message = available_message.find(
+            (e) => e.name === target
+          ).exists;
+          newResponse.status = res.status;
+          newResponse.data = res.data;
+          break;
+        }
+        default:
+          break;
       }
-      return el;
-    });
-    set(newAvailability);
-    return;
+    }
+    // レスポンス結果をステートにセット
+    const _response = setState(response, newResponse);
+    setResponse(_response);
+    // 重複チェック結果をステートにセット
+    const _available = setState(available, newAvailability);
+    setAvailability(_available);
+
+    // セット関数
+    function setState(arr, newObj) {
+      return arr.map((el) => {
+        if (el.name === target) {
+          return newObj;
+        } else {
+          return el;
+        }
+      });
+    }
   };
 
   // メール受信するかしないかの判定
@@ -238,14 +287,17 @@ const VerifyAccount = ({ Banner }) => {
   };
 
   // Continueボタン押下イベント
-  const continueClickHanlder = () => {
-    let newError;
+  const continueClickHanlder = async () => {
     // 入力チェック
-    newError = fieldInputEmptyCheck(accountInfo, error);
+    let newError = fieldInputEmptyCheck(accountInfo, error);
+
     // ユーザー名文字列チェック
     if (newError.username != valid_message_required) {
       if (accountInfo.username.length < 6 || accountInfo.username.length > 16) {
         newError.username = valid_message_username;
+      } else {
+        // 重複チェック
+        checkAvailHandler("username");
       }
     }
     // パスワード文字列チェック
@@ -282,27 +334,50 @@ const VerifyAccount = ({ Banner }) => {
         newError = { ...newError, confirmEmail: valid_message_emailNoMatch };
       }
     }
-    // ユーザー名文字列チェック
-    if (accountInfo.screenName.length < 3 || accountInfo.username.length > 15) {
-      newError.screenName = valid_message_screenName;
+    // スクリーン名文字列チェック
+    if (accountInfo.screenName != "") {
+      if (accountInfo.screenName.length < 3 || accountInfo.username.length > 15) {
+        newError.screenName = valid_message_screenName;
+      } else {
+        // 重複チェック
+        checkAvailHandler("screenName");
+      }
+    } else {
+      newError.screenName = "";
     }
     // Termチェック
     !isTermsCheck ? setTermAlert(true) : setTermAlert(false);
 
     // エラー内容セット
     setError(newError);
-    setAvailability(availableContentInit);
 
-    // エラーがなければEmail認証ページへ遷移
-    Object.values(newError).forEach((val) => {
-      if (val != "") {
-        setAccountInfo({ ...accountInfo, password: "", confirmPassword: "" });
-        return;
-      } else {
-        navigate("/verifyaccount");
+    // エラーがなければアカウントを作成しEmail認証ページへ遷移
+    let errFlg = false;
+    // for (var i = 0; i <= .length)
+    Object.values(newError).some((el) => {
+      if (el != "") {
+        errFlg = true;
+        return true;
       }
     });
+    if (!errFlg) {
+      await singUp(accountInfo);
+      sessionStorage.clear();
+      navigate("/verifyemail");
+    }
   };
+
+  // Continueボタン押下時の重複チェックとメッセージ作成
+  // const checkDuplicateForContinue = (target, currentErr) => {
+  //   const _available = available.find((el) => el.name === target);
+  //   const _response = response.find((el) => el.name === target);
+  //   // 重複があるとき
+  //   if (_response.status === 226) {
+  //     return "That " + _available.message + "\n" + _response.data.join("\n");
+  //   } else {
+  //     return currentErr;
+  //   }
+  // };
 
   /***** HTML ******/
   return (
@@ -318,7 +393,12 @@ const VerifyAccount = ({ Banner }) => {
                   <input
                     id="username"
                     type="text"
-                    css={customFormElements}
+                    css={
+                      error.username == ""
+                        ? customFormElements
+                        : [customFormElements, alertError(1)]
+                    }
+                    minLength={8}
                     onChange={(e) =>
                       setAccountInfo({
                         ...accountInfo,
@@ -328,9 +408,8 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={16}
                   />
                   <AvailableAlert
-                    message={
-                      available.find((el) => el.name === "username").content
-                    }
+                    available={available.find((el) => el.name === "username")}
+                    response={response.find((el) => el.name === "username")}
                   />
                   <input
                     type="button"
@@ -341,9 +420,7 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
-                    onClick={() =>
-                      checkAvailHandler("username", setAvailability)
-                    }
+                    onClick={() => checkAvailHandler("username")}
                   />
                   <p css={nameFieldDesc}>{p_username}</p>
                   {error.username != "" && (
@@ -365,7 +442,11 @@ const VerifyAccount = ({ Banner }) => {
                       })
                     }
                     value={accountInfo.password}
-                    css={customFormElements}
+                    css={
+                      error.password == ""
+                        ? customFormElements
+                        : [customFormElements, alertError(1)]
+                    }
                     minLength={8}
                     maxLength={50}
                   />
@@ -389,7 +470,11 @@ const VerifyAccount = ({ Banner }) => {
                       })
                     }
                     value={accountInfo.confirmPassword}
-                    css={customFormElements}
+                    css={
+                      error.confirmPassword == ""
+                        ? customFormElements
+                        : [customFormElements, alertError(1)]
+                    }
                     minLength={8}
                     maxLength={50}
                   />
@@ -410,7 +495,12 @@ const VerifyAccount = ({ Banner }) => {
                         email: e.target.value,
                       })
                     }
-                    css={customFormElements}
+                    css={
+                      error.email == ""
+                        ? customFormElements
+                        : [customFormElements, alertError(1)]
+                    }
+                    minLength={8}
                     maxLength={75}
                   />
                   <p css={nameFieldDesc}>{p_email}</p>
@@ -429,7 +519,12 @@ const VerifyAccount = ({ Banner }) => {
                         confirmEmail: e.target.value,
                       })
                     }
-                    css={customFormElements}
+                    css={
+                      error.confirmEmail == ""
+                        ? customFormElements
+                        : [customFormElements, alertError(1)]
+                    }
+                    minLength={8}
                     maxLength={75}
                   />
                   {error.confirmEmail != "" && (
@@ -499,9 +594,8 @@ const VerifyAccount = ({ Banner }) => {
                     }
                   />
                   <AvailableAlert
-                    message={
-                      available.find((el) => el.name === "screenName").content
-                    }
+                    available={available.find((el) => el.name === "screenName")}
+                    response={response.find((el) => el.name === "screenName")}
                   />
                   <input
                     type="button"
@@ -512,14 +606,15 @@ const VerifyAccount = ({ Banner }) => {
                       buttonRight,
                       buttonLightblue,
                     ]}
-                    onClick={() =>
-                      checkAvailHandler("screenName", setAvailability)
-                    }
+                    onClick={() => checkAvailHandler("screenName")}
                   />
+                  {error.screenName != "" && (
+                    <AlertSignUp error={error.screenName} />
+                  )}
                 </div>
               </div>
             </div>
-            <Banner />
+            <Banner icon={1} />
           </div>
           <div css={hiddenMobile}>
             <p css={dispField}>
@@ -573,32 +668,51 @@ export default VerifyAccount;
  * @param {string} lal - label部コンテント
  * @param {Function} handler - ☑クリック時イベント処理関数
  * @param {Boolean} termAlert - 本要素全体を入力チェック対象にするかどうか
- * @returns
+ * @return
  */
 const AcceptInfo = ({ id, lal, handler, termAlert }) => {
+  const color = termAlert && 1;
   return (
     <div css={acceptInfo}>
       <span>
         <span id={id} css={[checkBox]} onClick={(e) => handler(e)}></span>
         <GiCheckMark />
       </span>
-      <label css={alertError(termAlert)}>{lal}</label>
+      <label css={alertError(color)}>{lal}</label>
     </div>
   );
 };
 
 /**
  * Check Availability 押下時の入力チェック
- *
+ * @param {Object} available - 重複チェックの結果オブジェクト
+ * @param {Object} response - チェック結果での重複回避サジェストリスト格納オブジェクト
  */
-const AvailableAlert = ({ message }) => {
-  const showFlg = message === "" ? true : false;
+const AvailableAlert = ({ available, response }) => {
+  const showFlg = available.message === "" ? true : false;
+  const colorNo = (status) => {
+    switch (status) {
+      case 202:
+        return 3;
+      case 226:
+        return 2;
+      default:
+        return 1;
+    }
+  };
   return (
     <div
-      css={[alertBox, alertError(true)]}
+      css={[alertBox, alertError(colorNo(response.status))]}
       style={{ display: showFlg && "none" }}
     >
-      <h3 css={alertH3}>{message}</h3>
+      <h3 css={alertH3(colorNo(response.status))}>{available.message}</h3>
+      {response.status === 226 && (
+        <ul>
+          {response.data.map((val) => {
+            return <li key={val}>{val}</li>;
+          })}
+        </ul>
+      )}
     </div>
   );
 };

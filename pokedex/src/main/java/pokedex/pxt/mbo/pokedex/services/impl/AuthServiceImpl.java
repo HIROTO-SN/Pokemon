@@ -23,6 +23,7 @@ import pokedex.pxt.mbo.pokedex.payload.RegisterDto;
 import pokedex.pxt.mbo.pokedex.repository.RoleRepository;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
 import pokedex.pxt.mbo.pokedex.services.AuthService;
+import pokedex.pxt.mbo.pokedex.common.Constants;
 
 @Service
 public class AuthServiceImpl implements AuthService {
@@ -70,6 +71,9 @@ public class AuthServiceImpl implements AuthService {
 		user.setPassword(passwordEncoder.encode(registerDto.getPassword()));		
 		user.setBirthday(registerDto.getBirthday());
 		user.setCountry(registerDto.getCountry());
+		user.setAccountExpiration(Constants.TODAY.plusMonths(6));
+		user.setAccountPasswordExpiration(Constants.TODAY.plusMonths(6));
+		user.setCreatedDate(Constants.CURRENT_DATE_TIME);
 
 		Set<Role> roles = new HashSet<>();
 		Role userRole = roleRepository.findByName("ROLE_USER").get();
@@ -83,7 +87,7 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public List<String> checkNames(CheckNamesDto CheckNamesDto) {
-		// targetがUsernameかScreennameかを判定
+		// targetがusernameかscreennameかを判定
 		String target = CheckNamesDto.getTarget();
 		String val = CheckNamesDto.getValue().strip();
 		List<String> suggestNames = new ArrayList<String>();
