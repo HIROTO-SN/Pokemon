@@ -1,20 +1,20 @@
-// package pokedex.pxt.mbo.pokedex.services;
+package pokedex.pxt.mbo.pokedex.services;
 
-// import org.springframework.stereotype.Service;
-// import org.springframework.web.client.RestTemplate;
+import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-// import pokedex.pxt.mbo.pokedex.models.PokeDto;
+import pokedex.pxt.mbo.pokedex.entity.PokeDto;
 
-// @Service
-// public class PokeListService {
+@Service
+public class PokeListService {
 	
 	
-// 	/** PokeAPI リクエストURL */
-// 	private static final String URL = "https://pokeapi.co/api/v2/pokemon";
+	/** PokeAPI リクエストURL */
+	private static final String URL = "https://pokeapi.co/api/v2/pokemon";
 
-// 	private RestTemplate restTemplate = new RestTemplate();
+	private RestTemplate restTemplate = new RestTemplate();
 	
-// 	public PokeDto getPokemonData() {
-// 		return restTemplate.getForObject(URL, PokeDto.class);
-// 	}
-// }
+	public PokeDto getPokemonData() {
+		return restTemplate.getForObject(URL, PokeDto.class);
+	}
+}

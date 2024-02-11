@@ -9,13 +9,13 @@ const PrimaryNav = () => {
   
   const iconPath = "./icons/";
   const iconList = [
-    { name: "home", backgroundCSS: "#AAAAAA", link: "/us" },
-    { name: "pokedex", backgroundCSS: "#FF0033", link: "/us/pokedex" },
-    { name: "game", backgroundCSS: "#FF6666", link: "/us/pokemon-video-games" },
-    { name: "trading", backgroundCSS: "#FFCC00", link: "/us/pokemon-tcg" },
-    { name: "animation", backgroundCSS: "#00BB00", link: "/us/animation" },
-    { name: "trophy", backgroundCSS: "#0099FF", link: "/us/play-pokemon" },
-    { name: "news", backgroundCSS: "#0000FF", link: "/us/pokemon-news" },
+    { name: "home", backgroundCSS: "#AAAAAA", link: "/home" },
+    { name: "pokedex", backgroundCSS: "#FF0033", link: "/pokedex" },
+    { name: "game", backgroundCSS: "#FF6666", link: "/pokemon-video-games" },
+    { name: "trading", backgroundCSS: "#FFCC00", link: "/pokemon-tcg" },
+    { name: "animation", backgroundCSS: "#00BB00", link: "/animation" },
+    { name: "trophy", backgroundCSS: "#0099FF", link: "/play-pokemon" },
+    { name: "news", backgroundCSS: "#0000FF", link: "/pokemon-news" },
   ];
   const [clickActive, setClickActive] = useState(false);
   const [clickedTag, setClickedTag] = useState([]);
@@ -111,7 +111,6 @@ const primaryNav = css`
     width: 14.28571%;
   }
   li a {
-    text-decoration: none;
     float: left;
     height: 87px;
     width: 100%;
