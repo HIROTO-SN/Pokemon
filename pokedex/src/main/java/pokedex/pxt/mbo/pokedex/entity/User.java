@@ -52,16 +52,16 @@ public class User {
 	private String screenName;
 
 	@Column(name = "news_receive_flg")
-	private boolean newsInfoReceiveFlg;
+	private boolean newsInfoReceiveFlg = false;
 	
 	@Column(name = "update_receive_flg")
-	private boolean updateCenterReceiveFlg;
+	private boolean updateCenterReceiveFlg = false;
 
 	@Column(name = "disp_profile_flg")
-	private boolean displayPokeClubProfile;
+	private boolean displayPokeClubProfile = true;
 	
 	@Column(name = "account_enabled")
-	private boolean accountEnabled;
+	private boolean accountEnabled = true;
 
 	@Column(name = "account_expiration")
 	private LocalDate accountExpiration;

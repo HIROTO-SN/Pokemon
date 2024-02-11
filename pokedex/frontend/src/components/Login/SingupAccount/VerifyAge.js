@@ -39,6 +39,8 @@ import {
 } from "../../../contexts/SignupContext";
 import AlertSignUp from "./AlertSignUp";
 import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
+import { valid_message_birthdayNoValid } from "../../../constants/ValidationMessage";
+import { getFullDate, toHalfWidth } from "../../CommonFunc/Common";
 
 const VerifyAge = ({ Banner }) => {
   /***** CSS ******/
@@ -122,16 +124,16 @@ const VerifyAge = ({ Banner }) => {
 
   /***** JS ******/
   // カスタムセレクトボックス外クリックで閉じる処理
-  useEffect(() => {
-    documentClickHandler.current = (e) => {
-      const tagJudgeSVG = e.target.tagName === "svg";
-      const tagJudgePath = e.target.tagName === "path";
+  // useEffect(() => {
+  //   documentClickHandler.current = (e) => {
+  //     const tagJudgeSVG = e.target.tagName === "svg";
+  //     const tagJudgePath = e.target.tagName === "path";
 
-      if (insideRef.current.contains(e.target) || tagJudgeSVG || tagJudgePath)
-        return;
-      arrowOutsideClickHandler();
-    };
-  }, []);
+  //     if (insideRef.current.contains(e.target) || tagJudgeSVG || tagJudgePath)
+  //       return;
+  //     arrowOutsideClickHandler();
+  //   };
+  // }, []);
 
   // Countryリスト外押下イベント
   const arrowOutsideClickHandler = () => {
@@ -152,6 +154,7 @@ const VerifyAge = ({ Banner }) => {
       country: { name: selList.name, value: selList.value },
     };
     setAccountInfo(newAccountInfo);
+    sessionStorage.setItem('country', JSON.stringify(newAccountInfo.country));
     arrowClickHandler();
   };
   // Birth入力後チェンジイベント
@@ -159,11 +162,26 @@ const VerifyAge = ({ Banner }) => {
     const newAccountInfo = { ...accountInfo, birthday: e.target.value };
     setAccountInfo(newAccountInfo);
   };
+  // Birth入力後フォーカスアウトイベント
+  const birthdayBlurHandler = (e) => {
+    const halvedVal = toHalfWidth(e.target.value);
+    const date = new Date(halvedVal);
+    if (!isNaN(date.getDate())) {
+      const newDate = getFullDate(date);
+      sessionStorage.setItem('birth', newDate);
+      setAccountInfo({ ...accountInfo, birthday: newDate });
+    } else {
+      setAccountInfo({ ...accountInfo, birthday: "" });
+    }
+  }
 
   // Continueボタン押下イベント
   const continueClickHanlder = () => {
     // 入力エラーチェック
     const newError = fieldInputEmptyCheck(accountInfo, error) 
+    if (isNaN(new Date(accountInfo.birthday).getDate())) {
+      newError.birthday = valid_message_birthdayNoValid;
+    }
     setError(newError);
 
     // エラーがなければAccount認証ページへ遷移
@@ -191,6 +209,7 @@ const VerifyAge = ({ Banner }) => {
                   type="text"
                   placeholder="yyyy-mm-dd"
                   onChange={(e) => birthdayChangeHandler(e)}
+                  onBlur={(e) => birthdayBlurHandler(e)}
                   value={accountInfo.birthday}
                   css={birthdayInput}
                 />

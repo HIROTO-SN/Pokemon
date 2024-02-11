@@ -3,6 +3,7 @@ export const valid_message_usernameEmpty = "Please enter a username.";
 export const valid_message_passwordEmpty = "Please enter a password.";
 
 /* サインアップ時*/
+export const valid_message_birthdayNoValid = "Enter a valid birthday.";
 export const valid_message_required = "This field is required.";
 export const valid_message_username =
   "Your Pokémon Trainer Club username must be between 6 and 16 characters.";

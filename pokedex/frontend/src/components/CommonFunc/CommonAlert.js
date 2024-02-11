@@ -1,10 +1,11 @@
 import { passMaxLength, passMinLength, regexEmailProblem, regexEmailValid, regexPass, valid_message_emailNoValid, valid_message_emailWithProblem, valid_message_passInclude, valid_message_passLength, valid_message_required } from "../../constants/ValidationMessage";
 
-/*
+/**
  * 必須入力項目が入力されているかチェック
- * @param inputs: 入力内容 - Object
- * @param error: エラーチェック内容 - Object
- * @return newError: 入力チェック結果エラー内容 - Object
+ * @param {Object} inputs: 入力内容 
+ * @param {Object} error: エラーチェック内容
+ * @return {Object} newError: 入力チェック結果エラー内容
+ * @return {Boolean} errorExists : エラーがあったかどうか
  */
 export const fieldInputEmptyCheck = (inputs, error) => {
 	let newError = { ...error };
