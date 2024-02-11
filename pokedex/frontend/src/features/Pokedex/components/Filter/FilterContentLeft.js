@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import { typeList } from "../../../../constants/UlList";
 
 const FilterContentLeft = () => {
-  /* ブロック全体CSS */
+  /***** CSS ******/
   const ContentBlock = styled.div`
     clear: both;
     display: block;
@@ -179,10 +179,12 @@ const FilterContentLeft = () => {
     line-height: 125%;
   `;
   
+  /***** Definition ******/
   const clickedColor = "#30a7d7";
   const [clickedTypeList, setClickedTypeList] = useState([]);
   const [clickedWeakList, setClickedWeakList] = useState([]);
 
+  /***** JS ******/
   const clickTWHandler = (name, type) => {
 
     switch (type) {
@@ -216,6 +218,7 @@ const FilterContentLeft = () => {
     });
   },[clickedTypeList, clickedWeakList]);
 
+  /***** HTML ******/
   return (
     <>
       <ContentBlock>

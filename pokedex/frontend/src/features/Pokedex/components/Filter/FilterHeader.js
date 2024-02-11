@@ -9,8 +9,21 @@ import {
   column6,
   ttHint,
 } from "../../../../components/CommonCss/Layout.js";
+import { useDispatchSearch, useSearchCondition } from "../../contexts/SearchContext.js";
 
 const FilterHeader = () => {
+  /***** Definition ******/
+  const search = useSearchCondition();
+  const dipatch = useDispatchSearch();
+
+  /***** JS ******/
+  const searchInputChange = (e) => {
+    dipatch( { type: e.target.id, val: e.target.value } );
+  }
+
+  console.log(search);
+
+  /***** HTML ******/
   return (
     <DivFilterHead>
       <div>
@@ -20,7 +33,7 @@ const FilterHeader = () => {
             <div css={searchInputItems}>
               <span css={twitterTypehead}>
                 <input css={ttHint}></input>
-                <input></input>
+                <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
                 <pre></pre>
               </span>
               <input css={buttonSearch}></input>

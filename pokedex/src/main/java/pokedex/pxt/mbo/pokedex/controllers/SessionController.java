@@ -1,12 +1,10 @@
 package pokedex.pxt.mbo.pokedex.controllers;
 
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import pokedex.pxt.mbo.pokedex.entity.User;
 import pokedex.pxt.mbo.pokedex.payload.SessionDto;
 
 import org.springframework.web.bind.annotation.GetMapping;

@@ -230,9 +230,11 @@ const FilterContentRight = () => {
 
   const clickedColor = "#ee6b2f";
 
+  /***** Definition ******/
   const [clickedHeightList, setClickedHeightList] = useState([]);
   const [clickedWeightList, setClickedWeightList] = useState([]);
 
+  /***** JS ******/
   const clickHWHandler = (name, type) => {
     switch (type) {
       case "H":
@@ -271,6 +273,7 @@ const FilterContentRight = () => {
     });
   }, [clickedWeightList, clickedHeightList]);
 
+  /***** HTML ******/
   return (
     <>
       <ContentBlock>

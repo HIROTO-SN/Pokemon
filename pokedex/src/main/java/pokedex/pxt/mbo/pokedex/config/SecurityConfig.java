@@ -22,11 +22,11 @@ import org.springframework.security.web.SecurityFilterChain;
 @EnableMethodSecurity
 public class SecurityConfig {
 
-	private UserDetailsService userDetailsService;
+	// private UserDetailsService userDetailsService;
 	
-	SecurityConfig(UserDetailsService userDetailsService) {
-		this.userDetailsService = userDetailsService;
-	}
+	// SecurityConfig(UserDetailsService userDetailsService) {
+	// 	this.userDetailsService = userDetailsService;
+	// }
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -35,26 +35,10 @@ public class SecurityConfig {
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-		// http.formLogin(login -> login
-		// 	.loginPage("/login")
-		// 	.loginProcessingUrl("/authenticate")
-		// 	.defaultSuccessUrl("/")
-		// 	.failureUrl("/login?error")
-		// 	.permitAll()
-		// ).logout(logout -> logout
-		// 	.logoutSuccessUrl("/")
-		// ).authorizeHttpRequests(authz -> authz
-		// 	.requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll()
-		// 	.requestMatchers("/").permitAll()
-		// 	.requestMatchers("/login").permitAll()
-		// 	.requestMatchers("/pokeList").permitAll()
-		// 	.requestMatchers("/api/**").authenticated()
-		// 	.anyRequest().denyAll()
-		// );
 		
 		http.csrf((csrf -> csrf.disable()))
 						.authorizeHttpRequests(authorize -> authorize
-							.requestMatchers(HttpMethod.GET, "/pokeList").permitAll()
+							.requestMatchers(HttpMethod.GET, "/pokedex/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/items").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 							.requestMatchers("/session/**").permitAll()

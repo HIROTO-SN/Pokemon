@@ -3,7 +3,7 @@ package pokedex.pxt.mbo.pokedex.common;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.LocalDateTime;
-
+import java.util.*;
 
 /**
  * 定数定義
@@ -22,12 +22,20 @@ public class Constants {
 	// ログイン失敗許容回数
 	public static final int LOGIN_MAX_FAIL_COUNT = 5;
 
+	// PokeList Url 付与パラメータ
+	public static final Map<String, Integer> POKE_PARAM = new HashMap<>() {
+		{
+			put("offset", 0);
+			put("limit", 1025);
+		}
+	};
+
 	// enum使い方例↓
 	// public enum UserStatus {
-  //   ACTIVE("有効"),
-  //   INACTIVE("無効"),
-  //   PENDING("保留");
+	// ACTIVE("有効"),
+	// INACTIVE("無効"),
+	// PENDING("保留");
 
-	// 	// 呼び出し↑　UserStatus.ACTIVE
+	// // 呼び出し↑ UserStatus.ACTIVE
 	// }
 }

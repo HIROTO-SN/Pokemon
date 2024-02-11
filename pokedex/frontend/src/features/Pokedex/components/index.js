@@ -5,6 +5,7 @@ import Sort from "./Sort/Sort.js";
 import Results from "./Results/Results.js";
 import UserDashboard from "../../../components/Dashboard/UserDashboard.js";
 import { container } from "../../../components/CommonCss/Layout.js";
+import { SearchProvider } from "../contexts/SearchContext.js";
 
 const Pokedex = () => {
   
@@ -15,10 +16,12 @@ const Pokedex = () => {
     <>
       <UserDashboard />
       <div css={container}>
-        <Header/>
-        <Filter/>
-        <Sort/>
-        <Results/>
+        <SearchProvider>
+          <Header/>
+          <Filter/>
+          <Sort/>
+          <Results/>
+        </SearchProvider>
       </div>
     </>
   );
