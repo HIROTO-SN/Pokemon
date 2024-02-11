@@ -6,4 +6,6 @@ public class ApiEndPoints {
 	public static final String URL_SET_SESSION_USERDATA = "http://localhost:8080/session/login/set";
 	// ログイン情報取得URL
 	public static final String URL_GET_SESSION_USERDATA = "http://localhost:8080/session/login/get";
+	// ログイン情報取得URL
+	public static final String URL_GET_POKELIST_ALL = "https://pokeapi.co/api/v2/pokemon?offset=%d&limit=%d";
 }

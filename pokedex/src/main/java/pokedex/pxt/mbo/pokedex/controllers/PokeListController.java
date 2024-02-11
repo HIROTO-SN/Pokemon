@@ -6,19 +6,21 @@ import pokedex.pxt.mbo.pokedex.services.PokeListService;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@RequestMapping("/pokedex")
 @CrossOrigin(origins = "http://localhost:3000")
 public class PokeListController {
 	
 	@Autowired
 	PokeListService pokeListService;
 
-	@GetMapping("/pokeList")
-	public PokeDto getAllItems() {
-		return pokeListService.getPokemonData();
+	@GetMapping("/allpokeList")
+	public PokeDto getAllPokemonDetails() {
+		return pokeListService.getAllPokemonData();
 	}
 	
 }
