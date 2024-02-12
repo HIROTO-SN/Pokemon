@@ -1,5 +1,7 @@
 package pokedex.pxt.mbo.pokedex.entity;
 
+import java.util.List;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import lombok.AllArgsConstructor;
@@ -11,9 +13,14 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer"})
 
-public class PokeDataDto {
-	
-	private String name;
-	
-	private String url;
+public class Pokemon {
+
+	private int count;
+
+	private String next;
+
+	private String previous;
+
+	private List<PokeData> results;
+
 }

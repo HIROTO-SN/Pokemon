@@ -124,6 +124,9 @@ const Filter = () => {
     }
   `;
 
+  /***** JS ******/
+  
+  /***** HTML ******/
   return (
     <>
       <section css={filter}>
