@@ -1,8 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { capitalizeFirstLetter } from "../../utils/ConvToolUtils";
-import { setBackGroundForTypes, setFontColorForTypes } from "../../utils/ColorUtils";
+import { capitalizeFirstLetter, setBackGroundForTypes, setFontColorForTypes } from "../../utils/ConvToolUtils";
 
 const PokemonList = ({ number, pokemon }) => {
   const Li_pokemon = styled.li`

@@ -6,12 +6,21 @@ import Results from "./Results/Results.js";
 import UserDashboard from "../../../components/Dashboard/UserDashboard.js";
 import { container } from "../../../components/CommonCss/Layout.js";
 import { SearchProvider } from "../contexts/SearchContext.js";
+import { useEffect } from "react";
+import { setPokemonSession } from "../../../components/api/PokemoApi.js";
 
 const Pokedex = () => {
   
   const scrollOnTop = () => {
     window.scroll({ top: 0, behavior: "instant" });
   };
+
+  /***** JS ******/
+  useEffect(() => {
+    setPokemonSession();
+  },[])
+
+  /***** HTML ******/
   return (
     <>
       <UserDashboard />

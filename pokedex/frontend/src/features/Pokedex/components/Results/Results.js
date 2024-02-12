@@ -104,7 +104,7 @@ const Results = () => {
   };
 
   return (
-    <section css={results}>
+    <section id="result" css={results}>
       <ul css={resultsList}>
         {pokemonData.map((pokemon, i) => {
           return <PokemonList key={i} number={i} pokemon={pokemon} />;

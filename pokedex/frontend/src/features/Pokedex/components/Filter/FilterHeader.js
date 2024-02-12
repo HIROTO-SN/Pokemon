@@ -10,6 +10,7 @@ import {
   ttHint,
 } from "../../../../components/CommonCss/Layout.js";
 import { useDispatchSearch, useSearchCondition } from "../../contexts/SearchContext.js";
+import { clickSearchHandler } from "../../utils/PokeCommon.js";
 
 const FilterHeader = () => {
   /***** Definition ******/
@@ -36,7 +37,7 @@ const FilterHeader = () => {
                 <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
                 <pre></pre>
               </span>
-              <input css={buttonSearch}></input>
+              <input css={buttonSearch} onClick={() => clickSearchHandler()}></input>
             </div>
           </div>
           <p css={subtitle}>

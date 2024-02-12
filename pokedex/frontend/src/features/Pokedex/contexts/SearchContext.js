@@ -1,7 +1,7 @@
 import { createContext, useContext, useReducer } from "react";
 
 /*
-* Context - SearchContext
+* Context1 - SearchContext
 * 検索条件管理Context
 */ 
 const SearchCondition = createContext();

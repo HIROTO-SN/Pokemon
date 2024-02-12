@@ -1,13 +1,14 @@
 package pokedex.pxt.mbo.pokedex.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
-
-import pokedex.pxt.mbo.pokedex.entity.PokeDto;
-import pokedex.pxt.mbo.pokedex.services.PokeListService;
-
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import pokedex.pxt.mbo.pokedex.entity.Pokemon;
+import pokedex.pxt.mbo.pokedex.payload.SearchDto;
+import pokedex.pxt.mbo.pokedex.services.PokeListService;
 
 
 @RestController
@@ -18,9 +19,9 @@ public class PokeListController {
 	@Autowired
 	PokeListService pokeListService;
 
-	@GetMapping("/allpokeList")
-	public PokeDto getAllPokemonDetails() {
-		return pokeListService.getAllPokemonData();
+	@GetMapping("/search-pokeList")
+	public Pokemon getSearchPokemon(@RequestBody SearchDto searchDto) {
+		return pokeListService.getSearchPokeData(searchDto);
 	}
 	
 }
