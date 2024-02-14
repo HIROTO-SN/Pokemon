@@ -1,16 +1,17 @@
-package pokedex.pxt.mbo.pokedex.payload.pokemon;
+package pokedex.pxt.mbo.pokedex.payload.pokeApi;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
-@Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Abilities {
-	private int slot;
+@Getter
+@Setter
+public class PokeResultsDto {
+		
 	private String name;
-	private Boolean isHidden;
+	
+	private String url;
 }

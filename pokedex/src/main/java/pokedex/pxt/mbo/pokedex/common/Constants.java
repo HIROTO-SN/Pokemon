@@ -25,8 +25,8 @@ public class Constants {
 	// PokeList Url 付与パラメータ
 	public static final Map<String, Integer> POKE_PARAM = new HashMap<>() {
 		{
-			put("offset", 0);
-			put("limit", 1025);
+			put("OFFSET", 0);
+			put("LIMIT", 1025);
 		}
 	};
 

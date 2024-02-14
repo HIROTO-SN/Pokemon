@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pokedex.pxt.mbo.pokedex.entity.Pokemon;
 import pokedex.pxt.mbo.pokedex.payload.SearchDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.services.PokeListService;
 
 
@@ -20,7 +20,7 @@ public class PokeListController {
 	PokeListService pokeListService;
 
 	@GetMapping("/search-pokeList")
-	public Pokemon getSearchPokemon(@RequestBody SearchDto searchDto) {
+	public PokemonDto getSearchPokemon(@RequestBody SearchDto searchDto) {
 		return pokeListService.getSearchPokeData(searchDto);
 	}
 	

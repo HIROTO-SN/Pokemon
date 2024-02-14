@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-import pokedex.pxt.mbo.pokedex.entity.Pokemon;
 import pokedex.pxt.mbo.pokedex.payload.SessionDto;
-import pokedex.pxt.mbo.pokedex.services.PokeListService;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
+import pokedex.pxt.mbo.pokedex.services.SessionService;
 
 @RestController
 @RequestMapping("/session")
@@ -22,7 +22,7 @@ public class SessionController {
 	private HttpSession session;
 	
 	@Autowired
-	PokeListService pokeListService;
+	SessionService sessionService;
 
 	public SessionController(HttpSession session) {
 		this.session = session;
@@ -43,8 +43,8 @@ public class SessionController {
 	@PostMapping("/pokeList/set")
 	public void setPokeDataList(HttpServletRequest request) {
 		session = request.getSession();
-		Pokemon pokeDto = pokeListService.getAllPokemonData();
-		session.setAttribute("poke_data", pokeDto);
+		PokemonDto pokemon = sessionService.setAllPokemonData();
+		session.setAttribute("poke_data", pokemon);
 	}
 
 	@GetMapping("/pokeList/get")
