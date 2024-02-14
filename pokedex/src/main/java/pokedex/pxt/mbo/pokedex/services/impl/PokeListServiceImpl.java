@@ -4,9 +4,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import pokedex.pxt.mbo.pokedex.common.*;
-import pokedex.pxt.mbo.pokedex.entity.Pokemon;
 import pokedex.pxt.mbo.pokedex.payload.SearchDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.services.PokeListService;
 import pokedex.pxt.mbo.pokedex.services.SessionService;
 
@@ -17,15 +16,13 @@ public class PokeListServiceImpl implements PokeListService {
 	@Autowired
 	private SessionService sessionService;
 
-	public Pokemon getAllPokemonData() {
-		String url = String.format(ApiEndPoints.URL_GET_POKELIST_ALL,
-				Constants.POKE_PARAM.get("offset"),
-				Constants.POKE_PARAM.get("limit"));
-		return restTemplate.getForObject(url, Pokemon.class);
-	}
-
-	public Pokemon getSearchPokeData(SearchDto searchDto) {
-		Pokemon pokemon = sessionService.getPokeDataList().getBody();
-		return pokemon;
+	public PokemonDto getSearchPokeData(SearchDto searchDto) {
+		// Pokemon pokemon = sessionService.getPokeDataList().getBody();
+		// if (searchDto.getSearchInput() != "") {
+		// 	List<String> pokemon.getResults().Map()
+		// } else {
+		// 	return pokemon;
+		// }
+		return null;
 	}
 }

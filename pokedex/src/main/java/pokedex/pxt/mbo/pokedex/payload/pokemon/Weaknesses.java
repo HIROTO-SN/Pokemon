@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Abilities {
-	private int slot;
-	private String name;
-	private Boolean isHidden;
+public class Weaknesses {
+	private int id;
+	private String type;
 }
