@@ -1,5 +1,7 @@
 package pokedex.pxt.mbo.pokedex.controllers;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -43,7 +45,7 @@ public class SessionController {
 	@PostMapping("/pokeList/set")
 	public void setPokeDataList(HttpServletRequest request) {
 		session = request.getSession();
-		PokemonDto pokemon = sessionService.setAllPokemonData();
+		List<PokemonDto> pokemon = sessionService.setAllPokemonData();
 		session.setAttribute("poke_data", pokemon);
 	}
 
