@@ -3,7 +3,6 @@ import java.util.Map;
 import java.util.List;
 import java.util.ArrayList;
 
-import org.springframework.http.HttpMethod;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
@@ -19,11 +18,11 @@ import pokedex.pxt.mbo.pokedex.services.SessionService;
 public class SessionServiceImpl implements SessionService {
 
 	private RestTemplate rest;
-	private List<PokemonDto> pokemonDto;
+	private List<PokemonDto> pokemonList;
 
 	public SessionServiceImpl() {
 		this.rest = new RestTemplate();
-		this.pokemonDto = new ArrayList<PokemonDto>();
+		this.pokemonList = new ArrayList<PokemonDto>();
 	}
 
 	/*
@@ -48,7 +47,7 @@ public class SessionServiceImpl implements SessionService {
 	 * 全てのポケモンデータをセットする
 	 */
 	@Override
-	public PokemonDto setAllPokemonData() {
+	public List<PokemonDto> setAllPokemonData() {
 		
 		for (int i = 1; i <= Constants.POKE_PARAM.get("LIMIT"); i++) {
 			String url = String.format(ApiEndPoints.URL_GET_POKE_DETAILS, i);
@@ -56,18 +55,15 @@ public class SessionServiceImpl implements SessionService {
 			Map<String, Object> response = rest.getForObject(url, Map.class);
 			// Dtoオブジェクトにデータを格納	
 			PokemonDto poke = new PokemonDto();
-			List<Abilities> abilities = setAbilities((List<Object>)response.get("abilities"));
-			
-		
+			List<Abilities> abilities = setAbilities((List<Map<String, Object>>)response.get("abilities"));
 			poke.setNo((int)response.get("order"));
 			poke.setName((String)response.get("name"));
 			poke.setAbilities(abilities);
 			poke.setWeight((int)response.get("weight"));
 			poke.setHeight((int)response.get("height"));
-			// pokemonDto.setName(res.getBody());
-			String a = "a";
+			pokemonList.add(poke);
 		}
-		return null;
+		return pokemonList;
 	}
 
 	/*
@@ -82,10 +78,15 @@ public class SessionServiceImpl implements SessionService {
 	/*
 	 * Abilitiesをセットする
 	 */
-	public List<Abilities> setAbilities(List<Object> ability) {
-		ability.forEach(list -> {
-			System.out.println(list);
+	public List<Abilities> setAbilities(List<Map<String, Object>> obj) {
+		List<Abilities> list = new ArrayList<Abilities>();
+		obj.forEach(el -> {
+			Abilities _abilities = new Abilities();
+			_abilities.setSlot((int)el.get("slot"));
+			_abilities.setAbility((Map<String, String>) el.get("ability"));
+			_abilities.setIsHidden((Boolean)el.get("is_hidden"));
+			list.add(_abilities);
 		});
-		return null;
+		return list;
 	}
 }
