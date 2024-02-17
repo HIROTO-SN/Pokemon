@@ -1,6 +1,4 @@
-package pokedex.pxt.mbo.pokedex.payload.pokemon;
-
-import java.util.Map;
+package pokedex.pxt.mbo.pokedex.entity.pokemon;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -11,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Types {
-	private int slot;
-	private String name;
+public class Weaknesses {
+	private int id;
+	private String type;
 }
