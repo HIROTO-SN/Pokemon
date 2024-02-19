@@ -10,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Weaknesses {
-	private int id;
-	private String type;
+	private int type_id;
+	private String name;
 }
