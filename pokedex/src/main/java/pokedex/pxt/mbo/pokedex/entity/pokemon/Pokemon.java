@@ -1,7 +1,15 @@
 package pokedex.pxt.mbo.pokedex.entity.pokemon;
 
-import java.util.List;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,21 +19,42 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity
+@Table(name = "pokedex")
 public class Pokemon {
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int poke_id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private int form_id;
 	private String name;
-	private int ability1;
-	private String ability1Hidden;
-	private int ability2;
-	private String ability2Hidden;
-	private int ability3;
-	private String ability3Hidden;
-	private int ability4;
-	private String ability4Hidden;
-	private int type1;
-	private int type2;
-	private int type3;
-	private int height;
-	private int weight;
-	private String picurl;
+	// private int height;
+	// private int weight;
+	// @OneToOne
+	// @JoinColumn(name = "type1", insertable = false, updatable = false)
+	// private Types type1;
+	// @OneToOne
+	// @JoinColumn(name = "type2",insertable = false, updatable = false)
+	// private Types type2;
+	// private int gender;
+	// private int category;
+	// private String v1_description;
+	// private String v2_description;
+	// @OneToOne
+	// @JoinColumn(name = "ability1",insertable = false, updatable = false)
+	// private Abilities ability1;
+	// @OneToOne
+	// @JoinColumn(name = "ability2",insertable = false, updatable = false)
+	// private Abilities ability2;
+	// @OneToOne
+	// @JoinColumn(name = "ability_hidden",insertable = false, updatable = false)
+	// private Abilities ability_hidden;
+	// private int stats_hp;
+	// private int stats_attack;
+	// private int stats_defense;
+	// private int stats_specialAttack;
+	// private int stats_specialDefense;
+	// private int stats_speed;
+	// private String picurl;
 }

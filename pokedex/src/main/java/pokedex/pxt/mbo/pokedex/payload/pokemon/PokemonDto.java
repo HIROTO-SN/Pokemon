@@ -12,7 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PokemonDto {
-	private int no;
+	private int id;
 	private String name;
 	private List<Abilities> abilities;
 	private List<Types> types;
