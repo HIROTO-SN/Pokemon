@@ -42,15 +42,15 @@ public class SessionController {
 		return session.getAttribute("user_data");
 	}
 
-	@PostMapping("/pokeList/set")
-	public void setPokeDataList(HttpServletRequest request) {
-		session = request.getSession();
-		List<PokemonDto> pokemon = sessionService.setAllPokemonData();
-		session.setAttribute("poke_data", pokemon);
-	}
+	// @PostMapping("/pokeList/set")
+	// public void setPokeDataList(HttpServletRequest request) {
+	// 	session = request.getSession();
+	// 	List<PokemonDto> pokemon = sessionService.setAllPokemonData();
+	// 	session.setAttribute("poke_data", pokemon);
+	// }
 
-	@GetMapping("/pokeList/get")
-	public Object getPokeDataList() {
-		return session.getAttribute("poke_data");
-	}
+	// @GetMapping("/pokeList/get")
+	// public Object getPokeDataList() {
+	// 	return session.getAttribute("poke_data");
+	// }
 }

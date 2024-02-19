@@ -1,14 +1,11 @@
 package pokedex.pxt.mbo.pokedex.entity.pokemon;
 
-import org.hibernate.annotations.JdbcTypeCode;
-import org.hibernate.type.SqlTypes;
-
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.IdClass;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -21,14 +18,22 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "pokedex")
+@IdClass(value=PokemonPkey.class)
+
 public class Pokemon {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int poke_id;
+	@Column(name = "pokemon_id")
+	private int pokemonId;
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int form_id;
-	private String name;
+	@Column(name = "form_id")
+	private int formId;
+
+	@Column(name = "pokemon_name", nullable = false, unique = true)
+	private String pokemonName;
+
 	// private int height;
 	// private int weight;
 	// @OneToOne

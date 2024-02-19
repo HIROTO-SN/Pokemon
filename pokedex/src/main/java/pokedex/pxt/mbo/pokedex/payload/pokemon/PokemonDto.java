@@ -12,12 +12,13 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PokemonDto {
-	private int id;
-	private String name;
-	private List<Abilities> abilities;
-	private List<Types> types;
-	private List<Weaknesses> weaknesses;
-	private int height;
-	private int weight;
-	private String picurl;
+	private int pokemonId;
+	private int formId;
+	private String pokemonName;
+	// private List<Abilities> abilities;
+	// private List<Types> types;
+	// private List<Weaknesses> weaknesses;
+	// private int height;
+	// private int weight;
+	// private String picurl;
 }

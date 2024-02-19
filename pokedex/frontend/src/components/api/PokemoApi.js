@@ -1,6 +1,6 @@
 // import axios from "axios";
 import axios from "axios";
-import { pokemonSetUrl } from "../../constants/ApiUrls";
+import { pokemonSearchUrl } from "../../constants/ApiUrls";
 
 /**
  * PokemonApiから最初の20件のデータを取得
@@ -28,11 +28,15 @@ export const getPokemon = (url) => {
 }
 
 /**
- * Pokemon全データをセッションへ格納
+ * Pokemon検索データを取得
+ * @param {Object} search - 検索内容格納オブジェクト
  */
-export const setPokemonSession = () => {
+export const getSearchedPokemonList = (search) => {
   axios
-    .post(pokemonSetUrl)
+    .post(pokemonSearchUrl, search)
+    .then((res) => {
+      console.log("ポケモンリスト", res);
+    })
     .catch((reason) =>
       console.error("サーバーとの通信に失敗：", reason)
     );

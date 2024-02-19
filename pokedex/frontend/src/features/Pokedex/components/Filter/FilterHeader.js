@@ -22,8 +22,6 @@ const FilterHeader = () => {
     dipatch( { type: e.target.id, val: e.target.value } );
   }
 
-  console.log(search);
-
   /***** HTML ******/
   return (
     <DivFilterHead>
@@ -37,7 +35,7 @@ const FilterHeader = () => {
                 <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
                 <pre></pre>
               </span>
-              <input css={buttonSearch} onClick={() => clickSearchHandler()}></input>
+              <input css={buttonSearch} onClick={async () => clickSearchHandler(search)}></input>
             </div>
           </div>
           <p css={subtitle}>
