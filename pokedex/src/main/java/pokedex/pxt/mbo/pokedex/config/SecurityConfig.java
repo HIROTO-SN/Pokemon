@@ -39,7 +39,7 @@ public class SecurityConfig {
 		http.csrf((csrf -> csrf.disable()))
 						.authorizeHttpRequests(authorize -> authorize
 							.requestMatchers(HttpMethod.GET, "/pokedex/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/items").permitAll()
+							.requestMatchers(HttpMethod.POST, "/pokedex/**").permitAll()
 							.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
 							.requestMatchers("/session/**").permitAll()
 							.requestMatchers("/api/auth/**").permitAll()

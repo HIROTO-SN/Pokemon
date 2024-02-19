@@ -8,7 +8,7 @@ const SearchCondition = createContext();
 const DispatchSearchCondition = createContext();
 
 // 検索条件初期状態オブジェクト
-const initAccountInfoState = { 
+const initSearchState = { 
 	searchInput: "",
 	// password: "",
 };
@@ -21,7 +21,7 @@ export const SearchProvider = ({ children }) => {
 			case "searchInput":
 				return { ...prev, searchInput: val};
 		}
-	}, initAccountInfoState);
+	}, initSearchState);
 
 	return (
 		<SearchCondition.Provider value={searchResult}>
