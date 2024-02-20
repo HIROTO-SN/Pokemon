@@ -1,6 +1,6 @@
 // import axios from "axios";
 import axios from "axios";
-import { pokemonSearchUrl } from "../../constants/ApiUrls";
+import { POKEURL } from "../../constants/ApiUrls";
 
 /**
  * PokemonApiから最初の20件のデータを取得
@@ -28,12 +28,35 @@ export const getPokemon = (url) => {
 }
 
 /**
+ * Pokemon初回表示時20件データ取得
+ */
+export const getAllPokemonList = async () => {
+  try {
+    return await axios.get(POKEURL.ALL);
+  } catch(e) {
+    console.log("error:" + e);
+  }
+};
+
+/**
+ * Pokemon初回表示時20件データ取得
+ */
+export const getPokemonImages = (url) => {
+  return new Promise((resolve) => {
+    fetch(url)
+      .then((res) => res.json())
+      .then((data) => resolve(data))
+      .catch((reason) => console.error("アクセス拒否：", reason))
+  });
+}
+
+/**
  * Pokemon検索データを取得
  * @param {Object} search - 検索内容格納オブジェクト
  */
 export const getSearchedPokemonList = (search) => {
   axios
-    .post(pokemonSearchUrl, search)
+    .post(POKEURL.SEARCH, search)
     .then((res) => {
       console.log("ポケモンリスト", res);
     })

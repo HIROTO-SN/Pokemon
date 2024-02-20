@@ -61,5 +61,4 @@ public class Pokemon {
 	// private int stats_specialAttack;
 	// private int stats_specialDefense;
 	// private int stats_speed;
-	// private String picurl;
 }
