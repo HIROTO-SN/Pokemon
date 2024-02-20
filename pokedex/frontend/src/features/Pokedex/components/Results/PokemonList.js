@@ -2,8 +2,9 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { capitalizeFirstLetter, setBackGroundForTypes, setFontColorForTypes } from "../../utils/ConvToolUtils";
+import { EXTERNAL_POKEAPI } from "../../../../constants/ApiUrls";
 
-const PokemonList = ({ number, pokemon }) => {
+const PokemonList = ({ pokemon }) => {
   const Li_pokemon = styled.li`
     opacity: 1;
     top: 0px;
@@ -72,24 +73,25 @@ const PokemonList = ({ number, pokemon }) => {
 			color: ${setFontColorForTypes(typeName)};
   `;
 
+  /***** HTML ******/
 	return (
     <Li_pokemon>
       <a>
-        <img src={pokemon.sprites.other["official-artwork"].front_default} />
+        <img src={EXTERNAL_POKEAPI.IMAGE.replace("{0}", pokemon.pokemonId)} />
       </a>
       <div css={pokemonInfo}>
         <p css={id}>
           <span>#</span>
-          {(number + 1).toString().padStart(4, "0")}
+          {(Number(pokemon.pokemonId)).toString().padStart(4, "0")}
         </p>
-        <H5_names>{capitalizeFirstLetter(pokemon.name)}</H5_names>
-        {pokemon.types.map((_type) => {
+        <H5_names>{capitalizeFirstLetter(pokemon.pokemonName)}</H5_names>
+        {/* {pokemon.types.map((_type) => {
           return (
             <div key={_type.type.name}>
               <span css={pill(_type.type.name)}>{_type.type.name}</span>
             </div>
           );
-        })}
+        })} */}
       </div>
     </Li_pokemon>
   );

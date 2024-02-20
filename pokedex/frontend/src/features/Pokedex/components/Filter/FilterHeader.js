@@ -35,7 +35,7 @@ const FilterHeader = () => {
                 <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
                 <pre></pre>
               </span>
-              <input css={buttonSearch} onClick={async () => clickSearchHandler(search)}></input>
+              <input css={buttonSearch} onClick={async () => clickSearchHandler(search, dipatch)}></input>
             </div>
           </div>
           <p css={subtitle}>

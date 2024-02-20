@@ -11,6 +11,7 @@ const DispatchSearchCondition = createContext();
 const initSearchState = { 
 	searchInput: "",
 	// password: "",
+	lastPokeId: 20,
 };
 
 // Context定義
@@ -20,6 +21,8 @@ export const SearchProvider = ({ children }) => {
 		switch (type) {
 			case "searchInput":
 				return { ...prev, searchInput: val};
+			case "nextPoke":
+				return { ...prev, lastPokeId: (val + 1)};
 		}
 	}, initSearchState);
 

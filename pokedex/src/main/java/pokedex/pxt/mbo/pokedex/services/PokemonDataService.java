@@ -7,6 +7,6 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 
 @Service
 public interface PokemonDataService {
-
+	public List<PokemonDto> getAllPokemonList();
 	public List<PokemonDto> getSearchedPokemonList(SearchDto searchDto);
 }
