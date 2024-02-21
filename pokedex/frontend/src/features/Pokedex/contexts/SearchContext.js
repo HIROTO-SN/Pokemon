@@ -11,18 +11,21 @@ const DispatchSearchCondition = createContext();
 const initSearchState = { 
 	searchInput: "",
 	// password: "",
-	lastPokeId: 20,
+	numberRangeMin: 1,
+	numberRangeMax: 1025,
+	sortBy: 'asc',
+	lastPokeId: 0,
 };
 
 // Context定義
 export const SearchProvider = ({ children }) => {
 	
-  const [searchResult, searchDispatch] = useReducer((prev, { type, val }) => {
-		switch (type) {
+  const [searchResult, searchDispatch] = useReducer((state, action) => {
+		switch (action.type) {
 			case "searchInput":
-				return { ...prev, searchInput: val};
+				return { ...state, searchInput: action.val};
 			case "nextPoke":
-				return { ...prev, lastPokeId: (val + 1)};
+				return { ...state, lastPokeId: action.val};
 		}
 	}, initSearchState);
 

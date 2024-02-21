@@ -10,12 +10,17 @@ import pokedex.pxt.mbo.pokedex.entity.pokemon.PokemonPkey;
 
 public interface PokemonRepository extends JpaRepository<Pokemon, PokemonPkey>{
 	/*
-	 * Pokemon一覧用リストを全て取得する（初期表示用の20件）
+	 * Pokemon一覧用リストを取得する(pokemonIdの範囲指定、pokemonIdの昇順)
 	 */
 	public Optional<List<Pokemon>> findByFormIdAndPokemonIdBetweenOrderByPokemonId(int formId, int min, int max);
+	
+	/*
+	 * Pokemon一覧用リストを検索する(pokemonIdの範囲指定、pokemonIdの降順)
+	 */
+	public Optional<List<Pokemon>> findByFormIdAndPokemonIdBetweenOrderByPokemonIdDesc(int formId, int min, int max);
 
 	/*
-	 * Pokemon一覧用リストを検索する
+	 * Pokemon一覧用リストを名前検索する
 	 */
 	public Optional<List<Pokemon>> findByPokemonNameContainingAndFormId(String pokemoName, int formId);
 }

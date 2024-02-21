@@ -19,8 +19,9 @@ const FilterHeader = () => {
 
   /***** JS ******/
   const searchInputChange = (e) => {
-    dipatch( { type: e.target.id, val: e.target.value } );
+    dipatch( ...search, e.target.id, e.target.value );
   }
+  console.log(search);
 
   /***** HTML ******/
   return (

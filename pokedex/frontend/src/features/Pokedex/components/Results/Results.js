@@ -2,12 +2,12 @@
 import { css } from "@emotion/react";
 import { useEffect, useState } from "react";
 import { column12, push1 } from "../../../../components/CommonCss/Layout.js";
-import { getAllPokemon, getAllPokemonList, getPokemon, getPokemonImages } from "../../../../components/api/PokemoApi.js";
+import { getPokemonList } from "../../../../components/api/PokemoApi.js";
+import { useDispatchSearch, useSearchCondition } from "../../contexts/SearchContext.js";
 import Alert from "./Alert.js";
 import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
-import { useDispatchSearch } from "../../contexts/SearchContext.js";
 
 const Results = () => {
   /***** CSS ******/
@@ -60,85 +60,58 @@ const Results = () => {
    /***** Definition ******/
   const [loading, setLoading] = useState(true);
   const [pokemonData, setPokemonData] = useState([]);
+  const search = useSearchCondition();
   const dipatch = useDispatchSearch();
-  const [nextURL, setNextURL] = useState("");
 
   /***** JS ******/
   /**
   * 初期表示時処理
-  * Pokemonリスト1～20を取得
+  * Pokemonリスト1～12を取得
   */
   useEffect(() => {
     const fetchPokemonData = async () => {
-      // 全てのポケモンデータを取得
-      // let res = await getAllPokemon(pokemonExternalApiUrl);
-      // console.log(res);
-      // loadPokemon(res.results, "init");
-      // setLoading(false);
-      // setNextURL(res.next);
-
-      // ここから新しい処理
-      const res = await getAllPokemonList();
-      console.log("res.data ===========");
+      // 初期表示用ポケモンリストを取得
+      const res = await getPokemonList(search);
       console.log(res.data);
+      console.log(res.data.length);
       loadPokemon(res.data, "init");
       setLoading(false);
-      console.log(res.data.length);
     };
     fetchPokemonData();
   }, []);
 
-
+  
+  /**
+  * Load more クリックイベント
+  */  
+ const clickedloadMorePokemon = async () => {
+   // ローダーを表示
+   setLoading(true);
+   const nextTwelvePokemon = await getPokemonList(search);
+   loadPokemon(nextTwelvePokemon.data, "more");
+   // ローダーを再度非表示
+   setLoading(false);
+  };
+  
   /**
   * @param {List} data - 取得したPokemonデータ
+  * @param {String} type - Dispatchアクション名
   * PokemonリストのState更新関数
   */  
-  const loadPokemon = async (data, type) => {
+  const loadPokemon = (data, type) => {
     switch (type) {
       case "init": {
         setPokemonData(data);
-        dipatch("nextPoke", data.length);
+        dipatch({ type: "nextPoke", val: data.length });
         break;
       }
       case "more": {
         const combinedPoekmonData = [...pokemonData, ...data];
         setPokemonData(combinedPoekmonData);
-        dipatch("nextPoke", combinedPoekmonData.length);
+        dipatch({ type: "nextPoke", val: combinedPoekmonData.length } );
         break;
       }
     }
-  };
-
-  // const loadPokemon = async (data, type) => {
-  //   const _pokemon = await Promise.all(
-  //     data.map((pokemon) => {
-  //       const pokemonRecord = getPokemon(pokemon.url);
-  //       return pokemonRecord;
-  //     })
-  //   );
-  //   switch (type) {
-  //     case "init": {
-  //       setPokemonData(_pokemon);
-  //       break;
-  //     }
-  //     case "more": {
-  //       const combinedPoekmonData = [...pokemonData, ..._pokemon];
-  //       setPokemonData(combinedPoekmonData);
-  //       break;
-  //     }
-  //   }
-  // };
-
-  const clickedloadMorePokemon = async () => {
-    // ローダーを表示
-    setLoading(true);
-    const nextTwentyPokemonData = await getAllPokemon(nextURL);
-    await loadPokemon(nextTwentyPokemonData.results, "more");
-
-    // 次のページのURLをセット
-    setNextURL(nextTwentyPokemonData.next);
-    // ローダーを再度非表示
-    setLoading(false);
   };
 
   /***** HTML ******/

@@ -11,4 +11,8 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SearchDto {
 	private String searchInput;
+	private int numberRangeMin;
+	private int numberRangeMax;
+	private String sortBy;
+	private int lastPokeId;
 }
