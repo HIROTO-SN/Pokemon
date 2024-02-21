@@ -11,7 +11,14 @@ export const nameAvailabilityCheckUrl = "http://localhost:8080/api/auth/checknam
 
 
 /* Pokemonリスト */
-// 全ポケモンリスト取得（最初の20）
-export const pokemonAcessApiUrl = "https://pokeapi.co/api/v2/pokemon";
-// 全ポケモンリストSession登録
-export const pokemonSetUrl = "http://localhost:8080/session/pokeList/set";
+// 全Pokemonリスト取得（External: 最初の20）
+export const pokemonExternalApiUrl = "https://pokeapi.co/api/v2/pokemon";
+// 外部APIからPokemonのImageを取得
+export const EXTERNAL_POKEAPI = {
+	// {0}をPokemonIdと置換してください
+	IMAGE: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{0}.png"
+}
+// Pokemonリスト取得 (Internal）
+export const POKEURL = {
+	POKELIST: "http://localhost:8080/pokedex/pokeList"
+}

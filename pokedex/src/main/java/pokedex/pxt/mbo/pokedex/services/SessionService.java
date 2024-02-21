@@ -8,6 +8,6 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 public interface SessionService {
 	public void setLoginUserData(SessionDto sessionData);
 	public ResponseEntity<SessionDto> getLoginUserData();
-	public List<PokemonDto> setAllPokemonData();
-	public ResponseEntity<PokemonDto> getAllPokeData();
+	// public List<PokemonDto> setAllPokemonData();
+	// public ResponseEntity<PokemonDto> getAllPokeData();
 }

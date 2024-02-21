@@ -1,25 +1,59 @@
 // import axios from "axios";
 import axios from "axios";
-import { pokemonSetUrl } from "../../constants/ApiUrls";
+import { POKEURL } from "../../constants/ApiUrls";
+
+// /**
+//  * PokemonApiから最初の20件のデータを取得
+//  * @param {String} url - https://pokeapi.co/api/v2/pokemon
+//  * @return {Object} Promise - APIアクセス結果
+//  */
+// export const getAllPokemon = (url) => {
+//   return new Promise((resolve, reject) => {
+//     setTimeout(() => {
+//       fetch(url)
+//         .then((res) => res.json())
+//         .then((data) => resolve(data))
+//         .catch((reason) => console.error("アクセス拒否：", reason));
+//     }, 1000);
+//   });
+// };
+
+// export const getPokemon = (url) => {
+//   return new Promise((resolve, reject) => {
+//     fetch(url)
+//       .then((res) => res.json())
+//       .then((data) => resolve(data))
+//       .catch((reason) => console.error("アクセス拒否：", reason))
+//   });
+// }
 
 /**
- * PokemonApiから最初の20件のデータを取得
- * @param {String} url - https://pokeapi.co/api/v2/pokemon
- * @return {Object} Promise - APIアクセス結果
+ * Pokemon初回表示時20件データ取得
  */
-export const getAllPokemon = (url) => {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      fetch(url)
-        .then((res) => res.json())
-        .then((data) => resolve(data))
-        .catch((reason) => console.error("アクセス拒否：", reason));
-    }, 1000);
-  });
+export const getAllPokemonList = async () => {
+  try {
+    return await axios.get(POKEURL.ALL);
+  } catch(e) {
+    console.log("error:" + e);
+  }
 };
 
-export const getPokemon = (url) => {
-  return new Promise((resolve, reject) => {
+/**
+ * Pokemonリストを取得する
+ */
+export const getPokemonList = async (search) => {
+  try {
+    return await axios.post(POKEURL.POKELIST, search);
+  } catch(e) {
+    console.log("サーバーとの通信に失敗:" + e);
+  }
+};
+
+/**
+ * Pokemon初回表示時20件データ取得
+ */
+export const getPokemonImages = (url) => {
+  return new Promise((resolve) => {
     fetch(url)
       .then((res) => res.json())
       .then((data) => resolve(data))
@@ -28,11 +62,15 @@ export const getPokemon = (url) => {
 }
 
 /**
- * Pokemon全データをセッションへ格納
+ * Pokemon検索データを取得
+ * @param {Object} search - 検索内容格納オブジェクト
  */
-export const setPokemonSession = () => {
+export const getSearchedPokemonList = (search) => {
   axios
-    .post(pokemonSetUrl)
+    .post(POKEURL.SEARCH, search)
+    .then((res) => {
+      console.log("ポケモンリスト", res);
+    })
     .catch((reason) =>
       console.error("サーバーとの通信に失敗：", reason)
     );

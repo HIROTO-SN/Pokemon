@@ -19,9 +19,8 @@ const FilterHeader = () => {
 
   /***** JS ******/
   const searchInputChange = (e) => {
-    dipatch( { type: e.target.id, val: e.target.value } );
+    dipatch( ...search, e.target.id, e.target.value );
   }
-
   console.log(search);
 
   /***** HTML ******/
@@ -37,7 +36,7 @@ const FilterHeader = () => {
                 <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
                 <pre></pre>
               </span>
-              <input css={buttonSearch} onClick={() => clickSearchHandler()}></input>
+              <input css={buttonSearch} onClick={async () => clickSearchHandler(search, dipatch)}></input>
             </div>
           </div>
           <p css={subtitle}>

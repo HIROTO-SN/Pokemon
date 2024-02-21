@@ -8,20 +8,26 @@ const SearchCondition = createContext();
 const DispatchSearchCondition = createContext();
 
 // 検索条件初期状態オブジェクト
-const initAccountInfoState = { 
+const initSearchState = { 
 	searchInput: "",
 	// password: "",
+	numberRangeMin: 1,
+	numberRangeMax: 1025,
+	sortBy: 'asc',
+	lastPokeId: 0,
 };
 
 // Context定義
 export const SearchProvider = ({ children }) => {
 	
-  const [searchResult, searchDispatch] = useReducer((prev, { type, val }) => {
-		switch (type) {
+  const [searchResult, searchDispatch] = useReducer((state, action) => {
+		switch (action.type) {
 			case "searchInput":
-				return { ...prev, searchInput: val};
+				return { ...state, searchInput: action.val};
+			case "nextPoke":
+				return { ...state, lastPokeId: action.val};
 		}
-	}, initAccountInfoState);
+	}, initSearchState);
 
 	return (
 		<SearchCondition.Provider value={searchResult}>

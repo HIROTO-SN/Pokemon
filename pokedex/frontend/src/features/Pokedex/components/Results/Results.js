@@ -1,15 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { push1, column12 } from "../../../../components/CommonCss/Layout.js";
+import { useEffect, useState } from "react";
+import { column12, push1 } from "../../../../components/CommonCss/Layout.js";
+import { getPokemonList } from "../../../../components/api/PokemoApi.js";
+import { useDispatchSearch, useSearchCondition } from "../../contexts/SearchContext.js";
 import Alert from "./Alert.js";
+import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
-import { useEffect, useState } from "react";
-import { getAllPokemon, getPokemon } from "../../../../components/api/PokemoApi.js";
-import { pokemonAcessApiUrl } from "../../../../constants/ApiUrls.js";
-import Load from "./Load.js";
 
 const Results = () => {
+  /***** CSS ******/
   const results = css`
     overflow: visible;
     position: relative;
@@ -56,58 +57,69 @@ const Results = () => {
     position: relative;
   `;
 
+   /***** Definition ******/
   const [loading, setLoading] = useState(true);
   const [pokemonData, setPokemonData] = useState([]);
-  const [nextURL, setNextURL] = useState("");
+  const search = useSearchCondition();
+  const dipatch = useDispatchSearch();
 
+  /***** JS ******/
+  /**
+  * 初期表示時処理
+  * Pokemonリスト1～12を取得
+  */
   useEffect(() => {
     const fetchPokemonData = async () => {
-      // 全てのポケモンデータを取得
-      let res = await getAllPokemon(pokemonAcessApiUrl);
-      loadPokemon(res.results, "init");
+      // 初期表示用ポケモンリストを取得
+      const res = await getPokemonList(search);
+      console.log(res.data);
+      console.log(res.data.length);
+      loadPokemon(res.data, "init");
       setLoading(false);
-      setNextURL(res.next);
     };
     fetchPokemonData();
   }, []);
 
-  const loadPokemon = async (data, type) => {
-    const _pokemon = await Promise.all(
-      data.map((pokemon) => {
-        const pokemonRecord = getPokemon(pokemon.url);
-        return pokemonRecord;
-      })
-    );
+  
+  /**
+  * Load more クリックイベント
+  */  
+ const clickedloadMorePokemon = async () => {
+   // ローダーを表示
+   setLoading(true);
+   const nextTwelvePokemon = await getPokemonList(search);
+   loadPokemon(nextTwelvePokemon.data, "more");
+   // ローダーを再度非表示
+   setLoading(false);
+  };
+  
+  /**
+  * @param {List} data - 取得したPokemonデータ
+  * @param {String} type - Dispatchアクション名
+  * PokemonリストのState更新関数
+  */  
+  const loadPokemon = (data, type) => {
     switch (type) {
       case "init": {
-        setPokemonData(_pokemon);
+        setPokemonData(data);
+        dipatch({ type: "nextPoke", val: data.length });
         break;
       }
       case "more": {
-        const combinedPoekmonData = [...pokemonData, ..._pokemon];
+        const combinedPoekmonData = [...pokemonData, ...data];
         setPokemonData(combinedPoekmonData);
+        dipatch({ type: "nextPoke", val: combinedPoekmonData.length } );
         break;
       }
     }
   };
 
-  const clickedloadMorePokemon = async () => {
-    // ローダーを表示
-    setLoading(true);
-    const nextTwentyPokemonData = await getAllPokemon(nextURL);
-    await loadPokemon(nextTwentyPokemonData.results, "more");
-
-    // 次のページのURLをセット
-    setNextURL(nextTwentyPokemonData.next);
-    // ローダーを再度非表示
-    setLoading(false);
-  };
-
+  /***** HTML ******/
   return (
     <section id="result" css={results}>
       <ul css={resultsList}>
         {pokemonData.map((pokemon, i) => {
-          return <PokemonList key={i} number={i} pokemon={pokemon} />;
+          return <PokemonList key={i} pokemon={pokemon} />;
         })}
       </ul>
       <div css={[push1, column12, noResults]}>
