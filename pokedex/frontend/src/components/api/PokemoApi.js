@@ -65,13 +65,10 @@ export const getPokemonImages = (url) => {
  * Pokemon検索データを取得
  * @param {Object} search - 検索内容格納オブジェクト
  */
-export const getSearchedPokemonList = (search) => {
-  axios
-    .post(POKEURL.SEARCH, search)
-    .then((res) => {
-      console.log("ポケモンリスト", res);
-    })
-    .catch((reason) =>
-      console.error("サーバーとの通信に失敗：", reason)
-    );
+export const getSearchedPokemonList = async (search) => {
+  try {
+    return await axios.post(POKEURL.POKELIST, search);
+  } catch(e) {
+    console.log("サーバーとの通信に失敗:" + e);
+  }
 };
