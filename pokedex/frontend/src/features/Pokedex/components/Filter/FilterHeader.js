@@ -4,24 +4,35 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 
 import {
+  column6,
   push1,
   push7,
-  column6,
   ttHint,
 } from "../../../../components/CommonCss/Layout.js";
-import { useDispatchSearch, useSearchCondition } from "../../contexts/SearchContext.js";
-import { clickSearchHandler } from "../../utils/PokeCommon.js";
+import { useSearchCondition, useSearchDispatch } from "../../contexts/SearchContext.js";
+import PokeSearchHook from "../../utils/PokeSearchHook.js";
 
 const FilterHeader = () => {
   /***** Definition ******/
-  const search = useSearchCondition();
-  const dipatch = useDispatchSearch();
+  const searchDipatch = useSearchDispatch();
+  const searchAction = PokeSearchHook();
 
   /***** JS ******/
+  /**
+   * @param {Object} e - イベントオブジェクト
+   * 検索Input内容チェンジイベント
+   */
   const searchInputChange = (e) => {
-    dipatch( ...search, e.target.id, e.target.value );
+    searchDipatch({ type: e.target.id, val: e.target.value } );
   }
-  console.log(search);
+
+  // /**
+  //  * @param {Object} e - イベントオブジェクト
+  //  * 検索Input内容チェンジイベント
+  //  */
+  // const clickSearchHandler = async () => {
+  //   searchAction();
+  // }
 
   /***** HTML ******/
   return (
@@ -36,7 +47,7 @@ const FilterHeader = () => {
                 <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
                 <pre></pre>
               </span>
-              <input css={buttonSearch} onClick={async () => clickSearchHandler(search, dipatch)}></input>
+              <input css={buttonSearch} onClick={searchAction}></input>
             </div>
           </div>
           <p css={subtitle}>

@@ -1,9 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { column12, push1 } from "../../../../components/CommonCss/Layout.js";
 import { getPokemonList } from "../../../../components/api/PokemoApi.js";
-import { useDispatchSearch, useSearchCondition } from "../../contexts/SearchContext.js";
+import { useLoader, usePokemonData, useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData } from "../../contexts/SearchContext.js";
 import Alert from "./Alert.js";
 import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
@@ -57,11 +57,13 @@ const Results = () => {
     position: relative;
   `;
 
-   /***** Definition ******/
-  const [loading, setLoading] = useState(true);
-  const [pokemonData, setPokemonData] = useState([]);
+  /***** Definition ******/
+  const loader = useLoader();
+  const setLoader = useSetLoader();
+  const pokemonData = usePokemonData();
+  const setPokemonData = useSetPokemonData();
   const search = useSearchCondition();
-  const dipatch = useDispatchSearch();
+  const searchDipatch = useSearchDispatch();
 
   /***** JS ******/
   /**
@@ -72,25 +74,22 @@ const Results = () => {
     const fetchPokemonData = async () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonList(search);
-      console.log(res.data);
-      console.log(res.data.length);
       loadPokemon(res.data, "init");
-      setLoading(false);
+      setLoader(false);
     };
     fetchPokemonData();
   }, []);
-
   
   /**
   * Load more クリックイベント
   */  
  const clickedloadMorePokemon = async () => {
    // ローダーを表示
-   setLoading(true);
+   setLoader(true);
    const nextTwelvePokemon = await getPokemonList(search);
    loadPokemon(nextTwelvePokemon.data, "more");
    // ローダーを再度非表示
-   setLoading(false);
+   setLoader(false);
   };
   
   /**
@@ -102,13 +101,13 @@ const Results = () => {
     switch (type) {
       case "init": {
         setPokemonData(data);
-        dipatch({ type: "nextPoke", val: data.length });
+        searchDipatch({ type: "setPageNumber", val: 1 });
         break;
       }
       case "more": {
-        const combinedPoekmonData = [...pokemonData, ...data];
-        setPokemonData(combinedPoekmonData);
-        dipatch({ type: "nextPoke", val: combinedPoekmonData.length } );
+        const combinedPokemonData = [...pokemonData, ...data];
+        setPokemonData(combinedPokemonData);
+        searchDipatch({ type: "setPageNumber", val: (search.pageNumber + 1) } );
         break;
       }
     }
@@ -126,7 +125,7 @@ const Results = () => {
         <Alert />
       </div>
       <div css={contentBlock}>
-        {loading && <Load />}
+        {loader && <Load />}
         <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
       </div>
     </section>

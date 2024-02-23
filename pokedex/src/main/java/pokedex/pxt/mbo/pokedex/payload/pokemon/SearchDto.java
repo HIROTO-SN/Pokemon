@@ -13,6 +13,9 @@ public class SearchDto {
 	private String searchInput;
 	private int numberRangeMin;
 	private int numberRangeMax;
+	private String height;	
+	private String weight;
 	private String sortBy;
-	private int lastPokeId;
+	private int pageNumber;
+	private Boolean initFlg;
 }
