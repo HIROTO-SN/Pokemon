@@ -177,9 +177,6 @@ const LoginForm = () => {
 
     // ログイン成功時処理
     userStateAction({username: username, isLogin: true});
-    console.log("userState.username: " + userState.username);
-    console.log("userState.isLogin: " + userState.isLogin);
-    console.log("username: " + username);
     // navigate("/profile");
   };
   

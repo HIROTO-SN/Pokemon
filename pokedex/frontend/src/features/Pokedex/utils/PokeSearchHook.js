@@ -1,6 +1,5 @@
-import { useEffect } from "react";
 import { getSearchedPokemonList } from "../../../components/api/PokemoApi.js";
-import { useLoader, usePokemonData, useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData } from "../contexts/SearchContext.js";
+import { useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData } from "../contexts/SearchContext.js";
 
 /**
  * Pokedex画面での検索機能カスタムHOOKS
@@ -13,21 +12,21 @@ const PokeSearchHook = () => {
 	const search = useSearchCondition();
 	const searchDipatch = useSearchDispatch();
 
-	 /**
+	/**
    * Searchボタン押下時共通処理
-   */
-		const fetchPokeData = async () => {
-			// ローダーを表示
-			setLoader(true);
-			// ポケモンリストを取得
-			const newSearch = { ...search, pageNumber: 0 }
-			console.log("newSearch" + newSearch);
-			const res = await getSearchedPokemonList(newSearch);
-			setPokemonData(res.data);
-			searchDipatch({ type: "setPageNumber", val: 1});
-			// ローダーを非表示にし、スクロール処理
-			setLoader(false);
-			scrollToPokeList();
+ 	 */
+	const fetchPokeData = async () => {
+		// ローダーを表示
+		setLoader(true);
+		// ポケモンリストを取得
+		const newSearch = { ...search, pageNumber: 0 }
+		console.log("newSearch" + newSearch);
+		const res = await getSearchedPokemonList(newSearch);
+		setPokemonData(res.data);
+		searchDipatch({ type: "setPageNumber", val: 1});
+		// ローダーを非表示にし、スクロール処理
+		setLoader(false);
+		scrollToPokeList();
 	}
 
 	/**
@@ -40,9 +39,9 @@ const PokeSearchHook = () => {
 	}
 	
 	/***** Hooks return ******/
-	return (
+	return [
 		fetchPokeData
-	)
+	]
 }
 
 export default PokeSearchHook;
