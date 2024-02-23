@@ -1,5 +1,7 @@
 package pokedex.pxt.mbo.pokedex.payload.pokemon;
 
+import java.util.List;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,6 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SearchDto {
 	private String searchInput;
+	private List<Types> types;
 	private int numberRangeMin;
 	private int numberRangeMax;
 	private String height;	

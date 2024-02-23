@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { typeList } from "../../../../constants/UlList";
+import { useSearchCondition, useSearchDispatch } from "../../contexts/SearchContext";
 
 const FilterContentLeft = () => {
   /***** CSS ******/
@@ -181,19 +182,29 @@ const FilterContentLeft = () => {
   
   /***** Definition ******/
   const clickedColor = "#30a7d7";
-  const [clickedTypeList, setClickedTypeList] = useState([]);
+  const clickedTypeList = useSearchCondition().types;
+  const setClickedTypeList = useSearchDispatch();
+  console.log("clickedList : " + clickedTypeList);
   const [clickedWeakList, setClickedWeakList] = useState([]);
 
   /***** JS ******/
+  /**
+   * @param {String} name - クリックされたボタンのタイプ名
+   * @param {String} type - クリックされたボタンの種類（T or W）
+   * Type,WeakボタンのState更新関数
+   */  
   const clickTWHandler = (name, type) => {
 
     switch (type) {
       case "T" :
-        if (clickedTypeList.find((n) => n === name)) {
-          const filteredTypeList = clickedTypeList.filter((typeName) => typeName !== name)
-          setClickedTypeList(filteredTypeList);
+        if (clickedTypeList.find((_type) => _type.name === name)) {
+          // 選択されているタイプをクリックしたとき（削除）
+          const filteredTypeList = clickedTypeList.filter((_type) => _type.name !== name);
+          setClickedTypeList({ type: "searchType", val: filteredTypeList });
         } else {
-          setClickedTypeList([...clickedTypeList, name]);
+          // 選択されていないタイプをクリックしたとき（追加）
+          const newType = typeList.filter(_type => _type.name === name)[0];
+          setClickedTypeList({ type: "searchType", val: [...clickedTypeList, newType] });
         }
         break;
       case "W" :
@@ -207,13 +218,17 @@ const FilterContentLeft = () => {
     }
   }
 
+	/**
+   * Type, Weak ボタンの背景色セット
+ 	 */
   useEffect(() => {
-    clickedTypeList.map((typeList) => {
-      const el_target = document.querySelector("#" + typeList + "_t");
+    clickedTypeList.map((_type) => {
+      const el_target = document.querySelector("#" + _type.name + "_t");
       el_target.style.background = clickedColor;
+
     });
-    clickedWeakList.map((weakList) => {
-      const el_target = document.querySelector("#" + weakList + "_w");
+    clickedWeakList.map((_weak) => {
+      const el_target = document.querySelector("#" + _weak + "_w");
       el_target.style.background = clickedColor;
     });
   },[clickedTypeList, clickedWeakList]);

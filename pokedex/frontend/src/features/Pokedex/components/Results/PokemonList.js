@@ -59,18 +59,18 @@ const PokemonList = ({ pokemon }) => {
   `;
 
   const pill = (typeName) => css`
-      font-family: "Flexo-Medium", arial, sans-serif;
-      border-radius: 3px;
-      line-height: 18px;
-      max-width: 110px;
-      margin: 0 1.5625% 0 0;
-      width: 38.4375%;
-      float: left;
-      text-transform: none;
-      font-size: 11px;
-      text-align: center;
-			background: ${setBackGroundForTypes(typeName)};
-			color: ${setFontColorForTypes(typeName)};
+    font-family: "Flexo-Medium", arial, sans-serif;
+    border-radius: 3px;
+    line-height: 18px;
+    max-width: 110px;
+    margin: 0 1.5625% 0 0;
+    width: 38.4375%;
+    float: left;
+    text-transform: none;
+    font-size: 11px;
+    text-align: center;
+    background: ${setBackGroundForTypes(typeName)};
+    color: ${setFontColorForTypes(typeName)};
   `;
 
   /***** HTML ******/
@@ -85,13 +85,13 @@ const PokemonList = ({ pokemon }) => {
           {(Number(pokemon.pokemonId)).toString().padStart(4, "0")}
         </p>
         <H5_names>{capitalizeFirstLetter(pokemon.pokemonName)}</H5_names>
-        {/* {pokemon.types.map((_type) => {
+        {pokemon.types.map((_type) => {
           return (
-            <div key={_type.type.name}>
-              <span css={pill(_type.type.name)}>{_type.type.name}</span>
+            <div key={_type.name}>
+              <span css={pill(_type.name)}>{capitalizeFirstLetter(_type.name)}</span>
             </div>
           );
-        })} */}
+        })}
       </div>
     </Li_pokemon>
   );

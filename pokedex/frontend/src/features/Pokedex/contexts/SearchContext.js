@@ -10,7 +10,7 @@ const SetLoader = createContext();
 // 検索条件初期状態オブジェクト
 const initSearchState = { 
 	searchInput: "",
-	// password: "",
+	types: [],
 	numberRangeMin: 1,
 	numberRangeMax: 1025,
 	sortBy: 'asc',
@@ -30,6 +30,8 @@ export const SearchProvider = ({ children }) => {
 		switch (action.type) {
 			case "searchInput":
 				return { ...state, searchInput: action.val};
+			case "searchType":
+				return { ...state, types: action.val};
 			case "setPageNumber":
 				return { ...state, pageNumber: action.val, initFlg: false };
 		}

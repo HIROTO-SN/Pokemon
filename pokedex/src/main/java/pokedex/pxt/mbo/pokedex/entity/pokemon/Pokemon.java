@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -36,23 +38,23 @@ public class Pokemon {
 
 	// private double height;
 	// private double weight;
-	// @OneToOne
-	// @JoinColumn(name = "type1", insertable = false, updatable = false)
-	// private Types type1;
-	// @OneToOne
-	// @JoinColumn(name = "type2",insertable = false, updatable = false)
-	// private Types type2;
+	@ManyToOne
+	@JoinColumn(name = "type_1", insertable = false, updatable = false)
+	private Types type1;
+	@ManyToOne
+	@JoinColumn(name = "type_2",insertable = false, updatable = false)
+	private Types type2;
 	// private int gender;
 	// private int category;
 	// private String v1_description;
 	// private String v2_description;
-	// @OneToOne
+	// @ManyToOne
 	// @JoinColumn(name = "ability1",insertable = false, updatable = false)
 	// private Abilities ability1;
-	// @OneToOne
+	// @ManyToOne
 	// @JoinColumn(name = "ability2",insertable = false, updatable = false)
 	// private Abilities ability2;
-	// @OneToOne
+	// @ManyToOne
 	// @JoinColumn(name = "ability_hidden",insertable = false, updatable = false)
 	// private Abilities ability_hidden;
 	// private int stats_hp;

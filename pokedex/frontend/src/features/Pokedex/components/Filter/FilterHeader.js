@@ -15,7 +15,7 @@ import PokeSearchHook from "../../utils/PokeSearchHook.js";
 const FilterHeader = () => {
   /***** Definition ******/
   const searchDipatch = useSearchDispatch();
-  const searchAction = PokeSearchHook();
+  const [ searchAction ] = PokeSearchHook();
 
   /***** JS ******/
   /**
