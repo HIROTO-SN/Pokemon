@@ -5,6 +5,8 @@ import { CgPokemon } from "react-icons/cg";
 import { IoIosArrowDown } from "react-icons/io";
 import { CgSearch } from "react-icons/cg";
 import { useEffect, useState } from "react";
+import PokeSearchHook from "../../utils/PokeSearchHook";
+import { CLICKED_COLOR } from "../../../../constants/ConstantsGeneral";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -228,11 +230,10 @@ const FilterContentRight = () => {
     { name: "heavy", height: "60%", top: "45%", urlB: "/icons/ball.png" },
   ];
 
-  const clickedColor = "#ee6b2f";
-
   /***** Definition ******/
   const [clickedHeightList, setClickedHeightList] = useState([]);
   const [clickedWeightList, setClickedWeightList] = useState([]);
+  const [ searchAction ] = PokeSearchHook();
 
   /***** JS ******/
   const clickHWHandler = (name, type) => {
@@ -263,13 +264,13 @@ const FilterContentRight = () => {
   useEffect(() => {
     clickedHeightList.map((heightList) => {
       const el_target = document.querySelector("#" + heightList + "_h");
-      el_target.style.background = clickedColor;
+      el_target.style.background = CLICKED_COLOR.HW;
 
       // const el_target_img = document.querySelector("#" + heightList + "_imgH");
     });
     clickedWeightList.map((weightList) => {
       const el_target = document.querySelector("#" + weightList + "_w");
-      el_target.style.background = clickedColor;
+      el_target.style.background = CLICKED_COLOR.HW;
     });
   }, [clickedWeightList, clickedHeightList]);
 
@@ -337,7 +338,7 @@ const FilterContentRight = () => {
       </ContentBlock>
       <ContentBlock>
         <div css={filterAction}>
-          <a id="advSearch" css={[buttonOrange, button]}>
+          <a id="advSearch" css={[buttonOrange, button]} onClick={searchAction}>
             <CgSearch strokeWidth="1" />
             Search
           </a>

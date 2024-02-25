@@ -51,12 +51,17 @@ public class PokemonSpecification<Pokemon> {
 	 * @return <Specification<Pokemon>> 
 	 */
 	public Specification<Pokemon> typeSearch(List<Integer> types, String n1, String n2) {
-		if (types.size() == 0 || types.size() >= 3) {
-			// タイプが未選択、または3つ以上選択されているとき
-			return null;
-		} else {
-			// タイプが1つ、または2つ選択されているとき
-			return typeEqual(types.get(0), n1).and(typeEqual(types.get(1), n2));
+		switch (types.size()) {
+			case 0:
+				return null;
+			case 1:
+				return typeEqual(types.get(0), n1).or(typeEqual(types.get(0), n2));
+			case 2:
+				return (typeEqual(types.get(0), n1).and(typeEqual(types.get(1), n2))
+				 			.or(typeEqual(types.get(0), n2).and(typeEqual(types.get(1), n1))));
+			default:
+				// タイプが3件以上選択されている場合は検索結果はなし
+				return typeEqual(-1, n1).or(typeEqual(-1, n2));
 		}
 	}
 

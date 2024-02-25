@@ -67,7 +67,14 @@ export const getPokemonImages = (url) => {
  */
 export const getSearchedPokemonList = async (search) => {
   try {
-    return await axios.post(POKEURL.POKELIST, search);
+    const response = await axios.post(POKEURL.POKELIST, search);
+    if (response.status === 204) {
+      // 検索結果が1件も見つからなかった時
+      return { ... response, data: [] };
+    } else if (response.status === 200) {
+      // 検索結果が見つかった時
+      return response;
+    }
   } catch(e) {
     console.log("サーバーとの通信に失敗:" + e);
   }
