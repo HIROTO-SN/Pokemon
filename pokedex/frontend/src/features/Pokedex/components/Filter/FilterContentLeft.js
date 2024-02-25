@@ -204,7 +204,8 @@ const FilterContentLeft = () => {
         } else {
           // 選択されていないタイプをクリックしたとき（追加）
           const newType = typeList.filter(_type => _type.name === name)[0];
-          setClickedTypeList({ type: "searchType", val: [...clickedTypeList, newType] });
+          console.log("newType: " + newType.type_id);
+          setClickedTypeList({ type: "searchType", val: [...clickedTypeList, newType.type_id] });
         }
         break;
       case "W" :
@@ -222,15 +223,15 @@ const FilterContentLeft = () => {
    * Type, Weak ボタンの背景色セット
  	 */
   useEffect(() => {
-    clickedTypeList.map((_type) => {
-      const el_target = document.querySelector("#" + _type.name + "_t");
+    clickedTypeList.map((_type_id) => {
+      const el_target = document.querySelector("#t_" + _type_id);
       el_target.style.background = clickedColor;
 
     });
-    clickedWeakList.map((_weak) => {
-      const el_target = document.querySelector("#" + _weak + "_w");
-      el_target.style.background = clickedColor;
-    });
+    // clickedWeakList.map((_weak) => {
+    //   const el_target = document.querySelector("#" + _weak + "_w");
+    //   el_target.style.background = clickedColor;
+    // });
   },[clickedTypeList, clickedWeakList]);
 
   /***** HTML ******/
@@ -252,8 +253,8 @@ const FilterContentLeft = () => {
           {typeList.map((type) => (
             <li key={type.name}>
               <span css={pill({type})}>{type.name}</span>
-              <span id={type.name + "_t"} css={filterTypeRound} onClick={() => clickTWHandler(type.name, "T")}>T</span>
-              <span id={type.name + "_w"} css={filterWeaknessRound} onClick={() => clickTWHandler(type.name, "W")}>W</span>
+              <span id={"t_" + type.type_id} css={filterTypeRound} onClick={() => clickTWHandler(type.name, "T")}>T</span>
+              <span id={"w_" + type.type_id} css={filterWeaknessRound} onClick={() => clickTWHandler(type.name, "W")}>W</span>
             </li>
           ))}
         </ul>

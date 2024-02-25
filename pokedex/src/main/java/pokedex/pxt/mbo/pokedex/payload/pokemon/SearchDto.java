@@ -13,7 +13,7 @@ import lombok.Setter;
 @AllArgsConstructor
 public class SearchDto {
 	private String searchInput;
-	private List<Types> types;
+	private List<Integer> types;
 	private int numberRangeMin;
 	private int numberRangeMax;
 	private String height;	
