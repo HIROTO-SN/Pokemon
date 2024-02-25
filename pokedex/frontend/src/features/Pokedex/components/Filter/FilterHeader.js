@@ -26,14 +26,6 @@ const FilterHeader = () => {
     searchDipatch({ type: e.target.id, val: e.target.value } );
   }
 
-  // /**
-  //  * @param {Object} e - イベントオブジェクト
-  //  * 検索Input内容チェンジイベント
-  //  */
-  // const clickSearchHandler = async () => {
-  //   searchAction();
-  // }
-
   /***** HTML ******/
   return (
     <DivFilterHead>
@@ -47,7 +39,7 @@ const FilterHeader = () => {
                 <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
                 <pre></pre>
               </span>
-              <input css={buttonSearch} onClick={searchAction}></input>
+              <input type="button" css={buttonSearch} onClick={searchAction}></input>
             </div>
           </div>
           <p css={subtitle}>
