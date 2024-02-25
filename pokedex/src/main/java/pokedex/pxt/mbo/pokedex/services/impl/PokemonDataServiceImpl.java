@@ -52,6 +52,8 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 				Specification
 					.where(spec.formIdOneAndSort(searchDto.getSortBy()))
 					.and(spec.nameContains(searchDto.getSearchInput()))
+					.and(spec.typeSearch(searchDto.getTypes(), "1", "2")
+							.or(spec.typeSearch(searchDto.getTypes(), "2", "1")))
 					,PageRequest.of(searchDto.getPageNumber(), Constants.POKE.get("PAGE_SIZE"), Sort.by(
 						searchDto.getSortBy().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, 
 						"pokemonId"))

@@ -1,9 +1,11 @@
 package pokedex.pxt.mbo.pokedex.specification;
 
+import java.util.List;
 import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
 import jakarta.persistence.criteria.CriteriaQuery;
+import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import pokedex.pxt.mbo.pokedex.common.Constants;
@@ -39,6 +41,35 @@ public class PokemonSpecification<Pokemon> {
 	public Specification<Pokemon> nameContains(String pokemonName) {
 		return pokemonName.equals("") ? null : (root, query, builder) -> {
 			return builder.like(root.get("pokemonName"), "%" + pokemonName + "%");
+		};
+	}
+
+	/**
+	 * タイプによる検索成形用
+	 * @param types <List<Integer>> 検索対象タイプIDリスト
+	 * @param noList <String[]> 検索タイプ選択用ナンバー
+	 * @return <Specification<Pokemon>> 
+	 */
+	public Specification<Pokemon> typeSearch(List<Integer> types, String n1, String n2) {
+		if (types.size() == 0 || types.size() >= 3) {
+			// タイプが未選択、または3つ以上選択されているとき
+			return null;
+		} else {
+			// タイプが1つ、または2つ選択されているとき
+			return typeEqual(types.get(0), n1).and(typeEqual(types.get(1), n2));
+		}
+	}
+
+	/**
+	 * タイプ2による検索
+	 * @param type <Integer> タイプ2ID
+	 * @return <Specification<Pokemon>> 
+	 */
+	public Specification<Pokemon> typeEqual(Integer type, String no) {
+		return type == null  ? null : (root, query, builder) -> {
+			return builder
+					.equal(root.join("type" + no, JoinType.INNER)
+					.get("type_id"), type.intValue());
 		};
 	}
 	
