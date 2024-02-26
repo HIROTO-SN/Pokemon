@@ -97,11 +97,11 @@ const FilterContentLeft = () => {
     text-align: center;
   `;
 
-  const filterWeaknessRound = css`
+  const filterWeaknessRound = (flg) => css`
     cursor: pointer;
     margin-right: 0;
     font-family: "Flexo-Bold", arial, sans-serif;
-    background: #f2f2f2;
+    background: ${flg ? CLICKED_COLOR.TW : "#f2f2f2"};
     border-radius: 14px;
     color: #313131;
     line-height: 30px;
@@ -184,8 +184,9 @@ const FilterContentLeft = () => {
   /***** Definition ******/
   const clickedTypeList = useSearchCondition().types;
   const setClickedTypeList = useSearchDispatch();
-  console.log("clickedList : " + clickedTypeList);
-  const [clickedWeakList, setClickedWeakList] = useState([]);
+  const clickedWeakList = useSearchCondition().weaks;
+  const setClickedWeakList = useSearchDispatch();
+  console.log("clickedWeakList : " + clickedWeakList);
 
   /***** JS ******/
   /**
@@ -197,21 +198,22 @@ const FilterContentLeft = () => {
     switch (type) {
       case "T" :
         if (clickedTypeList.find((_type_id) => _type_id === id)) {
-          // 選択されているタイプをクリックしたとき（削除）
+          // 選択されているタイプ（T)をクリックしたとき（削除）
           const filteredTypeList = clickedTypeList.filter((_type_id) => _type_id !== id);
           setClickedTypeList({ type: "searchType", val: filteredTypeList });
         } else {
           // 選択されていないタイプをクリックしたとき（追加）
-          const newType = typeList.filter((type) => type.type_id === id)[0];
-          setClickedTypeList({ type: "searchType", val: [...clickedTypeList, newType.type_id] });
+          setClickedTypeList({ type: "searchType", val: [...clickedTypeList, id] });
         }
         break;
       case "W" :
-        if (clickedWeakList.find((n) => n === id)) {
-          const filteredWeakList = clickedWeakList.filter((typeName) => typeName !== id)
-          setClickedWeakList(filteredWeakList);
+        if (clickedWeakList.find((_type_id) => _type_id === id)) {
+          // 選択されている弱点（W)をクリックしたとき（削除）
+          const filteredWeakList = clickedWeakList.filter((_type_id) => _type_id !== id)
+          setClickedWeakList({ type: "searchWeak", val: filteredWeakList });
         } else {
-          setClickedWeakList([...clickedWeakList, id]);
+          // 選択されていない弱点をクリックしたとき（追加）
+          setClickedWeakList({ type: "searchWeak", val: [...clickedWeakList, id] });
         }
         break;
     }
@@ -226,10 +228,10 @@ const FilterContentLeft = () => {
       el_target.style.background = CLICKED_COLOR.TW;
 
     });
-    // clickedWeakList.map((_weak) => {
-    //   const el_target = document.querySelector("#" + _weak + "_w");
-    //   el_target.style.background = CLICKED_COLOR.TW;
-    // });
+    clickedWeakList.map((_weak_id) => {
+      const el_target = document.querySelector("#w_" + _weak_id);
+      el_target.style.background = CLICKED_COLOR.TW;
+    });
   },[clickedTypeList, clickedWeakList]);
 
   /***** HTML ******/
@@ -252,7 +254,7 @@ const FilterContentLeft = () => {
             <li key={type.name}>
               <span css={pill({type})}>{type.name}</span>
               <span id={"t_" + type.type_id} css={filterTypeRound(clickedTypeList.find((_type_id) => _type_id === type.type_id))} onClick={() => clickTWHandler(type.type_id, "T")}>T</span>
-              <span id={"w_" + type.type_id} css={filterWeaknessRound} onClick={() => clickTWHandler(type.type_id, "W")}>W</span>
+              <span id={"w_" + type.type_id} css={filterWeaknessRound(clickedWeakList.find((_weak_id) => _weak_id === type.type_id))} onClick={() => clickTWHandler(type.type_id, "W")}>W</span>
             </li>
           ))}
         </ul>

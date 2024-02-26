@@ -14,6 +14,7 @@ import lombok.Setter;
 public class SearchDto {
 	private String searchInput;
 	private List<Integer> types;
+	private List<Integer> weaks;
 	private int numberRangeMin;
 	private int numberRangeMax;
 	private String height;	

@@ -10,7 +10,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 
 /*
  * Session管理用Bean
@@ -29,5 +28,4 @@ public class SessionDto implements Serializable {
 	private LocalDate birthday;
 	private Integer accountLoginFailureCount;
 	private LocalDateTime accountLockedDate;
-	private PokemonDto pokemonDto;
 }

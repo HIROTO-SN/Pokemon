@@ -42,7 +42,7 @@ public class Pokemon {
 	@JoinColumn(name = "type_1", insertable = false, updatable = false)
 	private Types type1;
 	@ManyToOne
-	@JoinColumn(name = "type_2",insertable = false, updatable = false)
+	@JoinColumn(name = "type_2", insertable = false, updatable = false)
 	private Types type2;
 	// private int gender;
 	// private int category;

@@ -87,10 +87,12 @@ const PokemonList = ({ pokemon }) => {
         <H5_names>{capitalizeFirstLetter(pokemon.pokemonName)}</H5_names>
         {pokemon.types.map((_type) => {
           return (
-            <div key={_type.name}>
-              <span css={pill(_type.name)}>{capitalizeFirstLetter(_type.name)}</span>
-            </div>
-          );
+            (_type.type_id != 99 &&
+              <div key={_type.name}>
+                <span css={pill(_type.name)}>{capitalizeFirstLetter(_type.name)}</span>
+              </div>
+            )
+          )
         })}
       </div>
     </Li_pokemon>
