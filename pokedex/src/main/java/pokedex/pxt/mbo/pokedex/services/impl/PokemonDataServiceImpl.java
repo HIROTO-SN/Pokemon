@@ -48,16 +48,15 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		// 初回以外の検索または「Load more」押下時
 		} else {
 			PokemonSpecification<Pokemon> spec = new PokemonSpecification<>();
+			// Weaks（弱点）リストを作成
+			if (searchDto.getWeaks().size() > 0) {
+
+			}
 			pokemonRepository.findAll(
 				Specification
 					.where(spec.formIdOneAndSort(searchDto.getSortBy()))
 					.and(spec.nameContains(searchDto.getSearchInput()))
 					.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
-						// searchDto.getTypes().size() > 1 ?
-						// 	spec.typeSearch(searchDto.getTypes(), "1", "2")
-						// 	.or(spec.typeSearch(searchDto.getTypes(), "2", "1"))
-						// : 
-						// 	spec.typeSearch(searchDto.getTypes(), "1", "2"))
 					,PageRequest.of(searchDto.getPageNumber(), Constants.POKE.get("PAGE_SIZE"), Sort.by(
 						searchDto.getSortBy().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, 
 						"pokemonId"))
@@ -88,6 +87,16 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 						new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
 						new Types(pokemon.getType2().getType_id(), pokemon.getType2().getName())
 					)
+			),
+			new ArrayList<Types>(
+				// pokemon.getType2() == null ?
+				// 	Arrays.asList(
+				// 		new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName())
+				// 	)	: 
+				// 	Arrays.asList(
+				// 		new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
+				// 		new Types(pokemon.getType2().getType_id(), pokemon.getType2().getName())
+				// 	)
 			)
 		);
 	}

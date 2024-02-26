@@ -11,6 +11,7 @@ const SetLoader = createContext();
 const initSearchState = { 
 	searchInput: "",
 	types: [],
+	weaks: [],
 	numberRangeMin: 1,
 	numberRangeMax: 1025,
 	sortBy: 'asc',
@@ -32,6 +33,8 @@ export const SearchProvider = ({ children }) => {
 				return { ...state, searchInput: action.val};
 			case "searchType":
 				return { ...state, types: action.val};
+			case "searchWeak":
+				return { ...state, weaks: action.val};
 			case "setPageNumber":
 				return { ...state, pageNumber: action.val, initFlg: false };
 		}

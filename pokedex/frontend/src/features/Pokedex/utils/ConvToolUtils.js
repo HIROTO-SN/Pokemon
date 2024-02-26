@@ -3,7 +3,7 @@ import { typeList } from "../../../constants/UlList";
 // タイプリストの背景色変換
 export const setBackGroundForTypes = (typeName) => {
 	const filteredType = typeList.filter(type => type.name.toLowerCase() === typeName)[0];
-	if (!typeof filteredType) {
+	if (filteredType !== void 0) {
 		return filteredType.background;
 	}
 };
@@ -11,7 +11,7 @@ export const setBackGroundForTypes = (typeName) => {
 // タイプリストの文字色変換
 export const setFontColorForTypes = (typeName) => {
 	const filteredType = typeList.filter(type => type.name.toLowerCase() === typeName)[0];
-	if (!typeof filteredType) {
+	if (filteredType !== void 0) {
 		return filteredType.color;
 	}
 };
