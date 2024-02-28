@@ -6,7 +6,8 @@ import { IoIosArrowDown } from "react-icons/io";
 import { CgSearch } from "react-icons/cg";
 import { useEffect, useState } from "react";
 import PokeSearchHook from "../../utils/PokeSearchHook";
-import { CLICKED_COLOR } from "../../../../constants/ConstantsGeneral";
+import { CLICKED_COLOR, HEIGHT_LIST, WEIGHT_LIST } from "../../../../constants/ConstantsGeneral";
+import { useSearchCondition, useSearchDispatch } from "../../contexts/SearchContext";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -136,9 +137,9 @@ const FilterContentRight = () => {
       vertical-align: middle;
     }
   `;
-  const size = ({ list }) => css`
-    margin-left: ${list.name == "middle" && "5.62%"};
-    margin-right: ${list.name == "middle" && "5.62%"};
+  const pill = (name) => css`
+    margin-left: ${name == "middle" && "5.62%"};
+    margin-right: ${name == "middle" && "5.62%"};
   `;
   const imgHWeight = ({ list }) => css`
     cursor: pointer;
@@ -208,71 +209,71 @@ const FilterContentRight = () => {
     }
   `;
 
-  const heightList = [
-    {
-      name: "short",
-      height: "45%",
-      top: "35%",
-      urlB: "/icons/heightShort.png",
-    },
-    {
-      name: "middle",
-      height: "52%",
-      top: "35%",
-      urlB: "/icons/heightMiddle.png",
-    },
-    { name: "tall", height: "90%", top: "45%", urlB: "/icons/heightTall.png" },
-  ];
-
-  const weightList = [
-    { name: "light", height: "45%", top: "35%", urlB: "/icons/ball.png" },
-    { name: "middle", height: "50%", top: "38%", urlB: "/icons/ball.png" },
-    { name: "heavy", height: "60%", top: "45%", urlB: "/icons/ball.png" },
-  ];
-
   /***** Definition ******/
-  const [clickedHeightList, setClickedHeightList] = useState([]);
-  const [clickedWeightList, setClickedWeightList] = useState([]);
+  const clickedHeightList = useSearchCondition().height;
+  const clickedWeightList = useSearchCondition().weight;
+  const searchDipatch = useSearchDispatch();
+
   const [ searchAction ] = PokeSearchHook();
 
   /***** JS ******/
+  /**
+   * @param {String} name - クリックされたボタンの高さ、または重さ名
+   * @param {String} type - クリックされたボタンの種類（H or W）
+   * Type,WeakボタンのState更新関数
+   */ 
   const clickHWHandler = (name, type) => {
     switch (type) {
       case "H":
         if (clickedHeightList.find((n) => n === name)) {
-          const filteredHeightList = clickedHeightList.filter(
-            (heightName) => heightName !== name
-          );
-          setClickedHeightList(filteredHeightList);
+          const filteredHeightList = clickedHeightList.filter((n) => n !== name);
+          searchDipatch({ type: "searchHeight", val: filteredHeightList });
         } else {
-          setClickedHeightList([...clickedHeightList, name]);
+          searchDipatch({ type: "searchHeight", val: [...clickedHeightList, name] });
         }
         break;
       case "W":
         if (clickedWeightList.find((n) => n === name)) {
-          const filteredWeightList = clickedWeightList.filter(
-            (weightName) => weightName !== name
-          );
-          setClickedWeightList(filteredWeightList);
+          const filteredWeightList = clickedWeightList.filter((n) => n !== name);
+          searchDipatch({ type: "searchWeight", val: [...filteredWeightList] });
         } else {
-          setClickedWeightList([...clickedWeightList, name]);
+          searchDipatch({ type: "searchWeight", val: [...clickedWeightList, name] });
         }
         break;
     }
   };
 
+  /**
+   * 高さまたは重さのチェックがされた場合
+   */ 
   useEffect(() => {
-    clickedHeightList.map((heightList) => {
-      const el_target = document.querySelector("#" + heightList + "_h");
-      el_target.style.background = CLICKED_COLOR.HW;
-
-      // const el_target_img = document.querySelector("#" + heightList + "_imgH");
-    });
-    clickedWeightList.map((weightList) => {
-      const el_target = document.querySelector("#" + weightList + "_w");
-      el_target.style.background = CLICKED_COLOR.HW;
-    });
+    backgroundHandler();
   }, [clickedWeightList, clickedHeightList]);
+
+  /**
+   * 初期表示処理
+   */ 
+  useEffect(() => {
+    backgroundHandler();
+  })
+
+  /**
+   * 高さと重さの背景色制御
+   */ 
+  const backgroundHandler = () => {
+    // map処理共通
+    const func_map = (val, type) => {
+      const el_target = document.querySelector("#" + type + val);
+      el_target.style.background = CLICKED_COLOR.HW;
+    }
+    clickedHeightList.map((name) => {
+      func_map(name, "h_");
+    });
+    clickedWeightList.map((name) => {
+      func_map(name, "w_");
+    });
+
+  }
 
   /***** HTML ******/
   return (
@@ -294,10 +295,10 @@ const FilterContentRight = () => {
       <ContentBlock>
         <h3 css={[sectionTitle, filterTitle]}>Height</h3>
         <ul css={filterWHeight}>
-          {heightList.map((list) => (
+          {HEIGHT_LIST.map((list) => (
             <li
-              id={list.name + "_h"}
-              css={size({ list })}
+              id={"h_" + list.name}
+              css={pill(list.name)}
               key={list.name}
               onClick={() => clickHWHandler(list.name, "H")}
             >
@@ -317,10 +318,10 @@ const FilterContentRight = () => {
       <ContentBlock>
         <h3 css={[sectionTitle, filterTitle]}>Weight</h3>
         <ul css={filterWHeight}>
-          {weightList.map((list) => (
+          {WEIGHT_LIST.map((list) => (
             <li
-              id={list.name + "_w"}
-              css={size({ list })}
+              id={"w_" + list.name}
+              css={pill(list.name)}
               key={list.name}
               onClick={() => clickHWHandler(list.name, "W")}
             >

@@ -1,4 +1,4 @@
-import { getSearchedPokemonList } from "../../../components/api/PokemoApi.js";
+import { getAllPokemon, getSearchedPokemonList } from "../../../components/api/PokemoApi.js";
 import { useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData } from "../contexts/SearchContext.js";
 
 /**
@@ -16,6 +16,7 @@ const PokeSearchHook = () => {
    * Searchボタン押下時共通処理
  	 */
 	const fetchPokeData = async () => {
+		await testPokemonData();
 		// ローダーを表示
 		setLoader(true);
 		// ポケモンリストを取得
@@ -38,6 +39,14 @@ const PokeSearchHook = () => {
 		});
 	}
 	
+	const testPokemonData = async () => {
+		let list = []
+		for (var i = 1; i <= 1025; i++) {
+			let data = getAllPokemon("https://pokeapi.co/api/v2/version/" + i + "/").data.height;
+			list = [ ...list, data ];
+		}
+		console.log(list);
+	}
 	/***** Hooks return ******/
 	return [
 		fetchPokeData
