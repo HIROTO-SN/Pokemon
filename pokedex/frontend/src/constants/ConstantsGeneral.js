@@ -11,8 +11,34 @@ export const lal_updates_check = "News and updates about Pokémon Center (our of
 export const lal_term_check = "I accept the Pokemon.com Terms of Use.";
 
 /* POKEDEX */
+export const NUMBER_RANGE = {
+	START: 1,
+	END: 1025
+}
 export const CLICKED_COLOR = {
 	TW: "#30a7d7",
 	HW: "#ee6b2f",
 };
+
+export const HEIGHT_LIST = [
+	{
+		name: "short",
+		height: "45%",
+		top: "35%",
+		urlB: "/icons/heightShort.png",
+	},
+	{
+		name: "middle",
+		height: "52%",
+		top: "35%",
+		urlB: "/icons/heightMiddle.png",
+	},
+	{ name: "tall", height: "90%", top: "45%", urlB: "/icons/heightTall.png" },
+];
+
+export const WEIGHT_LIST = [
+	{ name: "light", height: "45%", top: "35%", urlB: "/icons/ball.png" },
+	{ name: "middle", height: "50%", top: "38%", urlB: "/icons/ball.png" },
+	{ name: "heavy", height: "60%", top: "45%", urlB: "/icons/ball.png" },
+];
 

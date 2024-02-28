@@ -1,4 +1,5 @@
 import { createContext, useContext, useReducer, useState } from "react";
+import { HEIGHT_LIST, WEIGHT_LIST } from "../../../constants/ConstantsGeneral";
 
 const SearchCondition = createContext();
 const DispatchSearchCondition = createContext();
@@ -14,6 +15,10 @@ const initSearchState = {
 	weaks: [],
 	numberRangeMin: 1,
 	numberRangeMax: 1025,
+	height: [],
+	heightPoint: 0,
+	weight: [],
+	weightPoint: 0,
 	sortBy: 'asc',
 	pageNumber: 0,
 	initFlg: true,
@@ -26,6 +31,28 @@ const initSearchState = {
 * 3. Loader管理
 */ 
 export const SearchProvider = ({ children }) => {
+
+	/**
+   * @param {List} map_list - チェックされた高さ、または重さのリスト
+   * @param {List} val_list - 比較対象配列（高さ、または重さのコンストリスト）
+   * 選択された高さ、または重さを判定するための数値を計算
+   */ 
+	const calcPoint = (map_list, val_list) => {
+		let cal = 0;
+		map_list.forEach((e) => {
+			if (e === val_list[0].name) {
+				cal += 1;
+			} else if (e === val_list[1].name) {
+				cal += 2;
+			} else if (e === val_list[2].name) {
+				cal += 4;	
+			} else {
+				cal += 0;
+			}
+		});
+		return cal;
+	}
+
 	/*1*/
   const [searchCondition, searchConditionDispatch] = useReducer((state, action) => {
 		switch (action.type) {
@@ -35,6 +62,10 @@ export const SearchProvider = ({ children }) => {
 				return { ...state, types: action.val};
 			case "searchWeak":
 				return { ...state, weaks: action.val};
+			case "searchHeight":
+				return { ...state, height: action.val, heightPoint: calcPoint(action.val, HEIGHT_LIST)};
+			case "searchWeight":
+				return { ...state, weight: action.val, weightPoint: calcPoint(action.val, WEIGHT_LIST)};
 			case "setPageNumber":
 				return { ...state, pageNumber: action.val, initFlg: false };
 		}
@@ -46,6 +77,7 @@ export const SearchProvider = ({ children }) => {
 	/*3*/
 	const [loader, setLoader] = useState(true);
 
+	/***** Context ******/
 	return (
 		<SearchCondition.Provider value={searchCondition}>
 			<DispatchSearchCondition.Provider value={searchConditionDispatch} >

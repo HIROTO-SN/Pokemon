@@ -13,8 +13,8 @@ import pokedex.pxt.mbo.pokedex.common.Constants;
 public class PokemonSpecification<Pokemon> {
 	/**
 	 * Pokemonをソートし、formId=1のものだけ抽出
-	 * @param sort <String> ソート種類(asc または desc)
-	 * @return <Specification<Pokemon>> 
+	 * @param sort String ソート種類(asc または desc)
+	 * @return Specification<Pokemon>
 	 */
 	public Specification<Pokemon> formIdOneAndSort(String sort) {
 		return new Specification<Pokemon>() {
@@ -35,8 +35,8 @@ public class PokemonSpecification<Pokemon> {
 
 	/**
 	 * Pokemon名による検索
-	 * @param pokemonName <String> Pokemon名
-	 * @return <Specification<Pokemon>> 
+	 * @param pokemonName String Pokemon名
+	 * @return Specification<Pokemon>
 	 */
 	public Specification<Pokemon> nameContains(String pokemonName) {
 		return pokemonName.equals("") ? null : (root, query, builder) -> {
@@ -46,9 +46,10 @@ public class PokemonSpecification<Pokemon> {
 
 	/**
 	 * タイプによる検索成形用
-	 * @param types <List<Integer>> 検索対象タイプIDリスト
-	 * @param noList <String[]> 検索タイプ選択用ナンバー
-	 * @return <Specification<Pokemon>> 
+	 * @param types List<Integer> 検索対象タイプIDリスト
+	 * @param n1 String type1
+	 * @param n2 String type2
+	 * @return Specification<Pokemon>
 	 */
 	public Specification<Pokemon> typeSearch(List<Integer> types, String n1, String n2) {
 		switch (types.size()) {
@@ -66,9 +67,9 @@ public class PokemonSpecification<Pokemon> {
 	}
 
 	/**
-	 * タイプ2による検索
-	 * @param type <Integer> タイプ2ID
-	 * @return <Specification<Pokemon>> 
+	 * タイプによる検索
+	 * @param type Integer タイプ2ID
+	 * @return Specification<Pokemon>
 	 */
 	public Specification<Pokemon> typeEqual(Integer type, String no) {
 		return type == null  ? null : (root, query, builder) -> {
@@ -77,23 +78,70 @@ public class PokemonSpecification<Pokemon> {
 					.get("type_id"), type.intValue());
 		};
 	}
+
+	/**
+	 * 高さ、重さによる検索成形用
+	 * @param point Integer 高さ、重さのポイント
+	 * @param type String 高さか重さの検索分岐用
+	 * @return Specification<Pokemon>
+	 */
+	public Specification<Pokemon> heightWeightSearch(Integer point, String type) {
+		switch (point) {
+			case 0: // サイズ選択なし
+			case 7: // 全てのサイズ
+			default:
+				return null;
+			case 1:
+				// 一番左のみ選択時（最小サイズ のみ）
+				return sizeLessThan(Constants.MIDDLE, type);
+			case 2:
+				// 中央のみ選択時（中間サイズ のみ）
+				return (sizeGreaterThanOrEqual(Constants.MIDDLE, type)).and(sizeLessThan(Constants.LARGE, type));
+			case 3:
+				// 一番左と中央選択時（最小サイズ または 中間サイズ）
+				return sizeLessThan(Constants.LARGE, type);
+			case 4:
+				// 一番右のみ選択時（最大サイズ のみ）
+				return sizeGreaterThanOrEqual(Constants.LARGE, type);
+			case 5:
+				// 一番左と一番右選択時（最小サイズ または 最大サイズ）
+				return (sizeGreaterThanOrEqual(Constants.LARGE, type)).or(sizeLessThan(Constants.MIDDLE, type));
+			case 6:
+				return null;
+		}
+	}
 	
 	/**
-	 * Pokemonの高さによる検索
-	 * @param height <String> Pokemonの高さ（インチ） ex.) 5'04 - 5フィート4インチ）
-	 * @return <Specification<Pokemon>> 
+	 * Pokemonの高さ、重さによる検索（規定値未満）
+	 * @param type String 高さか重さのどちらの判定かを分岐
+	 * @return Specification<Pokemon>
 	 */
-	public Specification<Pokemon> heightBetween(String height) {
-		return height.equals("") ? null : (root, query, builder) -> {
-			switch (height) {
-				case "short":
-				return builder.lessThan(root.get("height"), Constants.POKE_HEIGHT.get("MIDDLE_MIN"));
-				case "middle":
-				return builder.between(root.get("height"), Constants.POKE_HEIGHT.get("MIDDLE_MIN"), Constants.POKE_HEIGHT.get("TALL_MIN"));
-				case "tall":
-				return builder.greaterThan(root.get("height"), Constants.POKE_HEIGHT.get("TALL_MIN"));
-			};
-			return null;
+	public Specification<Pokemon> sizeLessThan(String scale, String type) {
+		return (root, query, builder) -> {
+			return type == "height" ? 
+				builder
+					.lessThan(root.get("height"), Constants.POKE_HEIGHT.get(scale))
+				: type == "weight" ?
+				builder
+					.lessThan(root.get("weight"), Constants.POKE_WEIGHT.get(scale))
+				: null;
+		};
+	}
+
+	/**
+	 * Pokemonの高さ、重さによる検索（規定値以上）
+	 * @param type String 高さか重さのどちらの判定かを分岐
+	 * @return Specification<Pokemon>
+	 */
+	public Specification<Pokemon> sizeGreaterThanOrEqual(String scale, String type) {
+		return (root, query, builder) -> {
+			return type == "height" ? 
+				builder
+					.greaterThanOrEqualTo(root.get("height"), Constants.POKE_HEIGHT.get(scale))
+				: type == "weight" ?
+				builder
+					.greaterThanOrEqualTo(root.get("weight"), Constants.POKE_WEIGHT.get(scale))
+				: null;
 		};
 	}
 }

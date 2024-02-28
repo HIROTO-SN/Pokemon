@@ -36,8 +36,10 @@ public class Pokemon {
 	@Column(name = "pokemon_name", nullable = false, unique = true)
 	private String pokemonName;
 
-	// private double height;
-	// private double weight;
+	private double height;
+
+	private double weight;
+	
 	@ManyToOne
 	@JoinColumn(name = "type_1", insertable = false, updatable = false)
 	private Types type1;

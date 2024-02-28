@@ -4,7 +4,7 @@ import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import { typeList } from "../../../../constants/UlList";
 import { useSearchCondition, useSearchDispatch } from "../../contexts/SearchContext";
-import { CLICKED_COLOR } from "../../../../constants/ConstantsGeneral";
+import { CLICKED_COLOR, NUMBER_RANGE } from "../../../../constants/ConstantsGeneral";
 
 const FilterContentLeft = () => {
   /***** CSS ******/
@@ -183,14 +183,12 @@ const FilterContentLeft = () => {
   
   /***** Definition ******/
   const clickedTypeList = useSearchCondition().types;
-  const setClickedTypeList = useSearchDispatch();
   const clickedWeakList = useSearchCondition().weaks;
-  const setClickedWeakList = useSearchDispatch();
-  console.log("clickedWeakList : " + clickedWeakList);
+  const searchDipatch = useSearchDispatch();
 
   /***** JS ******/
   /**
-   * @param {String} name - クリックされたボタンのタイプ名
+   * @param {String} id - クリックされたボタンのタイプID
    * @param {String} type - クリックされたボタンの種類（T or W）
    * Type,WeakボタンのState更新関数
    */  
@@ -200,20 +198,20 @@ const FilterContentLeft = () => {
         if (clickedTypeList.find((_type_id) => _type_id === id)) {
           // 選択されているタイプ（T)をクリックしたとき（削除）
           const filteredTypeList = clickedTypeList.filter((_type_id) => _type_id !== id);
-          setClickedTypeList({ type: "searchType", val: filteredTypeList });
+          searchDipatch({ type: "searchType", val: filteredTypeList });
         } else {
           // 選択されていないタイプをクリックしたとき（追加）
-          setClickedTypeList({ type: "searchType", val: [...clickedTypeList, id] });
+          searchDipatch({ type: "searchType", val: [...clickedTypeList, id] });
         }
         break;
       case "W" :
         if (clickedWeakList.find((_type_id) => _type_id === id)) {
           // 選択されている弱点（W)をクリックしたとき（削除）
           const filteredWeakList = clickedWeakList.filter((_type_id) => _type_id !== id)
-          setClickedWeakList({ type: "searchWeak", val: filteredWeakList });
+          searchDipatch({ type: "searchWeak", val: filteredWeakList });
         } else {
           // 選択されていない弱点をクリックしたとき（追加）
-          setClickedWeakList({ type: "searchWeak", val: [...clickedWeakList, id] });
+          searchDipatch({ type: "searchWeak", val: [...clickedWeakList, id] });
         }
         break;
     }
@@ -223,14 +221,17 @@ const FilterContentLeft = () => {
    * Type, Weak ボタンの背景色セット
  	 */
   useEffect(() => {
-    clickedTypeList.map((_type_id) => {
-      const el_target = document.querySelector("#t_" + _type_id);
+    // map処理共通
+    const func_map = (val, type) => {
+      const el_target = document.querySelector("#" + type + val);
       el_target.style.background = CLICKED_COLOR.TW;
+    }
 
+    clickedTypeList.map((id) => {
+      func_map(id, "t_");
     });
-    clickedWeakList.map((_weak_id) => {
-      const el_target = document.querySelector("#w_" + _weak_id);
-      el_target.style.background = CLICKED_COLOR.TW;
+    clickedWeakList.map((id) => {
+      func_map(id, "w_");
     });
   },[clickedTypeList, clickedWeakList]);
 
@@ -263,9 +264,9 @@ const FilterContentLeft = () => {
         <div css={rangeFilterWrapper}>
           <h3>Number Range</h3>
           <div css={rangeBox}>
-            <input css={[commonRangeBox, inputArea]} defaultValue="1"></input>
+            <input css={[commonRangeBox, inputArea]} defaultValue={NUMBER_RANGE.START}></input>
             <span>-</span>
-            <input css={[commonRangeBox, inputArea]} defaultValue="1010"></input>
+            <input css={[commonRangeBox, inputArea]} defaultValue={NUMBER_RANGE.END}></input>
           </div>
         </div>
         <p css={rangeValues}>

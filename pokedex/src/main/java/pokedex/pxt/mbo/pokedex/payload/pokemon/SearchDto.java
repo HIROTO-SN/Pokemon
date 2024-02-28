@@ -17,8 +17,10 @@ public class SearchDto {
 	private List<Integer> weaks;
 	private int numberRangeMin;
 	private int numberRangeMax;
-	private String height;	
-	private String weight;
+	private List<String> height;
+	private List<String> weight;
+	private Integer heightPoint;
+	private Integer weightPoint;
 	private String sortBy;
 	private int pageNumber;
 	private Boolean initFlg;
