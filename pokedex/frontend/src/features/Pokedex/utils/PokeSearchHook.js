@@ -16,7 +16,7 @@ const PokeSearchHook = () => {
    * Searchボタン押下時共通処理
  	 */
 	const fetchPokeData = async () => {
-		await testPokemonData();
+		// await testPokemonData();
 		// ローダーを表示
 		setLoader(true);
 		// ポケモンリストを取得
@@ -39,14 +39,16 @@ const PokeSearchHook = () => {
 		});
 	}
 	
-	const testPokemonData = async () => {
-		let list = []
-		for (var i = 1; i <= 1025; i++) {
-			let data = getAllPokemon("https://pokeapi.co/api/v2/version/" + i + "/").data.height;
-			list = [ ...list, data ];
-		}
-		console.log(list);
-	}
+	// const testPokemonData = async () => {
+	// 	let list = []
+	// 	for (var i = 1; i <= 10; i++) {
+	// 		let url = "https://pokeapi.co/api/v2/pokemon/" + i + "/";
+	// 		let data = await getAllPokemon(url);
+	// 		list = [ ...list, data.height ];
+	// 	}
+	// 	console.log(list);
+	// }
+
 	/***** Hooks return ******/
 	return [
 		fetchPokeData

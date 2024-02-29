@@ -51,6 +51,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			pokemonRepository.findAll(
 				Specification
 					.where(spec.formIdOneAndSort(searchDto.getSortBy()))
+					.and(spec.numberBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
 					.and(spec.nameContains(searchDto.getSearchInput()))
 					.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
 					.and(spec.heightWeightSearch(searchDto.getHeightPoint(), "height"))

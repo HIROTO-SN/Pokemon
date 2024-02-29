@@ -227,17 +227,17 @@ const FilterContentRight = () => {
       case "H":
         if (clickedHeightList.find((n) => n === name)) {
           const filteredHeightList = clickedHeightList.filter((n) => n !== name);
-          searchDipatch({ type: "searchHeight", val: filteredHeightList });
+          searchDipatch({ type: "checkHeight", val: filteredHeightList });
         } else {
-          searchDipatch({ type: "searchHeight", val: [...clickedHeightList, name] });
+          searchDipatch({ type: "checkHeight", val: [...clickedHeightList, name] });
         }
         break;
       case "W":
         if (clickedWeightList.find((n) => n === name)) {
           const filteredWeightList = clickedWeightList.filter((n) => n !== name);
-          searchDipatch({ type: "searchWeight", val: [...filteredWeightList] });
+          searchDipatch({ type: "checkWeight", val: [...filteredWeightList] });
         } else {
-          searchDipatch({ type: "searchWeight", val: [...clickedWeightList, name] });
+          searchDipatch({ type: "checkWeight", val: [...clickedWeightList, name] });
         }
         break;
     }
