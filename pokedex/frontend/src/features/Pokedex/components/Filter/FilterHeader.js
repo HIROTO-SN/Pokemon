@@ -9,13 +9,15 @@ import {
   push7,
   ttHint,
 } from "../../../../components/CommonCss/Layout.js";
-import { useSearchCondition, useSearchDispatch } from "../../contexts/SearchContext.js";
+import {
+  useSearchDispatch
+} from "../../contexts/SearchContext.js";
 import PokeSearchHook from "../../utils/PokeSearchHook.js";
 
 const FilterHeader = () => {
   /***** Definition ******/
   const searchDipatch = useSearchDispatch();
-  const [ searchAction ] = PokeSearchHook();
+  const [searchAction] = PokeSearchHook();
 
   /***** JS ******/
   /**
@@ -23,8 +25,8 @@ const FilterHeader = () => {
    * 検索Input内容チェンジイベント
    */
   const searchInputChange = (e) => {
-    searchDipatch({ type: e.target.id, val: e.target.value } );
-  }
+    searchDipatch({ type: e.target.id, val: e.target.value });
+  };
 
   /***** HTML ******/
   return (
@@ -36,10 +38,17 @@ const FilterHeader = () => {
             <div css={searchInputItems}>
               <span css={twitterTypehead}>
                 <input css={ttHint}></input>
-                <input id="searchInput" onBlur={(e) => searchInputChange(e)}></input>
+                <input
+                  id="searchInput"
+                  onBlur={(e) => searchInputChange(e)}
+                ></input>
                 <pre></pre>
               </span>
-              <input type="button" css={buttonSearch} onClick={searchAction}></input>
+              <input
+                type="button"
+                css={buttonSearch}
+                onClick={searchAction}
+              ></input>
             </div>
           </div>
           <p css={subtitle}>
@@ -63,28 +72,28 @@ const FilterHeader = () => {
 };
 
 const DivFilterHead = styled.div`
-	background: #313131;
-	float: left;
-	width: 100%;
+  background: #313131;
+  float: left;
+  width: 100%;
 
-	:before {
-		content: "";
+  :before {
+    content: "";
     display: table;
-	}
-	:after {
-		clear: both;
-		content: "";
+  }
+  :after {
+    clear: both;
+    content: "";
     display: table;
-	}
+  }
 
-	>div {
-		background: none;
+  > div {
+    background: none;
     display: block;
     margin: 0 auto;
     overflow: visible;
     max-width: 1024px;
     width: 100%;
-	}
+  }
 `;
 
 const filterTextSearch = css`

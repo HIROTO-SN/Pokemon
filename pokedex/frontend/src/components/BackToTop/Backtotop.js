@@ -57,7 +57,7 @@ const Backtotop = () => {
 
   /***** HTML ******/
   return (
-    <div id="back-to-top" css={[visibleMobile, backToTop]} onClick={scrollOnTop}>
+    <div id="back-to-top" css={[visibleMobile, backToTop]} onClick={()=> scrollOnTop()}>
 			<label css={iconPosition}>
       	<IoIosArrowUp css={icon} />
 			</label>

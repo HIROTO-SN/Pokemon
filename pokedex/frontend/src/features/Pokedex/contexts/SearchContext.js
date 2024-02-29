@@ -1,5 +1,5 @@
 import { createContext, useContext, useReducer, useState } from "react";
-import { HEIGHT_LIST, WEIGHT_LIST } from "../../../constants/ConstantsGeneral";
+import { HEIGHT_LIST, NUMBER_RANGE, WEIGHT_LIST } from "../../../constants/ConstantsGeneral";
 
 const SearchCondition = createContext();
 const DispatchSearchCondition = createContext();
@@ -13,8 +13,8 @@ const initSearchState = {
 	searchInput: "",
 	types: [],
 	weaks: [],
-	numberRangeMin: 1,
-	numberRangeMax: 1025,
+	numberRangeMin: NUMBER_RANGE.MIN,
+	numberRangeMax: NUMBER_RANGE.MAX,
 	height: [],
 	heightPoint: 0,
 	weight: [],
@@ -58,13 +58,17 @@ export const SearchProvider = ({ children }) => {
 		switch (action.type) {
 			case "searchInput":
 				return { ...state, searchInput: action.val};
-			case "searchType":
+			case "checkType":
 				return { ...state, types: action.val};
-			case "searchWeak":
+			case "checkWeak":
 				return { ...state, weaks: action.val};
-			case "searchHeight":
+			case "numberMinInput":
+				return { ...state, numberRangeMin: action.val};
+			case "numberMaxInput":
+				return { ...state, numberRangeMax: action.val};
+			case "checkHeight":
 				return { ...state, height: action.val, heightPoint: calcPoint(action.val, HEIGHT_LIST)};
-			case "searchWeight":
+			case "checkWeight":
 				return { ...state, weight: action.val, weightPoint: calcPoint(action.val, WEIGHT_LIST)};
 			case "setPageNumber":
 				return { ...state, pageNumber: action.val, initFlg: false };

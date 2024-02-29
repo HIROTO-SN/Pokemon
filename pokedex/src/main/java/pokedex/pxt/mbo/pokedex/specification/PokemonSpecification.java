@@ -34,6 +34,22 @@ public class PokemonSpecification<Pokemon> {
 	}
 
 	/**
+	 * PokemonIdの範囲検索
+	 * @param min int - Id範囲最小
+	 * @param max int - Id範囲最大
+	 * @return Specification<Pokemon>
+	 */
+	public Specification<Pokemon> numberBetween(int min, int max) {
+		return (root, query, builder) -> {
+			return ( min == 0 || max == 0 ) ?  
+			builder.lessThan(root.get("pokemonId"), 0)
+			: 
+			builder.between(root.get("pokemonId"), min, max);
+		};
+	}
+
+
+	/**
 	 * Pokemon名による検索
 	 * @param pokemonName String Pokemon名
 	 * @return Specification<Pokemon>

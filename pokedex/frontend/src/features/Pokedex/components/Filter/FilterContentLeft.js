@@ -2,9 +2,15 @@
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
+import {
+  CLICKED_COLOR,
+  NUMBER_RANGE,
+} from "../../../../constants/ConstantsGeneral";
 import { typeList } from "../../../../constants/UlList";
-import { useSearchCondition, useSearchDispatch } from "../../contexts/SearchContext";
-import { CLICKED_COLOR, NUMBER_RANGE } from "../../../../constants/ConstantsGeneral";
+import {
+  useSearchCondition,
+  useSearchDispatch,
+} from "../../contexts/SearchContext";
 
 const FilterContentLeft = () => {
   /***** CSS ******/
@@ -67,7 +73,7 @@ const FilterContentLeft = () => {
     }
   `;
 
-  const pill = ({type}) => css`
+  const pill = ({ type }) => css`
     border: 2px solid #a4a4a4;
     border-radius: 5px;
     line-height: 28px;
@@ -85,7 +91,7 @@ const FilterContentLeft = () => {
 
   const filterTypeRound = (flg) => css`
     font-family: "Flexo-Bold", arial, sans-serif;
-    background: ${flg ? CLICKED_COLOR.TW : "#f2f2f2" };
+    background: ${flg ? CLICKED_COLOR.TW : "#f2f2f2"};
     border-radius: 14px;
     color: #313131;
     line-height: 30px;
@@ -180,10 +186,12 @@ const FilterContentLeft = () => {
     font-weight: 500;
     line-height: 125%;
   `;
-  
+
   /***** Definition ******/
   const clickedTypeList = useSearchCondition().types;
   const clickedWeakList = useSearchCondition().weaks;
+  const inputNumberMin = useSearchCondition().numberRangeMin;
+  const inputNumberMax = useSearchCondition().numberRangeMax;
   const searchDipatch = useSearchDispatch();
 
   /***** JS ******/
@@ -191,41 +199,54 @@ const FilterContentLeft = () => {
    * @param {String} id - クリックされたボタンのタイプID
    * @param {String} type - クリックされたボタンの種類（T or W）
    * Type,WeakボタンのState更新関数
-   */  
+   */
   const clickTWHandler = (id, type) => {
     switch (type) {
-      case "T" :
+      case "T":
         if (clickedTypeList.find((_type_id) => _type_id === id)) {
           // 選択されているタイプ（T)をクリックしたとき（削除）
-          const filteredTypeList = clickedTypeList.filter((_type_id) => _type_id !== id);
-          searchDipatch({ type: "searchType", val: filteredTypeList });
+          const filteredTypeList = clickedTypeList.filter(
+            (_type_id) => _type_id !== id
+          );
+          searchDipatch({ type: "checkType", val: filteredTypeList });
         } else {
           // 選択されていないタイプをクリックしたとき（追加）
-          searchDipatch({ type: "searchType", val: [...clickedTypeList, id] });
+          searchDipatch({ type: "checkType", val: [...clickedTypeList, id] });
         }
         break;
-      case "W" :
+      case "W":
         if (clickedWeakList.find((_type_id) => _type_id === id)) {
           // 選択されている弱点（W)をクリックしたとき（削除）
-          const filteredWeakList = clickedWeakList.filter((_type_id) => _type_id !== id)
-          searchDipatch({ type: "searchWeak", val: filteredWeakList });
+          const filteredWeakList = clickedWeakList.filter(
+            (_type_id) => _type_id !== id
+          );
+          searchDipatch({ type: "checkWeak", val: filteredWeakList });
         } else {
           // 選択されていない弱点をクリックしたとき（追加）
-          searchDipatch({ type: "searchWeak", val: [...clickedWeakList, id] });
+          searchDipatch({ type: "checkWeak", val: [...clickedWeakList, id] });
         }
         break;
     }
-  }
+  };
 
-	/**
+  /***** JS ******/
+  /**
+   * @param {Object} e - イベントオブジェクト
+   * NumberRangeを変更されたとき
+   */
+  const changeNumberHandler = (e) => {
+    searchDipatch({ type: e.target.id, val: e.target.value });
+  };
+
+  /**
    * Type, Weak ボタンの背景色セット
- 	 */
+   */
   useEffect(() => {
     // map処理共通
     const func_map = (val, type) => {
       const el_target = document.querySelector("#" + type + val);
       el_target.style.background = CLICKED_COLOR.TW;
-    }
+    };
 
     clickedTypeList.map((id) => {
       func_map(id, "t_");
@@ -233,7 +254,9 @@ const FilterContentLeft = () => {
     clickedWeakList.map((id) => {
       func_map(id, "w_");
     });
-  },[clickedTypeList, clickedWeakList]);
+  }, [clickedTypeList, clickedWeakList]);
+
+  console.log(useSearchCondition());
 
   /***** HTML ******/
   return (
@@ -253,9 +276,25 @@ const FilterContentLeft = () => {
         <ul css={twList}>
           {typeList.map((type) => (
             <li key={type.name}>
-              <span css={pill({type})}>{type.name}</span>
-              <span id={"t_" + type.type_id} css={filterTypeRound(clickedTypeList.find((_type_id) => _type_id === type.type_id))} onClick={() => clickTWHandler(type.type_id, "T")}>T</span>
-              <span id={"w_" + type.type_id} css={filterWeaknessRound(clickedWeakList.find((_weak_id) => _weak_id === type.type_id))} onClick={() => clickTWHandler(type.type_id, "W")}>W</span>
+              <span css={pill({ type })}>{type.name}</span>
+              <span
+                id={"t_" + type.type_id}
+                css={filterTypeRound(
+                  clickedTypeList.find((_type_id) => _type_id === type.type_id)
+                )}
+                onClick={() => clickTWHandler(type.type_id, "T")}
+              >
+                T
+              </span>
+              <span
+                id={"w_" + type.type_id}
+                css={filterWeaknessRound(
+                  clickedWeakList.find((_weak_id) => _weak_id === type.type_id)
+                )}
+                onClick={() => clickTWHandler(type.type_id, "W")}
+              >
+                W
+              </span>
             </li>
           ))}
         </ul>
@@ -264,9 +303,15 @@ const FilterContentLeft = () => {
         <div css={rangeFilterWrapper}>
           <h3>Number Range</h3>
           <div css={rangeBox}>
-            <input css={[commonRangeBox, inputArea]} defaultValue={NUMBER_RANGE.START}></input>
+            <InputArea
+              type="min"
+              blurHandler={changeNumberHandler}
+            />
             <span>-</span>
-            <input css={[commonRangeBox, inputArea]} defaultValue={NUMBER_RANGE.END}></input>
+            <InputArea
+              type="max"
+              blurHandler={changeNumberHandler}
+            />
           </div>
         </div>
         <p css={rangeValues}>
@@ -274,6 +319,52 @@ const FilterContentLeft = () => {
         </p>
       </ContentBlock>
     </>
+  );
+};
+
+const InputArea = ({ type, blurHandler }) => {
+  /***** CSS ******/
+  const inputArea = css`
+    box-sizing: border-box;
+    border: none;
+    border-radius: 5px;
+    font-size: 100%;
+    font-family: "Roboto", arial, sans-serif;
+    line-height: 1.5;
+    padding: 0.5em 0;
+    text-indent: 0.5em;
+    height: auto;
+    background-color: #fff;
+  `;
+
+  const commonRangeBox = css`
+    color: black;
+    width: 75px;
+    display: inline;
+  `;
+
+  const [input, setInput] = useState();
+  const searchCondition = useSearchCondition();
+  const searchDipatch = useSearchDispatch();
+
+  /**
+   * 初期レンダー時にステートのセット
+   */
+  useEffect(() => {
+    if (type === "min") {
+      document.querySelector("#numberMinInput").value = searchCondition.numberRangeMin;
+    } else {
+      document.querySelector("#numberMaxInput").value = searchCondition.numberRangeMax;
+    }
+  },[])
+
+  /***** HTML ******/
+  return (
+    <input
+      id={type === "min" ? "numberMinInput" : "numberMaxInput"}
+      css={[commonRangeBox, inputArea]}
+      onBlur={(e) => searchDipatch({ type: e.target.id, val: e.target.value })}
+    ></input>
   );
 };
 

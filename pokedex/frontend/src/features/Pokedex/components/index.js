@@ -10,10 +10,6 @@ import Sort from "./Sort/Sort.js";
 
 const Pokedex = () => {
   
-  const scrollOnTop = () => {
-    window.scroll({ top: 0, behavior: "instant" });
-  };
-
   /***** HTML ******/
   return (
     <>
