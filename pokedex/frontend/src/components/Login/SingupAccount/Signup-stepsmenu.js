@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { stepMenuList } from "../../../constants/UlList";
+import { stepMenuList } from "../../../constants/ul_list/accountList";
 
 const StepsMenu = ({ pageNo }) => {
   /***** CSS ******/
@@ -117,15 +117,15 @@ const StepsMenu = ({ pageNo }) => {
 
   /***** HTML ******/
   return (
-      <div>
-        <ul css={stepMenu}>
-          {stepMenuList.map((list) => (
-            <li key={list.class} css={listClass({ list }, currentPage)}>
-              <span>{list.name}</span>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div>
+      <ul css={stepMenu}>
+        {stepMenuList.map((list) => (
+          <li key={list.class} css={listClass({ list }, currentPage)}>
+            <span>{list.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 

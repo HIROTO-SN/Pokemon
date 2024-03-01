@@ -2,17 +2,24 @@
 import { css } from "@emotion/react";
 import { push1, column12 } from "../../../../components/CommonCss/Layout.js";
 import { TfiReload } from "react-icons/tfi";
-import { CgPokemon } from "react-icons/cg";
-import { IoIosArrowDown } from "react-icons/io";
+import CustomSelect from "../../../../components/Common/CustomSelect.js";
+import { sortList } from "../../../../constants/ul_list/pokedexList.js";
+import {
+  useSearchCondition,
+  useSearchDispatch,
+} from "../../contexts/SearchContext.js";
 
+/**
+ * 「Surprise Me」 と 「Sort By」 の部分
+ */
 const Sort = () => {
+  /***** CSS ******/
   const sort = css`
     overflow: visible;
     padding: 1em 0;
     background: transparent url("/background/content_bg.png") left top;
     background-size: 100% 1px;
     margin: 0 auto;
-    overflow: hidden;
     max-width: 1024px;
     width: 100%;
 
@@ -74,81 +81,21 @@ const Sort = () => {
     font-family: "Flexo-Medium", arial, sans-serif;
   `;
 
-  const customSelectWrapper = css`
-    visibility: visible;
-    width: 100%;
-    float: left;
-    position: relative;
-    z-index: 2;
-  `;
+  /***** Definition ******/
+  const searchCondition = useSearchCondition().sortBy;
+  const searchDispatch = useSearchDispatch();
 
-  const customSelectMenu = css`
-    display: block;
-    float: left;
-    position: relative;
-    width: 100%;
-    z-index: 2;
+  // カスタムセレクトボックススタイル定義
+  const customSelectStyle = {
+    height: "180px",
+    backgroundColor: "#616161",
+    scrollbarColor: null,
+    listWordColor: null,
+  };
 
-    > label {
-      box-sizing: border-box;
-      background-color: #313131;
-      border: none;
-      border-radius: 5px;
-      color: #fff;
-      display: block;
-      font-size: 100%;
-      font-family: "Roboto", arial, sans-serif;
-      line-height: 1.5;
-      padding: 0.5em 0;
-      text-indent: 0.5em;
-      width: 100%;
-      height: auto;
-      margin: 0;
-      overflow: hidden;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    > label > svg:first-of-type {
-      font-family: "icons";
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 1;
-      font-weight: normal;
-      font-style: normal;
-      text-decoration: inherit;
-      text-transform: none;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      color: #f2f2f2;
-      font-size: 150%;
-      margin-right: 0.5em;
-    }
-    > label > svg:nth-of-type(2) {
-      background-color: #313131;
-      color: #fff;
-      vertical-align: middle;
-      font-family: "icons";
-      display: inline-block;
-      line-height: 1;
-      font-weight: normal;
-      font-style: normal;
-      font-size: 100%;
-      text-decoration: inherit;
-      text-transform: none;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      border-radius: 5px;
-      padding: 1em 0.75em 0.425em 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      z-index: 2;
-      text-indent: 0.5em;
-    }
-  `;
-
+  /***** HTML ******/
   return (
-    <section css={sort}>
+    <section css={sort} style={{ overflow: "wrap" }}>
       <div css={[push1, column12]}>
         <a id="shuffle" css={buttonSurprise}>
           <TfiReload strokeWidth="1.7" />
@@ -156,17 +103,14 @@ const Sort = () => {
         </a>
         <div css={flex}>
           <h3 css={sortLabel}>Sort By</h3>
-          <div css={customSelectWrapper}>
-            <select id="sortOrder" style={{ display: "none" }}></select>
-            <div css={customSelectMenu}>
-              <label id="sortOrderSelect">
-                <CgPokemon />
-                Lowest Number(First)
-                <IoIosArrowDown viewBox="0 100 412 412" />
-              </label>
-              <ul></ul>
-            </div>
-          </div>
+          <CustomSelect
+            type="sortBy"
+            state={searchCondition}
+            dispatch={searchDispatch}
+            list={sortList}
+            custom={customSelectStyle}
+            clickSubmit={true}
+          />
         </div>
       </div>
     </section>

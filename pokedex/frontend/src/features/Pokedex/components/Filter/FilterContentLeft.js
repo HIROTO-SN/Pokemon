@@ -3,10 +3,9 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 import {
-  CLICKED_COLOR,
-  NUMBER_RANGE,
+  CLICKED_COLOR
 } from "../../../../constants/ConstantsGeneral";
-import { typeList } from "../../../../constants/UlList";
+import { typeList } from "../../../../constants/ul_list/pokedexList";
 import {
   useSearchCondition,
   useSearchDispatch,
@@ -190,8 +189,6 @@ const FilterContentLeft = () => {
   /***** Definition ******/
   const clickedTypeList = useSearchCondition().types;
   const clickedWeakList = useSearchCondition().weaks;
-  const inputNumberMin = useSearchCondition().numberRangeMin;
-  const inputNumberMax = useSearchCondition().numberRangeMax;
   const searchDipatch = useSearchDispatch();
 
   /***** JS ******/
@@ -256,8 +253,6 @@ const FilterContentLeft = () => {
     });
   }, [clickedTypeList, clickedWeakList]);
 
-  console.log(useSearchCondition());
-
   /***** HTML ******/
   return (
     <>
@@ -303,15 +298,9 @@ const FilterContentLeft = () => {
         <div css={rangeFilterWrapper}>
           <h3>Number Range</h3>
           <div css={rangeBox}>
-            <InputArea
-              type="min"
-              blurHandler={changeNumberHandler}
-            />
+            <InputArea type="min" blurHandler={changeNumberHandler} />
             <span>-</span>
-            <InputArea
-              type="max"
-              blurHandler={changeNumberHandler}
-            />
+            <InputArea type="max" blurHandler={changeNumberHandler} />
           </div>
         </div>
         <p css={rangeValues}>
@@ -322,7 +311,7 @@ const FilterContentLeft = () => {
   );
 };
 
-const InputArea = ({ type, blurHandler }) => {
+const InputArea = ({ type }) => {
   /***** CSS ******/
   const inputArea = css`
     box-sizing: border-box;
@@ -343,7 +332,6 @@ const InputArea = ({ type, blurHandler }) => {
     display: inline;
   `;
 
-  const [input, setInput] = useState();
   const searchCondition = useSearchCondition();
   const searchDipatch = useSearchDispatch();
 
@@ -352,11 +340,13 @@ const InputArea = ({ type, blurHandler }) => {
    */
   useEffect(() => {
     if (type === "min") {
-      document.querySelector("#numberMinInput").value = searchCondition.numberRangeMin;
+      document.querySelector("#numberMinInput").value =
+        searchCondition.numberRangeMin;
     } else {
-      document.querySelector("#numberMaxInput").value = searchCondition.numberRangeMax;
+      document.querySelector("#numberMaxInput").value =
+        searchCondition.numberRangeMax;
     }
-  },[])
+  }, []);
 
   /***** HTML ******/
   return (
