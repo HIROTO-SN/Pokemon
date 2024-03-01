@@ -2,7 +2,6 @@
 import { container } from "../../../components/CommonCss/Layout.js";
 import UserDashboard from "../../../components/Dashboard/UserDashboard.js";
 import { SearchProvider } from "../contexts/SearchContext.js";
-import PokeSearchHook from "../utils/PokeSearchHook.js";
 import Filter from "./Filter/Filter.js";
 import Header from "./Header/Header.js";
 import Results from "./Results/Results.js";
@@ -20,7 +19,6 @@ const Pokedex = () => {
           <Filter/>
           <Sort/>
           <Results/>
-          <PokeSearchHook/>
         </SearchProvider>
       </div>
     </>

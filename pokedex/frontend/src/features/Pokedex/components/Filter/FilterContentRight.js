@@ -9,12 +9,14 @@ import {
   HEIGHT_LIST,
   WEIGHT_LIST,
 } from "../../../../constants/ConstantsGeneral";
+import { abilityList } from "../../../../constants/ul_list/pokedexList.js";
 import {
   useSearchCondition,
   useSearchDispatch,
+  useSetLoader,
+  useSetPokemonData,
 } from "../../contexts/SearchContext";
-import usePokeSearchHook from "../../utils/PokeSearchHook";
-import { abilityList } from "../../../../constants/ul_list/pokedexList.js";
+import { pokeSearchSubmit } from "../../utils/PokeCommmonFunc.js";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -143,12 +145,14 @@ const FilterContentRight = () => {
   `;
 
   /***** Definition ******/
-  const clickedHeightList = useSearchCondition().height;
-  const clickedWeightList = useSearchCondition().weight;
-  const selectedAbility = useSearchCondition().ability;
-  const selectedSort = useSearchCondition().sortBy;
+  const useSearch = useSearchCondition();
+  const clickedHeightList = useSearch.height;
+  const clickedWeightList = useSearch.weight;
+  const selectedAbility = useSearch.ability;
+  const selectedSort = useSearch.sortBy;
   const searchDipatch = useSearchDispatch();
-  const [ searchAction ] = usePokeSearchHook();
+  const setPokemon = useSetPokemonData();
+  const setLoader = useSetLoader();
 
   // カスタムセレクトボックススタイル定義
   const customSelectStyle = {
@@ -226,6 +230,16 @@ const FilterContentRight = () => {
     });
   };
 
+  /**
+   * 検索押下処理
+   */
+  const clickSearch = async() => {
+    setLoader(true);
+    // 共通API接続関数を呼び出し
+    await pokeSearchSubmit(useSearch, setPokemon, searchDipatch);
+    setLoader(false);
+  };
+
   /***** HTML ******/
   return (
     <>
@@ -286,7 +300,11 @@ const FilterContentRight = () => {
       </ContentBlock>
       <ContentBlock>
         <div css={filterAction}>
-          <a id="advSearch" css={[buttonOrange, button]} onClick={searchAction}>
+          <a
+            id="advSearch"
+            css={[buttonOrange, button]}
+            onClick={() => clickSearch()}
+          >
             <CgSearch strokeWidth="1" />
             Search
           </a>
