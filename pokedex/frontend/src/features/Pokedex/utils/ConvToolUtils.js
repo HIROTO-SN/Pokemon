@@ -1,4 +1,4 @@
-import { typeList } from "../../../constants/UlList";
+import { typeList } from "../../../constants/ul_list/pokedexList";
 
 // タイプリストの背景色変換
 export const setBackGroundForTypes = (typeName) => {

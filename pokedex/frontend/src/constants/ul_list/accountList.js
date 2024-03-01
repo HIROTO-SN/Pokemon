@@ -1,43 +1,15 @@
-export const typeList = [
-  { type_id: 12, name: "Bug", background: "#729f3f" },
-  { type_id: 16, name: "Dark", background: "#707070" },
-  { type_id: 15, 
-    name: "Dragon",
-    background: "linear-gradient(180deg, #53a4cf 50%, #f16e57 50%)",
-  },
-  { type_id: 4, name: "Electric", background: "#eed535", color: "#212121" },
-  { type_id: 18, name: "Fairy", background: "#fdb9e9", color: "#212121" },
-  { type_id: 7, name: "Fighting", background: "#d56723" },
-  { type_id: 2, name: "Fire", background: "#fd7d24" },
-  {
-    type_id: 10, 
-    name: "Flying",
-    background: "linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)",
-    color: "#212121",
-  },
-  { type_id: 14, name: "Ghost", background: "#7b62a3" },
-  { type_id: 5, name: "Grass", background: "#9bcc50", color: "#212121" },
-  {
-    type_id: 9, 
-    name: "Ground",
-    background: "linear-gradient(180deg, #f7de3f 50%, #ab9842 50%)",
-    color: "#212121",
-  },
-  { type_id: 6, name: "Ice", background: "#51c4e7", color: "#212121" },
-  { type_id: 1, name: "Normal", background: "#a4acaf", color: "#212121" },
-  { type_id: 8, name: "Poison", background: "#b97fc9" },
-  { type_id: 11, name: "Psychic", background: "#f366b9" },
-  { type_id: 13, name: "Rock", background: "#a38c21" },
-  { type_id: 17, name: "Steel", background: "#9eb7b8", color: "#212121" },
-  { type_id: 3, name: "Water", background: "#4592c4" },
-];
+/**
+ * サインイン・ログイン画面でのリスト
+ */
 
+// ステップリスト
 export const stepMenuList = [
   { name: "Verify Age", pageNo: 1, class: "first" },
   { name: "Create Account", pageNo: 2, class: "mtype_iddle" },
   { name: "Verify Email", pageNo: 3, class: "last" },
 ];
 
+// 国リスト
 export const countryList = [
 	{ name: "United States", value: "US" },
 	{ name: "Canada", value: "CA" },

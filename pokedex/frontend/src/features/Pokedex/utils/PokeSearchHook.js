@@ -4,7 +4,7 @@ import { useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData 
 /**
  * Pokedex画面での検索機能カスタムHOOKS
  */
-const PokeSearchHook = () => {
+const usePokeSearchHook = () => {
 
 	/***** Definition ******/
 	const setLoader = useSetLoader();
@@ -55,6 +55,6 @@ const PokeSearchHook = () => {
 	]
 }
 
-export default PokeSearchHook;
+export default usePokeSearchHook;
 
 

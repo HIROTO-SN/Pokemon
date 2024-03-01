@@ -126,11 +126,6 @@ export const section = css`
   }
 `;
 
-export const customScrollBar = css`
-  position: relative;
-  overflow: visible;
-`;
-
 // アラート系
 export const alertError = (color) => css`
   border: 2px solid ${colorCtrl(color)};

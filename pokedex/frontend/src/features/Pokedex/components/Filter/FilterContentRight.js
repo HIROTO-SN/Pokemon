@@ -1,13 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { CgPokemon } from "react-icons/cg";
-import { IoIosArrowDown } from "react-icons/io";
+import { useEffect } from "react";
 import { CgSearch } from "react-icons/cg";
-import { useEffect, useState } from "react";
-import PokeSearchHook from "../../utils/PokeSearchHook";
-import { CLICKED_COLOR, HEIGHT_LIST, WEIGHT_LIST } from "../../../../constants/ConstantsGeneral";
-import { useSearchCondition, useSearchDispatch } from "../../contexts/SearchContext";
+import CustomSelect from "../../../../components/Common/CustomSelect.js";
+import {
+  CLICKED_COLOR,
+  HEIGHT_LIST,
+  WEIGHT_LIST,
+} from "../../../../constants/ConstantsGeneral";
+import {
+  useSearchCondition,
+  useSearchDispatch,
+} from "../../contexts/SearchContext";
+import usePokeSearchHook from "../../utils/PokeSearchHook";
+import { abilityList } from "../../../../constants/ul_list/pokedexList.js";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -34,80 +41,6 @@ const FilterContentRight = () => {
     margin-left: 1.5625%;
     padding-left: 0;
     font-size: 187.5%;
-  `;
-
-  /* ブロック1つ目 */
-  const customSelectWrapper = css`
-    visibility: visible;
-    width: 100%;
-    float: left;
-    position: relative;
-    z-index: 2;
-  `;
-
-  const customSelectMenu = css`
-    display: block;
-    float: left;
-    position: relative;
-    width: 100%;
-    z-index: 2;
-
-    > label {
-      box-sizing: border-box;
-      background-color: #313131;
-      border: none;
-      border-radius: 5px;
-      color: #fff;
-      display: block;
-      font-size: 100%;
-      font-family: "Roboto", arial, sans-serif;
-      line-height: 1.5;
-      padding: 0.5em 0;
-      text-indent: 0.5em;
-      width: 100%;
-      height: auto;
-      margin: 0;
-      overflow: hidden;
-      cursor: pointer;
-      white-space: nowrap;
-    }
-    > label > svg:first-of-type {
-      font-family: "icons";
-      display: inline-block;
-      vertical-align: middle;
-      line-height: 1;
-      font-weight: normal;
-      font-style: normal;
-      text-decoration: inherit;
-      text-transform: none;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      color: #f2f2f2;
-      font-size: 150%;
-      margin-right: 0.5em;
-    }
-    > label > svg:nth-of-type(2) {
-      background-color: #313131;
-      color: #fff;
-      vertical-align: middle;
-      font-family: "icons";
-      display: inline-block;
-      line-height: 1;
-      font-weight: normal;
-      font-style: normal;
-      font-size: 100%;
-      text-decoration: inherit;
-      text-transform: none;
-      text-rendering: auto;
-      -webkit-font-smoothing: antialiased;
-      border-radius: 5px;
-      padding: 1em 0.75em 0.425em 0;
-      position: absolute;
-      right: 0;
-      top: 0;
-      z-index: 2;
-      text-indent: 0.5em;
-    }
   `;
 
   /* ブロック2つ目 */
@@ -212,32 +145,51 @@ const FilterContentRight = () => {
   /***** Definition ******/
   const clickedHeightList = useSearchCondition().height;
   const clickedWeightList = useSearchCondition().weight;
+  const selectedAbility = useSearchCondition().ability;
+  const selectedSort = useSearchCondition().sortBy;
   const searchDipatch = useSearchDispatch();
+  const [ searchAction ] = usePokeSearchHook();
 
-  const [ searchAction ] = PokeSearchHook();
+  // カスタムセレクトボックススタイル定義
+  const customSelectStyle = {
+    height: "300px",
+    backgroundColor: "#a4a4a4",
+    scrollbarColor: "dark",
+    listWordColor: "green",
+  };
 
   /***** JS ******/
   /**
    * @param {String} name - クリックされたボタンの高さ、または重さ名
    * @param {String} type - クリックされたボタンの種類（H or W）
    * Type,WeakボタンのState更新関数
-   */ 
+   */
   const clickHWHandler = (name, type) => {
     switch (type) {
       case "H":
         if (clickedHeightList.find((n) => n === name)) {
-          const filteredHeightList = clickedHeightList.filter((n) => n !== name);
+          const filteredHeightList = clickedHeightList.filter(
+            (n) => n !== name
+          );
           searchDipatch({ type: "checkHeight", val: filteredHeightList });
         } else {
-          searchDipatch({ type: "checkHeight", val: [...clickedHeightList, name] });
+          searchDipatch({
+            type: "checkHeight",
+            val: [...clickedHeightList, name],
+          });
         }
         break;
       case "W":
         if (clickedWeightList.find((n) => n === name)) {
-          const filteredWeightList = clickedWeightList.filter((n) => n !== name);
+          const filteredWeightList = clickedWeightList.filter(
+            (n) => n !== name
+          );
           searchDipatch({ type: "checkWeight", val: [...filteredWeightList] });
         } else {
-          searchDipatch({ type: "checkWeight", val: [...clickedWeightList, name] });
+          searchDipatch({
+            type: "checkWeight",
+            val: [...clickedWeightList, name],
+          });
         }
         break;
     }
@@ -245,52 +197,47 @@ const FilterContentRight = () => {
 
   /**
    * 高さまたは重さのチェックがされた場合
-   */ 
+   */
   useEffect(() => {
     backgroundHandler();
   }, [clickedWeightList, clickedHeightList]);
 
   /**
    * 初期表示処理
-   */ 
+   */
   useEffect(() => {
     backgroundHandler();
-  })
+  });
 
   /**
    * 高さと重さの背景色制御
-   */ 
+   */
   const backgroundHandler = () => {
     // map処理共通
     const func_map = (val, type) => {
       const el_target = document.querySelector("#" + type + val);
       el_target.style.background = CLICKED_COLOR.HW;
-    }
+    };
     clickedHeightList.map((name) => {
       func_map(name, "h_");
     });
     clickedWeightList.map((name) => {
       func_map(name, "w_");
     });
-
-  }
+  };
 
   /***** HTML ******/
   return (
     <>
       <ContentBlock>
         <h3 css={[sectionTitle, filterTitle]}>Ability</h3>
-        <div css={customSelectWrapper}>
-          <select id="abilities" style={{ display: "none" }}></select>
-          <div css={customSelectMenu}>
-            <label>
-              <CgPokemon />
-              All
-              <IoIosArrowDown viewBox="0 100 412 412" />
-            </label>
-            <div></div>
-          </div>
-        </div>
+        <CustomSelect
+          type="selectAbility"
+          state={selectedAbility}
+          dispatch={searchDipatch}
+          list={abilityList}
+          custom={customSelectStyle}
+        />
       </ContentBlock>
       <ContentBlock>
         <h3 css={[sectionTitle, filterTitle]}>Height</h3>
@@ -343,7 +290,11 @@ const FilterContentRight = () => {
             <CgSearch strokeWidth="1" />
             Search
           </a>
-          <a id="reset" css={[buttonGray, button]}>
+          <a
+            id="reset"
+            css={[buttonGray, button]}
+            onClick={() => searchDipatch({ type: "reset", val: selectedSort })}
+          >
             Reset
           </a>
         </div>

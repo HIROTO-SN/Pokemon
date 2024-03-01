@@ -20,13 +20,13 @@ import {
   formWrapper,
   inRowSelect,
   submitButton,
+  customScrollbar,
 } from "../../CommonCss/AccountCss";
 import {
   alertBox,
   alertError,
   alertH3,
   column10,
-  customScrollBar,
   hiddenMobile,
   noPaddingTop,
   push2,
@@ -632,7 +632,7 @@ const VerifyAccount = ({ Banner }) => {
           <p>
             Please scroll through the Terms of Use and click Submit to accept.
           </p>
-          <div css={[termWrapper, customScrollBar]}>
+          <div css={[termWrapper, customScrollbar]}>
             <div css={viewport}>
               <div></div>
             </div>

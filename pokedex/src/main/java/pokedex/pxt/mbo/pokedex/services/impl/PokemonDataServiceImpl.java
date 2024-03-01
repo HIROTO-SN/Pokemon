@@ -7,6 +7,7 @@ import java.util.Arrays;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
@@ -27,8 +28,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 	/**
 	 * Pokemonリストを取得
+	 * 
 	 * @param request <searchDto> リクエスト
-	 * @return response <PokemonDto> 
+	 * @return response <PokemonDto>
 	 */
 	public List<PokemonDto> getPokemonList(SearchDto searchDto) {
 		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
@@ -36,39 +38,39 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		if (searchDto.getInitFlg()) {
 			// Pokemonリストを検索する（一覧は常にformId=1のものを取得）
 			pokemonRepository.findByFormIdAndPokemonIdBetweenOrderByPokemonId(
-				Constants.POKE.get("FORM_ID_FOR_LIST"),
-				Constants.POKE.get("OFFSET_FOR_INIT"),
-				Constants.POKE.get("PAGE_SIZE")
-				)
-				.ifPresent(poke -> {
-					poke.forEach(_poke -> {
-						pokemonDto.add(setPokemonDtoList(_poke));
+					Constants.POKE.get("FORM_ID_FOR_LIST"),
+					Constants.POKE.get("OFFSET_FOR_INIT"),
+					Constants.POKE.get("PAGE_SIZE"))
+					.ifPresent(poke -> {
+						poke.forEach(_poke -> {
+							pokemonDto.add(setPokemonDtoList(_poke));
+						});
 					});
-				});
-		// 初回以外の検索または「Load more」押下時
+			// 初回以外の検索または「Load more」押下時
 		} else {
 			PokemonSpecification<Pokemon> spec = new PokemonSpecification<>();
 			pokemonRepository.findAll(
-				Specification
-					.where(spec.formIdOneAndSort(searchDto.getSortBy()))
-					.and(spec.numberBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
-					.and(spec.nameContains(searchDto.getSearchInput()))
-					.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
-					.and(spec.heightWeightSearch(searchDto.getHeightPoint(), "height"))
-					.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight"))
-					,PageRequest.of(searchDto.getPageNumber(), Constants.POKE.get("PAGE_SIZE"), Sort.by(
-						searchDto.getSortBy().equals("asc") ? Sort.Direction.ASC : Sort.Direction.DESC, 
-						"pokemonId"))
-			).forEach(poke -> {
-				pokemonDto.add(setPokemonDtoList(poke));
-			});
+					Specification
+							.where(spec.formIdOneAndSort(searchDto.getSortBy()))
+							.and(spec.numberBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
+							.and(spec.nameContains(searchDto.getSearchInput()))
+							.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
+							.and(spec.heightWeightSearch(searchDto.getHeightPoint(), "height"))
+							.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight")),
+					PageRequest.of(searchDto.getPageNumber(), 
+					Constants.POKE.get("PAGE_SIZE"), 
+					manageSort(searchDto.getSortBy()))
+				).forEach(poke -> {
+					pokemonDto.add(setPokemonDtoList(poke));
+				});
 		}
-		
+
 		return pokemonDto;
 	}
 
 	/**
 	 * PokemonリストをSET
+	 * 
 	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
 	 * @return <PokemonDto> PokemonDtoオブジェクト
 	 */
@@ -78,25 +80,32 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			pokemon.getFormId(),
 			pokemon.getPokemonName(),
 			new ArrayList<Types>(
-				pokemon.getType2() == null ?
-					Arrays.asList(
-						new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName())
-					)	: 
-					Arrays.asList(
-						new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
-						new Types(pokemon.getType2().getType_id(), pokemon.getType2().getName())
-					)
-			),
-			new ArrayList<Types>(
-				// pokemon.getType2() == null ?
-				// 	Arrays.asList(
-				// 		new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName())
-				// 	)	: 
-				// 	Arrays.asList(
-				// 		new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
-				// 		new Types(pokemon.getType2().getType_id(), pokemon.getType2().getName())
-				// 	)
-			)
+					pokemon.getType2() == null ? Arrays.asList(
+							new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName()))
+							: Arrays.asList(
+									new Types(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
+									new Types(pokemon.getType2().getType_id(), pokemon.getType2().getName()))),
+			new ArrayList<Types>()
 		);
+	}
+
+	/**
+	 * Pokemonリストをソート
+	 * 
+	 * @param sortBy <String> sort内容
+	 * @return <Direction> Directionオブジェクト
+	 */
+	private Sort manageSort (String sortBy) {
+		switch(sortBy) {
+			case "asc":
+			default:
+				return Sort.by(Direction.ASC, "pokemonId");
+			case "desc":
+				return Sort.by(Direction.DESC, "pokemonId");
+			case "A-Z":
+				return Sort.by(Direction.ASC, "pokemonName");
+			case "Z-A":
+				return Sort.by(Direction.DESC, "pokemonName");
+		}
 	}
 }
