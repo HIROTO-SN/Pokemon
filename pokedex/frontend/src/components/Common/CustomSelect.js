@@ -3,7 +3,8 @@ import { css } from "@emotion/react";
 import { useState } from "react";
 import { CgPokemon } from "react-icons/cg";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
-import usePokeSearchHook from "../../features/Pokedex/utils/PokeSearchHook";
+import { pokeSearchSubmit } from "../../features/Pokedex/utils/PokeCommmonFunc";
+import { useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData } from "../../features/Pokedex/contexts/SearchContext";
 
 /**
  * カスタムセレクトボックス
@@ -11,17 +12,23 @@ import usePokeSearchHook from "../../features/Pokedex/utils/PokeSearchHook";
 const CustomSelect = ({ type: typeAction, state, dispatch, list, custom, clickSubmit }) => {
   /***** CSS *****/
   const useCss = useSelectCss();
+  const useSearch = useSearchCondition();
+  const searchDipatch = useSearchDispatch();
+  const setPokemon = useSetPokemonData();
+  const setLoader = useSetLoader();
 
   /***** Definition ******/
   const [isListOpened, setIsListOpened] = useState(false);
-  const [ searchAction ] = usePokeSearchHook();
 
   /***** JS ******/
-  const listItemClickHandler = (list, clickSubmit) => {
+  const listItemClickHandler = async(list, clickSubmit) => {
     arrowClickHandler();
     dispatch({ type: typeAction, val: list.id })
     if (clickSubmit && state !== list.id ) {
-      searchAction();
+      setLoader(true);
+      const newSearch = { ...useSearch, sortBy: list.id};
+      await pokeSearchSubmit(newSearch, setPokemon, searchDipatch, false);
+      setLoader(false);
     }
   };
 

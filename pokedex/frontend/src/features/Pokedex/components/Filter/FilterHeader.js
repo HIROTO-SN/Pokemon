@@ -10,14 +10,19 @@ import {
   ttHint,
 } from "../../../../components/CommonCss/Layout.js";
 import {
-  useSearchDispatch
+  useSearchCondition,
+  useSearchDispatch,
+  useSetLoader,
+  useSetPokemonData
 } from "../../contexts/SearchContext.js";
-import PokeSearchHook from "../../utils/PokeSearchHook.js";
+import { pokeSearchSubmit } from "../../utils/PokeCommmonFunc.js";
 
 const FilterHeader = () => {
   /***** Definition ******/
   const searchDipatch = useSearchDispatch();
-  const [searchAction] = PokeSearchHook();
+  const useSearch = useSearchCondition();
+  const setPokemon = useSetPokemonData();
+  const setLoader = useSetLoader();
 
   /***** JS ******/
   /**
@@ -26,6 +31,14 @@ const FilterHeader = () => {
    */
   const searchInputChange = (e) => {
     searchDipatch({ type: e.target.id, val: e.target.value });
+  };
+
+  
+  const clickSearch = async() => {
+    setLoader(true);
+    // 共通API接続関数を呼び出し
+    await pokeSearchSubmit(useSearch, setPokemon, searchDipatch);
+    setLoader(false);
   };
 
   /***** HTML ******/
@@ -47,7 +60,7 @@ const FilterHeader = () => {
               <input
                 type="button"
                 css={buttonSearch}
-                onClick={searchAction}
+                onClick={() => clickSearch()}
               ></input>
             </div>
           </div>
