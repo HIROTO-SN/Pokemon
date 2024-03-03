@@ -2,7 +2,7 @@ import React from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-
+import { Link as Scroll } from "react-scroll";
 import {
   column6,
   push1,
@@ -13,7 +13,8 @@ import {
   useSearchCondition,
   useSearchDispatch,
   useSetLoader,
-  useSetPokemonData
+  useSetNoResult,
+  useSetPokemonData,
 } from "../../contexts/SearchContext.js";
 import { pokeSearchSubmit } from "../../utils/PokeCommmonFunc.js";
 
@@ -23,6 +24,7 @@ const FilterHeader = () => {
   const useSearch = useSearchCondition();
   const setPokemon = useSetPokemonData();
   const setLoader = useSetLoader();
+  const setNoResult = useSetNoResult();
 
   /***** JS ******/
   /**
@@ -33,11 +35,10 @@ const FilterHeader = () => {
     searchDipatch({ type: e.target.id, val: e.target.value });
   };
 
-  
-  const clickSearch = async() => {
+  const clickSearch = async () => {
     setLoader(true);
     // 共通API接続関数を呼び出し
-    await pokeSearchSubmit(useSearch, setPokemon, searchDipatch);
+    await pokeSearchSubmit(useSearch, setPokemon, searchDipatch, setNoResult);
     setLoader(false);
   };
 
@@ -57,11 +58,13 @@ const FilterHeader = () => {
                 ></input>
                 <pre></pre>
               </span>
-              <input
-                type="button"
+              <Scroll
+                to="result"
+                smooth={true}
+                duration={1000}
                 css={buttonSearch}
                 onClick={() => clickSearch()}
-              ></input>
+              ></Scroll>
             </div>
           </div>
           <p css={subtitle}>

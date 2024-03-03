@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class SearchDto {
+	private List<Integer> pokeIdList;
 	private String searchInput;
 	private List<Integer> types;
 	private List<Integer> weaks;
@@ -24,5 +25,5 @@ public class SearchDto {
 	private Integer weightPoint;
 	private String sortBy;
 	private int pageNumber;
-	private Boolean initFlg;
+	private String actionType;
 }

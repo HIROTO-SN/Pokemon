@@ -15,6 +15,7 @@ import Backtotop from "./components/BackToTop/Backtotop.js";
 import { LoginProvider } from "./contexts/LoginContext.js";
 import Profile from "./components/Profile/Profile.js";
 import Signup from "./components/Login/SingupAccount/Signup.js";
+import PokemonDetails from "./features/Pokedex/components/Details/PokemonDetails.js";
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
       <Router>
         <Navbar />
         <Routes>
+          <Route path="/"/>
           <Route path="/login" element={<Login />}></Route>
           <Route path="/verifyage" element={<Signup pageNo={1} />}></Route>
           <Route path="/verifyaccount" element={<Signup pageNo={2} />}></Route>
@@ -30,6 +32,7 @@ function App() {
           <Route path="/profile" element={<Profile />}></Route>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/pokedex" element={<Pokedex />}></Route>
+          <Route path="/pokedex/:pokemonName" element={<PokemonDetails />}/>
           <Route path="/pokemon-video-games" element={<VideoGames />}></Route>
           <Route path="/pokemon-tcg" element={<TradingCard />}></Route>
           <Route path="/animation" element={<Animation />}></Route>

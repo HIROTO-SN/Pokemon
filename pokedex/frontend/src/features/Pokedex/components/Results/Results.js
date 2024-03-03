@@ -3,11 +3,19 @@ import { css } from "@emotion/react";
 import { useEffect } from "react";
 import { column12, push1 } from "../../../../components/CommonCss/Layout.js";
 import { getPokemonList } from "../../../../components/api/PokemoApi.js";
-import { useLoader, usePokemonData, useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData } from "../../contexts/SearchContext.js";
+import {
+  useLoader,
+  usePokemonData,
+  useSearchCondition,
+  useSearchDispatch,
+  useSetLoader,
+  useSetPokemonData,
+} from "../../contexts/SearchContext.js";
 import Alert from "./Alert.js";
 import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
+import { getPokeIdList } from "../../utils/PokeCommmonFunc.js";
 
 const Results = () => {
   /***** CSS ******/
@@ -44,9 +52,9 @@ const Results = () => {
     list-style: none;
   `;
 
-  const noResults = css`
-    display: none;
-  `;
+  // const noResults = css`
+  //   display: none;
+  // `;
 
   const contentBlock = css`
     clear: both;
@@ -67,9 +75,9 @@ const Results = () => {
 
   /***** JS ******/
   /**
-  * 初期表示時処理
-  * Pokemonリスト1～12を取得
-  */
+   * 初期表示時処理
+   * Pokemonリスト1～12を取得
+   */
   useEffect(() => {
     const fetchPokemonData = async () => {
       // 初期表示用ポケモンリストを取得
@@ -79,35 +87,54 @@ const Results = () => {
     };
     fetchPokemonData();
   }, []);
-  
+
   /**
-  * Load more クリックイベント
-  */  
- const clickedloadMorePokemon = async () => {
-   // ローダーを表示
-   setLoader(true);
-   const nextTwelvePokemon = await getPokemonList(search);
-   loadPokemon(nextTwelvePokemon.data, "more");
-   // ローダーを再度非表示
-   setLoader(false);
+   * Load more クリックイベント
+   */
+  const clickedloadMorePokemon = async () => {
+    // ローダーを表示
+    setLoader(true);
+    const nextTwelvePokemon = await getPokemonList(search);
+    loadPokemon(nextTwelvePokemon.data, "more");
+    // ローダーを再度非表示
+    setLoader(false);
   };
-  
+
   /**
-  * @param {List} data - 取得したPokemonデータ
-  * @param {String} type - Dispatchアクション名
-  * PokemonリストのState更新関数
-  */  
+   * @param {List} data - 取得したPokemonデータ
+   * @param {String} type - Dispatchアクション名
+   * PokemonリストのState更新関数
+   */
   const loadPokemon = (data, type) => {
     switch (type) {
       case "init": {
         setPokemonData(data);
-        searchDipatch({ type: "setPageNumber", val: 1 });
+        searchDipatch({
+          type: "setPageNumber",
+          pokeIdList: getPokeIdList(data),
+          val: 1,
+          actionType: "search",
+        });
         break;
       }
       case "more": {
         const combinedPokemonData = [...pokemonData, ...data];
         setPokemonData(combinedPokemonData);
-        searchDipatch({ type: "setPageNumber", val: (search.pageNumber + 1) } );
+        if (search.actionType === "surprise") {
+          searchDipatch({
+            type: "setPageNumber",
+            pokeIdList: getPokeIdList(combinedPokemonData),
+            val: search.pageNumber + 1,
+            actionType: "surprise",
+          });
+        } else {
+          searchDipatch({
+            type: "setPageNumber",
+            pokeIdList: getPokeIdList(combinedPokemonData),
+            val: search.pageNumber + 1,
+            actionType: "search",
+          });
+        }
         break;
       }
     }
@@ -116,18 +143,28 @@ const Results = () => {
   /***** HTML ******/
   return (
     <section id="result" css={results}>
-      <ul css={resultsList}>
-        {pokemonData.map((pokemon, i) => {
-          return <PokemonList key={i} pokemon={pokemon} />;
-        })}
-      </ul>
-      <div css={[push1, column12, noResults]}>
-        <Alert />
-      </div>
-      <div css={contentBlock}>
-        {loader && <Load />}
-        <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
-      </div>
+      {pokemonData.length > 0 && typeof pokemonData !== void 0 ?
+        // Pokemonリストを取得できた時
+        <>
+          <ul css={resultsList}>
+            {pokemonData.map((pokemon, i) => {
+              return <PokemonList key={i} pokemon={pokemon} />;
+            })}
+          </ul>
+          <div css={contentBlock}>
+            {loader && <Load />}
+            <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
+          </div>
+        </>
+        :
+        // Pokemonリストを取得できず、エラーの時
+        <>
+          {loader && <Load />}
+          <div css={[push1, column12]}>
+            <Alert />
+          </div>
+        </>
+      }
     </section>
   );
 };

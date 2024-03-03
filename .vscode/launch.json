@@ -6,6 +6,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "ConvTools",
+			"request": "launch",
+			"mainClass": "utils.ConvTools",
+			"projectName": "pokedex"
+		},
+		{
+			"type": "java",
 			"name": "PasswordGeneratorEncoder",
 			"request": "launch",
 			"mainClass": "utils.PasswordGeneratorEncoder",
