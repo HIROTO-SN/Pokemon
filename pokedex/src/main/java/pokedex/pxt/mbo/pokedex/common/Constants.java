@@ -28,6 +28,7 @@ public class Constants {
 			put("FORM_ID_FOR_LIST", 1);
 			put("OFFSET_FOR_INIT", 1);
 			put("PAGE_SIZE", 12);
+			put("LAST_POKEMON_ID", 1025);
 		}
 	};
 	// 基準値キー名

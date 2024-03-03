@@ -5,9 +5,13 @@ import { TfiReload } from "react-icons/tfi";
 import CustomSelect from "../../../../components/Common/CustomSelect.js";
 import { sortList } from "../../../../constants/ul_list/pokedexList.js";
 import {
+  initSearchState,
   useSearchCondition,
   useSearchDispatch,
+  useSetNoResult,
+  useSetPokemonData,
 } from "../../contexts/SearchContext.js";
+import { pokeSearchSubmit } from "../../utils/PokeCommmonFunc.js";
 
 /**
  * 「Surprise Me」 と 「Sort By」 の部分
@@ -38,7 +42,7 @@ const Sort = () => {
   const buttonSurprise = css`
     float: left;
     margin-right: -100%;
-    width: 34.71%;
+    width: 39.8%;
     margin-top: 2em;
     margin-left: 0.78125%;
     background-color: #30a7d7;
@@ -60,6 +64,10 @@ const Sort = () => {
       position: relative;
       top: 2px;
       margin-right: 0.5em;
+    }
+
+    :hover {
+      background-color: #1b82b1;
     }
   `;
 
@@ -84,6 +92,8 @@ const Sort = () => {
   /***** Definition ******/
   const searchCondition = useSearchCondition().sortBy;
   const searchDispatch = useSearchDispatch();
+  const setPokemon = useSetPokemonData()
+  const setNoResult = useSetNoResult();
 
   // カスタムセレクトボックススタイル定義
   const customSelectStyle = {
@@ -92,15 +102,24 @@ const Sort = () => {
     scrollbarColor: null,
     listWordColor: null,
   };
+  /***** JS ******/
+  const clickSurprise = async() => {
+    // actionTypeを"surprise"に指定して検索
+    await pokeSearchSubmit(initSearchState, setPokemon, searchDispatch, setNoResult, "surprise");
+  };
 
   /***** HTML ******/
   return (
     <section css={sort} style={{ overflow: "wrap" }}>
       <div css={[push1, column12]}>
-        <a id="shuffle" css={buttonSurprise}>
+        <button
+          id="shuffle"
+          css={buttonSurprise}
+          onClick={() => clickSurprise()}
+        >
           <TfiReload strokeWidth="1.7" />
           Surprise Me!
-        </a>
+        </button>
         <div css={flex}>
           <h3 css={sortLabel}>Sort By</h3>
           <CustomSelect

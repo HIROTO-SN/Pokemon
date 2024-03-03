@@ -10,6 +10,7 @@ import {
   useSearchCondition,
   useSearchDispatch,
 } from "../../contexts/SearchContext";
+import { toHalfWidth } from "../../../../components/CommonFunc/Common";
 
 const FilterContentLeft = () => {
   /***** CSS ******/
@@ -353,7 +354,7 @@ const InputArea = ({ type }) => {
     <input
       id={type === "min" ? "numberMinInput" : "numberMaxInput"}
       css={[commonRangeBox, inputArea]}
-      onBlur={(e) => searchDipatch({ type: e.target.id, val: e.target.value })}
+      onBlur={(e) => searchDipatch({ type: e.target.id, val: toHalfWidth(e.target.value) })}
     ></input>
   );
 };

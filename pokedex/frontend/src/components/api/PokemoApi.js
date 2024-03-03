@@ -76,6 +76,6 @@ export const getSearchedPokemonList = async (search) => {
       return response;
     }
   } catch(e) {
-    console.log("サーバーとの通信に失敗:" + e);
+    return { data: [], status: 500 };
   }
 };

@@ -11,9 +11,12 @@ const PokemonData = createContext();
 const SetPokemonData = createContext();
 const Loader = createContext();
 const SetLoader = createContext();
+const NoResult = createContext();
+const SetNoResult = createContext();
 
 // 検索条件初期状態オブジェクト
-const initSearchState = {
+export const initSearchState = {
+  pokeIdList: [],
   searchInput: "",
   types: [],
   weaks: [],
@@ -26,7 +29,7 @@ const initSearchState = {
   ability: 0, // allは0と定義
   sortBy: "asc",
   pageNumber: 0,
-  initFlg: true,
+  actionType: "init",
 };
 
 /*
@@ -88,17 +91,27 @@ export const SearchProvider = ({ children }) => {
         case "sortBy":
           return { ...state, sortBy: action.val };
         case "setPageNumber":
-          return { ...state, pageNumber: action.val, initFlg: false };
-				case "reset":
-					return { ...initSearchState, sortBy: action.val };
+          return {
+            ...state,
+            pokeIdList: action.pokeIdList,
+            pageNumber: action.val,
+            actionType: action.actionType,
+          };
+        case "reset":
+          return { ...initSearchState, sortBy: action.val };
       }
-    },initSearchState);
+    },
+    initSearchState
+  );
 
   /*2*/
   const [pokemonData, setPokemonData] = useState([]);
 
   /*3*/
   const [loader, setLoader] = useState(true);
+
+  /*4*/
+  const [noResult, setNoResult] = useState(200);
 
   /***** Context ******/
   return (
@@ -108,7 +121,11 @@ export const SearchProvider = ({ children }) => {
           <SetPokemonData.Provider value={setPokemonData}>
             <Loader.Provider value={loader}>
               <SetLoader.Provider value={setLoader}>
-                {children}
+                <NoResult.Provider value={noResult}>
+                  <SetNoResult.Provider value={setNoResult}>
+                    {children}
+                  </SetNoResult.Provider>
+                </NoResult.Provider>
               </SetLoader.Provider>
             </Loader.Provider>
           </SetPokemonData.Provider>
@@ -124,3 +141,5 @@ export const usePokemonData = () => useContext(PokemonData);
 export const useSetPokemonData = () => useContext(SetPokemonData);
 export const useLoader = () => useContext(Loader);
 export const useSetLoader = () => useContext(SetLoader);
+export const useNoResult = () => useContext(NoResult);
+export const useSetNoResult = () => useContext(SetNoResult);

@@ -68,6 +68,14 @@ export const noPaddingTop = css`
   padding-top: 0 !important;
 `;
 
+export const overflowVisible = css`
+  overflow: visible;
+`;
+
+export const overflowVisible = css`
+  overflow: visible;
+`;
+
 /*
  *　色/ディスプレイ要素調整系
  */

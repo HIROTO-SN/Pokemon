@@ -14,9 +14,11 @@ import {
   useSearchCondition,
   useSearchDispatch,
   useSetLoader,
+  useSetNoResult,
   useSetPokemonData,
 } from "../../contexts/SearchContext";
 import { pokeSearchSubmit } from "../../utils/PokeCommmonFunc.js";
+import { Link as Scroll } from "react-scroll";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -153,6 +155,7 @@ const FilterContentRight = () => {
   const searchDipatch = useSearchDispatch();
   const setPokemon = useSetPokemonData();
   const setLoader = useSetLoader();
+  const setNoResult = useSetNoResult();
 
   // カスタムセレクトボックススタイル定義
   const customSelectStyle = {
@@ -236,7 +239,7 @@ const FilterContentRight = () => {
   const clickSearch = async() => {
     setLoader(true);
     // 共通API接続関数を呼び出し
-    await pokeSearchSubmit(useSearch, setPokemon, searchDipatch);
+    await pokeSearchSubmit(useSearch, setPokemon, searchDipatch, setNoResult);
     setLoader(false);
   };
 
@@ -300,14 +303,17 @@ const FilterContentRight = () => {
       </ContentBlock>
       <ContentBlock>
         <div css={filterAction}>
-          <a
+          <Scroll
             id="advSearch"
+            to="result"
+            smooth={true}
+            duration={600}
             css={[buttonOrange, button]}
             onClick={() => clickSearch()}
           >
             <CgSearch strokeWidth="1" />
             Search
-          </a>
+          </Scroll>
           <a
             id="reset"
             css={[buttonGray, button]}

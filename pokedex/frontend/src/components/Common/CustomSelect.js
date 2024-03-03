@@ -4,7 +4,7 @@ import { useState } from "react";
 import { CgPokemon } from "react-icons/cg";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { pokeSearchSubmit } from "../../features/Pokedex/utils/PokeCommmonFunc";
-import { useSearchCondition, useSearchDispatch, useSetLoader, useSetPokemonData } from "../../features/Pokedex/contexts/SearchContext";
+import { useSearchCondition, useSearchDispatch, useSetLoader, useSetNoResult, useSetPokemonData } from "../../features/Pokedex/contexts/SearchContext";
 
 /**
  * カスタムセレクトボックス
@@ -16,6 +16,7 @@ const CustomSelect = ({ type: typeAction, state, dispatch, list, custom, clickSu
   const searchDipatch = useSearchDispatch();
   const setPokemon = useSetPokemonData();
   const setLoader = useSetLoader();
+  const setNoResult = useSetNoResult();
 
   /***** Definition ******/
   const [isListOpened, setIsListOpened] = useState(false);
@@ -27,7 +28,7 @@ const CustomSelect = ({ type: typeAction, state, dispatch, list, custom, clickSu
     if (clickSubmit && state !== list.id ) {
       setLoader(true);
       const newSearch = { ...useSearch, sortBy: list.id};
-      await pokeSearchSubmit(newSearch, setPokemon, searchDipatch, false);
+      await pokeSearchSubmit(newSearch, setPokemon, searchDipatch, setNoResult, "search");
       setLoader(false);
     }
   };
