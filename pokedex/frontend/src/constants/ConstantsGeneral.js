@@ -42,3 +42,8 @@ export const WEIGHT_LIST = [
 	{ name: "heavy", height: "60%", top: "45%", urlB: "/icons/ball.png" },
 ];
 
+/* POKEDEX - DETAILS */
+export const STATS_INFO = {
+	MAX: 250,
+	GAUGE_BAR_HEIGHT: 15,
+};
