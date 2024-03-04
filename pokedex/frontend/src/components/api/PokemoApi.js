@@ -7,16 +7,16 @@ import { POKEURL } from "../../constants/ApiUrls";
 //  * @param {String} url - https://pokeapi.co/api/v2/pokemon
 //  * @return {Object} Promise - APIアクセス結果
 //  */
-// export const getAllPokemon = (url) => {
-//   return new Promise((resolve, reject) => {
-//     setTimeout(() => {
-//       fetch(url)
-//         .then((res) => res.json())
-//         .then((data) => resolve(data))
-//         .catch((reason) => console.error("アクセス拒否：", reason));
-//     }, 1000);
-//   });
-// };
+export const getAllPokemon = (url) => {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      fetch(url)
+        .then((res) => res.json())
+        .then((data) => resolve(data))
+        .catch((reason) => console.error("アクセス拒否：", reason));
+    }, 1000);
+  });
+};
 
 // export const getPokemon = (url) => {
 //   return new Promise((resolve, reject) => {
@@ -65,13 +65,17 @@ export const getPokemonImages = (url) => {
  * Pokemon検索データを取得
  * @param {Object} search - 検索内容格納オブジェクト
  */
-export const getSearchedPokemonList = (search) => {
-  axios
-    .post(POKEURL.SEARCH, search)
-    .then((res) => {
-      console.log("ポケモンリスト", res);
-    })
-    .catch((reason) =>
-      console.error("サーバーとの通信に失敗：", reason)
-    );
+export const getSearchedPokemonList = async (search) => {
+  try {
+    const response = await axios.post(POKEURL.POKELIST, search);
+    if (response.status === 204) {
+      // 検索結果が1件も見つからなかった時
+      return { ... response, data: [] };
+    } else if (response.status === 200) {
+      // 検索結果が見つかった時
+      return response;
+    }
+  } catch(e) {
+    return { data: [], status: 500 };
+  }
 };

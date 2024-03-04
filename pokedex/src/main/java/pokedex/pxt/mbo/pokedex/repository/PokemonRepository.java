@@ -4,23 +4,15 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.PokemonPkey;
 
-public interface PokemonRepository extends JpaRepository<Pokemon, PokemonPkey>{
+public interface PokemonRepository extends JpaRepository<Pokemon, PokemonPkey>, JpaSpecificationExecutor<Pokemon>{
 	/*
-	 * Pokemon一覧用リストを取得する(pokemonIdの範囲指定、pokemonIdの昇順)
+	 * Pokemon一覧用リストを取得する(主に初期表示時用)
 	 */
 	public Optional<List<Pokemon>> findByFormIdAndPokemonIdBetweenOrderByPokemonId(int formId, int min, int max);
 	
-	/*
-	 * Pokemon一覧用リストを検索する(pokemonIdの範囲指定、pokemonIdの降順)
-	 */
-	public Optional<List<Pokemon>> findByFormIdAndPokemonIdBetweenOrderByPokemonIdDesc(int formId, int min, int max);
-
-	/*
-	 * Pokemon一覧用リストを名前検索する
-	 */
-	public Optional<List<Pokemon>> findByPokemonNameContainingAndFormId(String pokemoName, int formId);
 }

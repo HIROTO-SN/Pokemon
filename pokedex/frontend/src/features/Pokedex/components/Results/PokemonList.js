@@ -1,8 +1,14 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { capitalizeFirstLetter, setBackGroundForTypes, setFontColorForTypes } from "../../utils/ConvToolUtils";
+import { Link } from "react-router-dom";
 import { EXTERNAL_POKEAPI } from "../../../../constants/ApiUrls";
+import {
+  capitalizeFirstLetter,
+  extractString,
+  setBackGroundForTypes,
+  setFontColorForTypes,
+} from "../../utils/ConvToolUtils";
 
 const PokemonList = ({ pokemon }) => {
   const Li_pokemon = styled.li`
@@ -23,6 +29,7 @@ const PokemonList = ({ pokemon }) => {
       border-radius: 5px;
       width: 100%;
       padding-top: 100;
+      cursor: pointer;
 
       > img {
         float: left;
@@ -59,39 +66,45 @@ const PokemonList = ({ pokemon }) => {
   `;
 
   const pill = (typeName) => css`
-      font-family: "Flexo-Medium", arial, sans-serif;
-      border-radius: 3px;
-      line-height: 18px;
-      max-width: 110px;
-      margin: 0 1.5625% 0 0;
-      width: 38.4375%;
-      float: left;
-      text-transform: none;
-      font-size: 11px;
-      text-align: center;
-			background: ${setBackGroundForTypes(typeName)};
-			color: ${setFontColorForTypes(typeName)};
+    font-family: "Flexo-Medium", arial, sans-serif;
+    border-radius: 3px;
+    line-height: 18px;
+    max-width: 110px;
+    margin: 0 1.5625% 0 0;
+    width: 38.4375%;
+    float: left;
+    text-transform: none;
+    font-size: 11px;
+    text-align: center;
+    background: ${setBackGroundForTypes(typeName)};
+    color: ${setFontColorForTypes(typeName)};
   `;
 
   /***** HTML ******/
-	return (
+  return (
     <Li_pokemon>
-      <a>
+      <Link to={`/pokedex/${pokemon.pokemonName}`} state={pokemon.pokemonId}>
         <img src={EXTERNAL_POKEAPI.IMAGE.replace("{0}", pokemon.pokemonId)} />
-      </a>
+      </Link>
       <div css={pokemonInfo}>
         <p css={id}>
           <span>#</span>
-          {(Number(pokemon.pokemonId)).toString().padStart(4, "0")}
+          {Number(pokemon.pokemonId).toString().padStart(4, "0")}
         </p>
-        <H5_names>{capitalizeFirstLetter(pokemon.pokemonName)}</H5_names>
-        {/* {pokemon.types.map((_type) => {
+        <H5_names>
+          {capitalizeFirstLetter(extractString(pokemon.pokemonName, 0, " "))}
+        </H5_names>
+        {pokemon.types.map((_type) => {
           return (
-            <div key={_type.type.name}>
-              <span css={pill(_type.type.name)}>{_type.type.name}</span>
-            </div>
+            _type.type_id != 99 && (
+              <div key={_type.name}>
+                <span css={pill(_type.name)}>
+                  {capitalizeFirstLetter(_type.name)}
+                </span>
+              </div>
+            )
           );
-        })} */}
+        })}
       </div>
     </Li_pokemon>
   );

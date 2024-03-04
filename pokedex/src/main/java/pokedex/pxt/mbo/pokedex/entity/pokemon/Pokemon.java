@@ -6,6 +6,8 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.IdClass;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -34,27 +36,46 @@ public class Pokemon {
 	@Column(name = "pokemon_name", nullable = false, unique = true)
 	private String pokemonName;
 
-	// private int height;
-	// private int weight;
-	// @OneToOne
-	// @JoinColumn(name = "type1", insertable = false, updatable = false)
-	// private Types type1;
-	// @OneToOne
-	// @JoinColumn(name = "type2",insertable = false, updatable = false)
-	// private Types type2;
+	@Column(nullable = true)
+	private double height;
+
+	@Column(nullable = true)
+	private double weight;
+	
+	@ManyToOne
+	@JoinColumn(name = "type_1", insertable = false)
+	private Types type1;
+	
+	@ManyToOne
+	@JoinColumn(name = "type_2", insertable = false)
+	private Types type2;
+	
+	@ManyToOne
+	@JoinColumn(name = "ability_1",insertable = false)
+	private Abilities ability1;
+	
+	@ManyToOne
+	@JoinColumn(name = "ability_2",insertable = false)
+	private Abilities ability2;
+	
+	@ManyToOne
+	@JoinColumn(name = "ability_hidden",insertable = false)
+	private Abilities ability_hidden;
+
+	// @Column(name = "ability1")
+	// private String ability_1;
+	
+	// @Column(name = "ability2")
+	// private String ability_2;
+	
+	// @Column(name = "ability_hidden")
+	// private String ability_hidden;
+	
 	// private int gender;
 	// private int category;
 	// private String v1_description;
 	// private String v2_description;
-	// @OneToOne
-	// @JoinColumn(name = "ability1",insertable = false, updatable = false)
-	// private Abilities ability1;
-	// @OneToOne
-	// @JoinColumn(name = "ability2",insertable = false, updatable = false)
-	// private Abilities ability2;
-	// @OneToOne
-	// @JoinColumn(name = "ability_hidden",insertable = false, updatable = false)
-	// private Abilities ability_hidden;
+	// @ManyToOne
 	// private int stats_hp;
 	// private int stats_attack;
 	// private int stats_defense;

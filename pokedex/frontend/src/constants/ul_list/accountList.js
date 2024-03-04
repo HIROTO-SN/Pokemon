@@ -1,41 +1,15 @@
-export const typeList = [
-  { name: "Bug", background: "#729f3f" },
-  { name: "Dark", background: "#707070" },
-  {
-    name: "Dragon",
-    background: "linear-gradient(180deg, #53a4cf 50%, #f16e57 50%)",
-  },
-  { name: "Electric", background: "#eed535", color: "#212121" },
-  { name: "Fairy", background: "#fdb9e9", color: "#212121" },
-  { name: "Fighting", background: "#d56723" },
-  { name: "Fire", background: "#fd7d24" },
-  {
-    name: "Flying",
-    background: "linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)",
-    color: "#212121",
-  },
-  { name: "Ghost", background: "#7b62a3" },
-  { name: "Grass", background: "#9bcc50", color: "#212121" },
-  {
-    name: "Ground",
-    background: "linear-gradient(180deg, #f7de3f 50%, #ab9842 50%)",
-    color: "#212121",
-  },
-  { name: "Ice", background: "#51c4e7", color: "#212121" },
-  { name: "Normal", background: "#a4acaf", color: "#212121" },
-  { name: "Poison", background: "#b97fc9" },
-  { name: "Psychic", background: "#f366b9" },
-  { name: "Rock", background: "#a38c21" },
-  { name: "Steel", background: "#9eb7b8", color: "#212121" },
-  { name: "Water", background: "#4592c4" },
-];
+/**
+ * サインイン・ログイン画面でのリスト
+ */
 
+// ステップリスト
 export const stepMenuList = [
   { name: "Verify Age", pageNo: 1, class: "first" },
-  { name: "Create Account", pageNo: 2, class: "middle" },
+  { name: "Create Account", pageNo: 2, class: "mtype_iddle" },
   { name: "Verify Email", pageNo: 3, class: "last" },
 ];
 
+// 国リスト
 export const countryList = [
 	{ name: "United States", value: "US" },
 	{ name: "Canada", value: "CA" },
@@ -141,7 +115,7 @@ export const countryList = [
   { name: "Hungary", value: "HU" },
   { name: "Iceland", value: "IS" },
   { name: "India", value: "IN" },
-  { name: "Indonesia", value: "ID" },
+  { name: "Indonesia", value: "type_id" },
   { name: "Iran (Islamic Republic of)", value: "IR" },
   { name: "Iraq", value: "IQ" },
   { name: "Ireland", value: "IE" },
@@ -262,7 +236,7 @@ export const countryList = [
   { name: "Togo", value: "TG" },
   { name: "Tokelau", value: "TK" },
   { name: "Tonga", value: "TO" },
-  { name: "Trinidad and Tobago", value: "TT" },
+  { name: "Trintype_idad and Tobago", value: "TT" },
   { name: "Tunisia", value: "TN" },
   { name: "Turkey", value: "TR" },
   { name: "Turkmenistan", value: "TM" },

@@ -15,8 +15,9 @@ public class PokemonDto {
 	private int pokemonId;
 	private int formId;
 	private String pokemonName;
+	private List<Types> types;
+	private List<Types> weaks;
 	// private List<Abilities> abilities;
-	// private List<Types> types;
 	// private List<Weaknesses> weaknesses;
 	// private int height;
 	// private int weight;

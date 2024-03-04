@@ -189,6 +189,7 @@ export const customScrollbar = css`
 `;
 
 export const buttonBlack = css`
+  background-color: #313131;
   color: #fff !important;
 `;
 

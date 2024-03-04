@@ -1,7 +1,5 @@
 package pokedex.pxt.mbo.pokedex.payload.pokemon;
 
-import java.util.Map;
-
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +10,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Types {
-	private int slot;
+	private int type_id;
 	private String name;
 }

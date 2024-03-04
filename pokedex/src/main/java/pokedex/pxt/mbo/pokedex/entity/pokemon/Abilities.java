@@ -21,7 +21,11 @@ public class Abilities {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int ability_id;
+
 	@Column(nullable = false)
 	private String name;
+
 	private String description;
+	
+	private int gen;
 }
