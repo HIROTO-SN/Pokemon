@@ -70,10 +70,15 @@ export const noPaddingTop = css`
 
 export const overflowVisible = css`
   overflow: visible;
-`;
-
-export const overflowVisible = css`
-  overflow: visible;
+  ::before {
+    content: "";
+    display: table;
+  }
+  ::after {
+    clear: both;
+    content: "";
+    display: table;
+  }
 `;
 
 /*
@@ -122,7 +127,7 @@ export const container = css`
 export const section = css`
   padding: 1em 0;
   background: transparent url("./background/content_bg.png") left top;
-  background-size: 100% 1px;
+  background-size: 100% 1px;  
   display: block;
   margin: 0 auto;
   overflow: hidden;
@@ -161,7 +166,7 @@ export const alertH3 = (color) => css`
   text-transform: none;
   font-size: 125%;
   line-height: 125%;
-  font-family: "Flexo-Medium",arial,sans-serif;
+  font-family: "Flexo-Medium", arial, sans-serif;
 `;
 
 // アラートボックス色定義
@@ -177,7 +182,7 @@ const colorCtrl = (color) => {
     default:
       return "none";
   }
-}
+};
 
 // カスタムセレクトボックス スクロール制御
 export const viewport = css`
