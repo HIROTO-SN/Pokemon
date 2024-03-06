@@ -70,6 +70,10 @@ export const noPaddingTop = css`
 
 export const overflowVisible = css`
   overflow: visible;
+`;
+
+// レイアウト調整
+export const clearTable = css`
   ::before {
     content: "";
     display: table;
@@ -79,7 +83,7 @@ export const overflowVisible = css`
     content: "";
     display: table;
   }
-`;
+`
 
 /*
  *　色/ディスプレイ要素調整系

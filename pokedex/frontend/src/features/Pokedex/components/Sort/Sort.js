@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { push1, column12 } from "../../../../components/CommonCss/Layout.js";
+import { push1, column12, clearTable } from "../../../../components/CommonCss/Layout.js";
 import { TfiReload } from "react-icons/tfi";
 import CustomSelect from "../../../../components/Common/CustomSelect.js";
 import { sortList } from "../../../../constants/ul_list/pokedexList.js";
@@ -26,17 +26,6 @@ const Sort = () => {
     margin: 0 auto;
     max-width: 1024px;
     width: 100%;
-
-    :before {
-      content: "";
-      display: table;
-    }
-
-    :after {
-      clear: both;
-      content: "";
-      display: table;
-    }
   `;
 
   const buttonSurprise = css`
@@ -110,7 +99,7 @@ const Sort = () => {
 
   /***** HTML ******/
   return (
-    <section css={sort} style={{ overflow: "wrap" }}>
+    <section css={[sort, clearTable]} style={{ overflow: "wrap" }}>
       <div css={[push1, column12]}>
         <button
           id="shuffle"

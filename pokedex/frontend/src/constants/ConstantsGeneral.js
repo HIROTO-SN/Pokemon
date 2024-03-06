@@ -47,3 +47,10 @@ export const STATS_INFO = {
 	MAX: 250,
 	GAUGE_BAR_HEIGHT: 15,
 };
+
+export const versionLabelList = [
+	{ name: "x", },
+	{ name: "y", }
+];
+
+export const noEvolution = "This Pokémon does not evolve.";

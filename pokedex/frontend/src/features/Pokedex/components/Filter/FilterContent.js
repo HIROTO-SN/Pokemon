@@ -6,6 +6,7 @@ import {
   push8,
   column5,
   column7,
+  clearTable,
 } from "../../../../components/CommonCss/Layout.js";
 import FilterContentLeft from "./FilterContentLeft.js";
 import FilterContentRight from "./FilterContentRight.js";
@@ -21,21 +22,10 @@ const FilterContent = ({toggleActive}) => {
     overflow: hidden;
     height: ${!toggleActive ? "0px" : "inherit"};
   `;
-  const clear = css`
-    :before{
-      content: "";
-      display: table;
-    }
-    :after{
-      clear: both;
-      content: "";
-      display: table;
-    }
-  `;
 
   return (
     <div css={pokedexFilterWrapper}>
-      <div css={clear}>
+      <div css={clearTable}>
         <div css={[column7, push1]}><FilterContentLeft/></div>
         <div css={[column5, push8]}><FilterContentRight/></div>
       </div>

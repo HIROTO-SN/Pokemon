@@ -16,6 +16,7 @@ import { LoginProvider } from "./contexts/LoginContext.js";
 import Profile from "./components/Profile/Profile.js";
 import Signup from "./components/Login/SingupAccount/Signup.js";
 import PokemonDetails from "./features/Pokedex/components/Details/PokemonDetails.js";
+import { DetailProvider } from "./features/Pokedex/contexts/DetailContext.js";
 
 function App() {
   return (
@@ -32,7 +33,7 @@ function App() {
           <Route path="/profile" element={<Profile />}></Route>
           <Route path="/home" element={<Home />}></Route>
           <Route path="/pokedex" element={<Pokedex />}></Route>
-          <Route path="/pokedex/:pokemonName" element={<PokemonDetails />}/>
+          <Route path="/pokedex/:pokemonName" element={<DetailProvider><PokemonDetails /></DetailProvider>}/>
           <Route path="/pokemon-video-games" element={<VideoGames />}></Route>
           <Route path="/pokemon-tcg" element={<TradingCard />}></Route>
           <Route path="/animation" element={<Animation />}></Route>
