@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useEffect } from "react";
-import { column12, push1 } from "../../../../components/CommonCss/Layout.js";
+import { clearTable, column12, push1 } from "../../../../components/CommonCss/Layout.js";
 import { getPokemonList } from "../../../../components/api/PokemoApi.js";
 import {
   useLoader,
@@ -31,16 +31,6 @@ const Results = () => {
     overflow: hidden;
     max-width: 1024px;
     width: 100%;
-
-    :before {
-      content: "";
-      display: table;
-    }
-    :after {
-      clear: both;
-      content: "";
-      display: table;
-    }
   `;
 
   const resultsList = css`
@@ -51,10 +41,6 @@ const Results = () => {
     margin-left: 7.2525%;
     list-style: none;
   `;
-
-  // const noResults = css`
-  //   display: none;
-  // `;
 
   const contentBlock = css`
     clear: both;
@@ -142,7 +128,7 @@ const Results = () => {
 
   /***** HTML ******/
   return (
-    <section id="result" css={results}>
+    <section id="result" css={[results, clearTable]}>
       {pokemonData.length > 0 && typeof pokemonData !== void 0 ?
         // Pokemonリストを取得できた時
         <>

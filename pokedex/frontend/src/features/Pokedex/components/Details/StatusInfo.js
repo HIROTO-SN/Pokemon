@@ -2,51 +2,29 @@
 import { css } from "@emotion/react";
 import { STATS_INFO } from "../../../../constants/ConstantsGeneral";
 
-const StatusInfo = () => {
+const StatusInfo = ({ stat }) => {
   /***** Definition ******/
   const cssObj = useCssStatus();
 
-  /* ★ 後で消すテストデータ */
-  const status_list = [
-    {
-      name: "Venusaur",
-      stat_list: [
-        { name: "HP", val: 80 },
-        { name: "Attack", val: 82 },
-        { name: "Defense", val: 83 },
-        { name: "Special Attack", val: 100 },
-        { name: "Special Defense", val: 100 },
-        { name: "Speed", val: 80 },
-      ],
-      disp: true,
-    },
-    {
-      name: "Mega Venusaur",
-      stat_list: [{ name: "HP", val: 70 }],
-      disp: false,
-    },
-    {
-      name: "Gigantamax Venusaur",
-      stat_list: [{ name: "HP", val: 100 }],
-      disp: false,
-    },
-  ];
-  
   // メーターバー表示用の空のリスト
-  const meter_bar_list = [...Array(STATS_INFO.GAUGE_BAR_HEIGHT)].map((_, i) => i + 1);
+  const meter_bar_list = [...Array(STATS_INFO.GAUGE_BAR_HEIGHT)].map(
+    (_, i) => i + 1
+  );
 
   /***** JS ******/
   /**
-   * 
+   *
    * @param {Number} val - ステータス値
    * @return CSSでのtop位置計算結果
    */
   const meterBarCalc = (val) => {
-    if (val === void 0 || val >= STATS_INFO.MAX ) {
+    if (val === void 0 || val >= STATS_INFO.MAX) {
       return 0;
     } else {
       // ステータスバー1つずつのポイント重み計算
-      const bar_each_point = Math.ceil(STATS_INFO.MAX / STATS_INFO.GAUGE_BAR_HEIGHT);
+      const bar_each_point = Math.ceil(
+        STATS_INFO.MAX / STATS_INFO.GAUGE_BAR_HEIGHT
+      );
       // 引数で取得したステータス値がステータスバーの下から何番目かを計算
       const val_stat_position = Math.ceil(val / bar_each_point);
       // 四捨五入位置
@@ -54,30 +32,26 @@ const StatusInfo = () => {
       // CSSでの位置ずけ計算しreturn
       return (100 - (100 / 15) * val_stat_position).toFixed(digit);
     }
-  }
+  };
 
   /***** HTML ******/
   return (
-    <>
-      {status_list.map((stat) => (
-        <div key={stat.name + "_stat"} css={cssObj.statusInfo(stat.disp)}>
-          <h3>Stats</h3>
-          <ul>
-            {stat.stat_list.map((_stat) => (
-              <li key={_stat.name}>
-                <ul css={cssObj.gauge}>
-                  <li css={cssObj.meter(meterBarCalc(_stat.val))}></li>
-                  {meter_bar_list.map((meter) => (
-                    <li key={meter + "_meter"}></li>
-                  ))}
-                </ul>
-                <span css={cssObj.meter_title}>{_stat.name}</span>
-              </li>
-            ))}
-          </ul>
-        </div>
-      ))}
-    </>
+    <div css={cssObj.statusInfo}>
+      <h3>Stats</h3>
+      <ul>
+        {stat.map((_stat) => (
+          <li key={_stat.name}>
+            <ul css={cssObj.gauge}>
+              <li css={cssObj.meter(meterBarCalc(_stat.val))}></li>
+              {meter_bar_list.map((meter) => (
+                <li key={meter + "_meter"}></li>
+              ))}
+            </ul>
+            <span css={cssObj.meter_title}>{_stat.name}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 };
 
@@ -86,9 +60,7 @@ const StatusInfo = () => {
  */
 const useCssStatus = () => {
   // 全体囲い
-  const statusInfo = (disp) => css`
-    display: ${disp ? "block" : "none"};
-    opacity: ${disp ? 1 : 0};
+  const statusInfo = css`
     background-color: #a4a4a4;
     border-radius: 10px;
     display: block;
@@ -170,7 +142,7 @@ const useCssStatus = () => {
     @media (min-width: 1281px) and (max-width: 9999px) {
       font-size: 75%;
     }
-  `
+  `;
 
   return {
     statusInfo,

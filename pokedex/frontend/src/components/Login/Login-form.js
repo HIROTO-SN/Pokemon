@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { accountButton, notchBottomCenter } from "./Login";
-import { hiddenMobile, push1 } from "../CommonCss/Layout";
+import { clearTable, hiddenMobile, push1 } from "../CommonCss/Layout";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useLoginInfo, useLoginAction, useLoginErrorSet } from "../../contexts/LoginContext";
@@ -116,19 +116,6 @@ const LoginForm = () => {
     font-family: "Flexo-Medium", arial, sans-serif;
   `;
 
-  // ログインボタンと枠の隙間
-  const clear = css`
-    :before {
-      content: "";
-      display: table;
-    }
-    :after {
-      clear: both;
-      content: "";
-      display: table;
-    }
-  `;
-
   // ボタン
   const buttonGreen = css`
     clear: both;
@@ -212,7 +199,7 @@ const LoginForm = () => {
           ></input>
           <a css={roboto}>Forgot your password?</a>
         </div>
-        <div css={clear}></div>
+        <div css={clearTable}></div>
         <input
           id="login"
           name="login"

@@ -1,50 +1,39 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 
-const ProfileImage = () => {
-	/***** Definition ******/
-	const cssObj = useCssPagination();
+const ProfileImage = ({ name, src }) => {
+  /***** Definition ******/
+  const cssObj = useCssProfileImaeg();
 
-	/* ★ 後で消すテストデータ */
-	const pic_list = [
-		{ name: "Venusaur", src: "../test/003.png", disp: true },
-		{ name: "Mega Venusaur", src: "../test/003_f2.png", disp: false },
-		{ name: "Gigantamax Venusaur", src: "../test/003_f3.png", disp: false },
-	]
-
-	return (
-		<div css={cssObj.pokeProfile}>
-			{pic_list.map((pic) => (
-				<img key={pic.name + "_pic"} src={pic.src} css={cssObj.imgProfile(pic.disp)} alt={pic.name}/>
-			))}
-		</div>
-	)
-}
+  return (
+    <div css={cssObj.pokeProfile}>
+      <img src={src} css={cssObj.imgProfile} alt={name} />
+    </div>
+  );
+};
 
 /**
  * CSS定義
  */
-const useCssPagination = () => {
-	const pokeProfile = css`
-		background-color: #F2F2F2;
+const useCssProfileImaeg = () => {
+  const pokeProfile = css`
+    background-color: #f2f2f2;
     border-radius: 5px;
     position: relative;
-		display: block;
+    display: block;
     float: left;
     width: 100%;
-	`
-	const imgProfile = (disp) => css`
-    display: ${disp ? "block" : "none"};
-		opacity: ${disp ? 1 : 0};
-		float: left;
+  `;
+  const imgProfile = () => css`
+    float: left;
     width: 100%;
     padding-bottom: 30px;
-	`
+  `;
 
-	return {
-		pokeProfile,
-		imgProfile,
-	}
-}
+  return {
+    pokeProfile,
+    imgProfile,
+  };
+};
 
-export default ProfileImage
+export default ProfileImage;
