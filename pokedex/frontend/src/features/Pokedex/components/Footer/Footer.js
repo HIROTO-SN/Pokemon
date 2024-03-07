@@ -1,6 +1,8 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import FooterSignup from "./Footer-signup";
+import ErrorModal from "./ErrorModal";
+import { useState } from "react";
 
 /**
  * ★Component★
@@ -9,15 +11,17 @@ import FooterSignup from "./Footer-signup";
 const Footer = () => {
   /***** Definition ******/
   const c = useCssFooter();
+	const [modalIsOpen, setModalIsOpen] = useState(false);
 
   /***** JSX ******/
   return (
     <footer css={c.globalFooter}>
       <div css={c.footerEmail}>
         <p css={c.footerEmailTitle}>Sign up for Pokémon&nbsp;emails!</p>
-				<FooterSignup/>
+				<FooterSignup setModalIsOpen={setModalIsOpen}/>
       </div>
       <div></div>
+			<ErrorModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
     </footer>
   );
 };
@@ -37,7 +41,7 @@ const useCssFooter = () => {
   `;
 
   const footerEmail = css`
-    font-family: "Roboto", arial, sans-serif;
+    font-family: "Roboto, arial, sans-serif";
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -48,7 +52,7 @@ const useCssFooter = () => {
   `;
 
   const footerEmailTitle = css`
-    font-family: "Roboto", arial, sans-serif;
+    font-family: "Roboto, arial, sans-serif";
     font-weight: bold;
     font-size: 135%;
     color: white;
@@ -56,6 +60,7 @@ const useCssFooter = () => {
     line-height: 125%;
     margin: 0.5em 0;
   `;
+
   return { globalFooter, footerEmail, footerEmailTitle };
 };
 

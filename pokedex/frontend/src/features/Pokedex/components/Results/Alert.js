@@ -6,7 +6,7 @@ const Alert = () => {
 	/***** Definition ******/
 	const useResultStatus = useNoResult();
 
-	/***** HTML ******/
+	/***** JSX ******/
   return (
     <div css={[alertBox, alertError(1)]}>
       <h3 css={alertH3(1)}>

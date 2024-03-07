@@ -3,11 +3,11 @@ import { css } from "@emotion/react";
 
 const ProfileImage = ({ name, src }) => {
   /***** Definition ******/
-  const cssObj = useCssProfileImaeg();
+  const c = useCssProfileImaeg();
 
   return (
-    <div css={cssObj.pokeProfile}>
-      <img src={src} css={cssObj.imgProfile} alt={name} />
+    <div css={c.pokeProfile}>
+      <img src={src} css={c.imgProfile} alt={name} />
     </div>
   );
 };

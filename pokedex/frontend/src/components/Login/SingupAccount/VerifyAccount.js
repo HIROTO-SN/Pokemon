@@ -379,7 +379,7 @@ const VerifyAccount = ({ Banner }) => {
   //   }
   // };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <fieldset css={[section, noPaddingTop, sectionUserAccount]}>

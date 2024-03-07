@@ -167,7 +167,7 @@ const LoginForm = () => {
     // navigate("/profile");
   };
   
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div css={[push1, formWrapper]}>
       <form id="login-form" css={formInner} onSubmit={handleLoginSubmit}>

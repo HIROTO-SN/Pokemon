@@ -31,7 +31,7 @@ export const MatchHeightTablet = ({ attribute }) => {
     setAbilityInfoShow(null);
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div
       css={[cssObj.pokeAttributeBox, cssObj.lightBlue]}

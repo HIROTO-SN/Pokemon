@@ -6,7 +6,7 @@ import { TODAY } from "../../../../constants/ConstantsGeneral";
 import { countryList } from "../../../../constants/ul_list/accountList";
 import { emailCheck } from "../../../../components/CommonFunc/CommonAlert";
 
-const FooterSignup = () => {
+const FooterSignup = ({ setModalIsOpen }) => {
   /***** Definition ******/
   const inputInit = {
     email: "",
@@ -26,8 +26,13 @@ const FooterSignup = () => {
 				flg = false;
 			}
 		});
+		// flgがtrueならSIGN UP ボタンを活性化
+		if (flg) {
+			document.querySelector("#email-signup-button").disabled = false;
+		} 
 		return flg;
 	}, false);
+
   const [inputState, inputDispatch] = useReducer((state, action) => {
 		let newState;
     switch (action.type) {
@@ -106,8 +111,13 @@ const FooterSignup = () => {
     });
 
   };
-  console.log(inputState);
-	console.log(submitValid);
+
+  /**
+   * Signupボタンクリックイベント
+   */
+  const onSignupClick = () => {
+		setModalIsOpen(true);
+  };
 
   /***** JSX ******/
   return (
@@ -223,6 +233,7 @@ const FooterSignup = () => {
         css={c.signup_button(submitValid)}
         type="button"
         value="SIGN UP"
+				onClick={() => onSignupClick()}
       />
     </div>
   );

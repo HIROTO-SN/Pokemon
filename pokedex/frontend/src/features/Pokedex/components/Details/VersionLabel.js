@@ -23,7 +23,7 @@ const VersionLabel = () => {
 		setVersionLabel(id);
 	};
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div css={clearTable}>
       {versionLabelList.map((version) => (

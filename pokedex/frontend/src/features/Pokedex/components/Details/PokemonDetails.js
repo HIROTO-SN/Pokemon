@@ -14,6 +14,7 @@ import {
   push1,
   push7,
   section,
+  sliderWidet,
 } from "../../../../components/CommonCss/Layout";
 import UserDashboard from "../../../../components/Dashboard/UserDashboard";
 import {
@@ -28,6 +29,8 @@ import VersionDescri from "./VersionDescri";
 import VersionLabel from "./VersionLabel";
 import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 import Evolution from "./Evolution";
+import { evo_1 } from "./EvolutionData";
+import ExploreMore from "./ExploreMore";
 
 const PokemonDetails = () => {
   /***** Definition ******/
@@ -35,7 +38,7 @@ const PokemonDetails = () => {
   const location = useLocation();
   // console.log(location.state);
   // console.log(params);
-  const cssObj = useCssPokemonDetails();
+  const c = useCssPokemonDetails();
 
   /* ★ 後で消すテストデータ */
   const pokeDataList = [
@@ -192,7 +195,7 @@ const PokemonDetails = () => {
   ];
 
   // 進化リスト
-  const evolution = [];
+  const evolutionList = evo_1;
   // const evolution = [
   //   {
   //     formId: 1 [
@@ -224,7 +227,9 @@ const PokemonDetails = () => {
   const setSelectedForm = useSetSelectedForm();
 
   /***** JS ******/
-  useEffect(() => {});
+  useEffect(() => {
+    window.scroll({ top: 0, behavior: "instant" });
+  },[]);
 
   /**
    * リストアイテム選択時アクション
@@ -234,20 +239,20 @@ const PokemonDetails = () => {
     setSelectedForm(formId);
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <UserDashboard />
       <div css={container}>
-        <section css={[cssObj.pokedexHeader, (90, 0, 0, 0), clearTable]}>
+        <section css={[c.pokedexHeader, (90, 0, 0, 0), clearTable]}>
           <Pagination pokeId={location.state} pokeName={params.pokemonName} />
         </section>
         <section
           css={[
-            cssObj.pokemonForm,
+            c.pokemonForm,
             section,
             overflowVisible,
-            cssObj.backgroundMod,
+            c.backgroundMod,
           ]}
         >
           <div css={[column12, push1]}>
@@ -259,38 +264,43 @@ const PokemonDetails = () => {
             />
           </div>
         </section>
-        <section css={[section, cssObj.backgroundMod]}>
+        <section css={[section, c.backgroundMod]}>
           <div css={[column6, push1, animeFadeIn]}>
           {pokeDataList.map((poke) => (
-            <div css={cssObj.isShow(poke.id === selectedForm)} key={poke.name + "_form_attribute_left"}>
+            <div css={c.isShow(poke.id === selectedForm)} key={poke.name + "_form_attribute_left"}>
               <ProfileImage name={poke.name} src={poke.src} />
               <StatusInfo stat={poke.statList} />
             </div>
           ))}
           </div>
           <div css={[column6, push7]}>
-            <div css={cssObj.details_right}>
+            <div css={c.details_right}>
               <VersionDescri />
               <h3>Versions:</h3>
               <VersionLabel />
               {pokeDataList.map((poke) => (
-                <div css={cssObj.isShow(poke.id === selectedForm)} key={poke.name + "_form_attribute_right"}>
+                <div css={c.isShow(poke.id === selectedForm)} key={poke.name + "_form_attribute_right"}>
                   <MatchHeightTablet attribute={poke.attributeList.attBox} />
-                  <TypeWeaksBox id="type" list={poke.attributeList.types} />
-                  <TypeWeaksBox
-                    id="weaknesses"
-                    list={poke.attributeList.weaks}
-                  />
+                  <div css={animeFadeIn}>
+                    <TypeWeaksBox id="type" list={poke.attributeList.types} />
+                    <TypeWeaksBox
+                      id="weaknesses"
+                      list={poke.attributeList.weaks}
+                    />
+                  </div>
                 </div>
               ))}
               <div css={clearTable}></div>
             </div>
           </div>
         </section>
-        <section css={[section, cssObj.backgroundMod]}>
-          <Evolution list={evolution} />
+        <section css={[section, c.backgroundMod]}>
+          <Evolution evolutionList={evolutionList} />
         </section>
-        <section css={[section, cssObj.backgroundMod, noPaddingTop]}></section>
+        <section css={[section, c.backgroundMod, noPaddingTop]}>
+          <ExploreMore/>
+        </section>
+        <section css={[sliderWidet]}></section>
       </div>
     </>
   );

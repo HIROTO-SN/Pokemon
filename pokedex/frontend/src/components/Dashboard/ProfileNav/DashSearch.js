@@ -6,14 +6,14 @@ const DashSearch = () => {
   /* searchスタイル */
   const search = css`
     transition: background-image 0.2s;
-    background-image: url("./background/profile-nav-search-bg.png");
+    background-image: url("../background/profile-nav-search-bg.png");
     float: left;
     height: 67px;
     margin-top: 0;
     width: 59px;
 
     :hover {
-      background-image: url("./background/profile-nav-search-bg-hover.png");
+      background-image: url("../background/profile-nav-search-bg-hover.png");
     }
   `;
 
@@ -37,11 +37,11 @@ const DashSearch = () => {
   `;
 
   /***** JS ******/
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div css={search}>
       <a css={iconSearch}>
-        <img src="./icons/search.png" height="30%"/>
+        <img src="../icons/search.png" height="30%"/>
         <span css={offScreen}></span>
       </a>
     </div>

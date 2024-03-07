@@ -41,3 +41,20 @@ export const getPokeIdList = (data) => {
   let idList = data.map((_data) => _data.pokemonId);
   return idList;
 };
+
+
+/**
+ * Evolution ポイント計算
+ * @param {List} data - evolutionリスト
+ * @return {Number} point - Evolution ポイント 
+ */
+export const getEvolutionPoint = (data) => {
+  // 初期値は進化なしの1
+  let point = 1;
+  for (var i = 0; i <= data.length; i++) {
+    
+  }
+
+
+  return point;
+};

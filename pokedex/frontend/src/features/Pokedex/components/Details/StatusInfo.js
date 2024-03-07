@@ -34,7 +34,7 @@ const StatusInfo = ({ stat }) => {
     }
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div css={cssObj.statusInfo}>
       <h3>Stats</h3>
