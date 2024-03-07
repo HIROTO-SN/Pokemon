@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 
 /**
  * 【COMPONENT】
@@ -25,9 +26,9 @@ const VersionDescri = ({ descriFlg = "x" }) => {
     },
   ];
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
-    <div>
+    <div css={animeFadeIn}>
       {description_list.map((desc) => (
         <p key={desc.version} css={cssObj.descriInfo(desc.disp)}>
 					{desc.description}

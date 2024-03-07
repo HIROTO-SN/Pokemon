@@ -15,7 +15,7 @@ const Login = () => {
   `;
 
   const section = css`
-    background: transparent url("./background/content_bg.png") left top;
+    background: transparent url("../background/content_bg.png") left top;
     background-size: 100% 1px;
     display: block;
     margin: 0 auto;
@@ -75,7 +75,7 @@ const Login = () => {
   const dogEar = (type) => css`
     :before {
       content: " ";
-      background: url("./background/default-dog-ear.png") no-repeat 0 0;
+      background: url("../background/default-dog-ear.png") no-repeat 0 0;
       height: 2em;
       position: absolute;
       width: 2em;
@@ -169,7 +169,7 @@ export const notchBottomCenter = css`
 
 	:before {
 		left: -10px;
-		background: transparent url("./background/left-notch-bottom-right.png")
+		background: transparent url("../background/left-notch-bottom-right.png")
 			no-repeat;
 		background-size: 12px 8px;
 		backface-visibility: hidden;
@@ -182,7 +182,7 @@ export const notchBottomCenter = css`
 
 	:after {
 		right: -10px;
-		background: transparent url("./background/right-notch-bottom-right.png")
+		background: transparent url("../background/right-notch-bottom-right.png")
 			no-repeat;
 		background-size: 12px 8px;
 		backface-visibility: hidden;

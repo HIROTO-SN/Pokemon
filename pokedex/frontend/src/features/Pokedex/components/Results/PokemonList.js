@@ -80,7 +80,7 @@ const PokemonList = ({ pokemon }) => {
     color: ${setFontColorForTypes(typeName)};
   `;
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <Li_pokemon>
       <Link to={`/pokedex/${pokemon.pokemonName}`} state={pokemon.pokemonId}>

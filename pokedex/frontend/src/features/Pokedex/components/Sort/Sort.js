@@ -97,7 +97,7 @@ const Sort = () => {
     await pokeSearchSubmit(initSearchState, setPokemon, searchDispatch, setNoResult, "surprise");
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <section css={[sort, clearTable]} style={{ overflow: "wrap" }}>
       <div css={[push1, column12]}>

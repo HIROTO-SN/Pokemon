@@ -29,7 +29,7 @@ const VerifyEmail = ({ Banner }) => {
     min-height: 146px;
   `;
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div css={section}>
       <div css={[column10, push2]}>

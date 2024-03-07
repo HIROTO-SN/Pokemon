@@ -42,7 +42,7 @@ const FilterHeader = () => {
     setLoader(false);
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <DivFilterHead>
       <div>

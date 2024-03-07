@@ -41,7 +41,7 @@ const DashboardOpen = () => {
 
     // 上部のレイアウト部
     :after {
-      background: transparent url("./background/profile-nav-bg.png") left -51px;
+      background: transparent url("../background/profile-nav-bg.png") left -51px;
       content: " ";
       display: block;
       height: 17px;
@@ -94,7 +94,7 @@ const DashboardOpen = () => {
 
   /***** JS ******/
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <DashList css={[visibleNotSignedIn, singUp]}>
@@ -103,7 +103,7 @@ const DashboardOpen = () => {
             <div css={avatarIconWrapper}>
               <img
                 css={avatarIcon}
-                src="./icons/profile-nav-signup.png"
+                src="../icons/profile-nav-signup.png"
                 alt="Log In"
               />
             </div>

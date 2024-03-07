@@ -115,7 +115,7 @@ const StepsMenu = ({ pageNo }) => {
   /***** Definition ******/
   const currentPage = pageNo;
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div>
       <ul css={stepMenu}>

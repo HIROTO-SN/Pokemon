@@ -14,7 +14,7 @@ const Pagination = ({ pokeId, pokeName }) => {
     { id: 3, name: "Venusaur", page: "next" },
   ];
 
-  /***** JS ******/
+  /***** JSX ******/
   return (
     <>
       <div css={cssObj.pagination}>

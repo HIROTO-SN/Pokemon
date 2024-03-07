@@ -254,7 +254,7 @@ const FilterContentLeft = () => {
     });
   }, [clickedTypeList, clickedWeakList]);
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <ContentBlock>
@@ -349,7 +349,7 @@ const InputArea = ({ type }) => {
     }
   }, []);
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <input
       id={type === "min" ? "numberMinInput" : "numberMaxInput"}

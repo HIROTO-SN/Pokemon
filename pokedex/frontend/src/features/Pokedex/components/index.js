@@ -9,7 +9,7 @@ import Sort from "./Sort/Sort.js";
 
 const Pokedex = () => {
   
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <UserDashboard />

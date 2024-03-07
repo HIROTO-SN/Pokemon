@@ -194,7 +194,7 @@ const VerifyAge = ({ Banner }) => {
     })
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <section css={[noPaddingTop, section, sectionUserAccount]}>
       <div css={[column10, push2]}>
