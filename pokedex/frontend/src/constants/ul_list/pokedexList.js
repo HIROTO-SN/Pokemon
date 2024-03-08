@@ -31,10 +31,10 @@ export const typeList = [
   },
   { type_id: 6, name: "Ice", background: "#51c4e7", color: "#212121" },
   { type_id: 1, name: "Normal", background: "#a4acaf", color: "#212121" },
-  { type_id: 8, name: "Poison", background: "#b97fc9" },
+  { type_id: 8, name: "Poison", background: "#b97fc9", color: "#ffffff" },
   { type_id: 11, name: "Psychic", background: "#f366b9" },
   { type_id: 13, name: "Rock", background: "#a38c21" },
-  { type_id: 17, name: "Steel", background: "#9eb7b8", color: "#212121" },
+  { type_id: 17, name: "Steel", background: "#9eb7b8", color: "#" },
   { type_id: 3, name: "Water", background: "#4592c4" },
 ];
 

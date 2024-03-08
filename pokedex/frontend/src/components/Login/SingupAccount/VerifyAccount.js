@@ -154,6 +154,7 @@ const VerifyAccount = ({ Banner }) => {
     background-color: #616161;
     border-radius: 5px;
     height: 300px;
+    position: relative!important;
   `;
 
   /***** context ******/
@@ -194,8 +195,8 @@ const VerifyAccount = ({ Banner }) => {
   // 初期表示時処理
   useEffect(() => {
     const newBirth = sessionStorage.getItem('birth');
-    const newCountry = JSON.parse(sessionStorage.getItem('country'));
-    setAccountInfo({ ...accountInfo, birth: newBirth, country: newCountry});
+    // const newCountry = JSON.parse(sessionStorage.getItem('country'));
+    // setAccountInfo({ ...accountInfo, birth: newBirth, country: newCountry});
   }, []);
 
   const checkAvailHandler = async (target) => {
@@ -379,7 +380,7 @@ const VerifyAccount = ({ Banner }) => {
   //   }
   // };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <fieldset css={[section, noPaddingTop, sectionUserAccount]}>

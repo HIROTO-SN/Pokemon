@@ -154,7 +154,7 @@ const VerifyAge = ({ Banner }) => {
       country: { name: selList.name, value: selList.value },
     };
     setAccountInfo(newAccountInfo);
-    sessionStorage.setItem('country', JSON.stringify(newAccountInfo.country));
+    // sessionStorage.setItem('country', JSON.stringify(newAccountInfo.country));
     arrowClickHandler();
   };
   // Birth入力後チェンジイベント
@@ -168,7 +168,7 @@ const VerifyAge = ({ Banner }) => {
     const date = new Date(halvedVal);
     if (!isNaN(date.getDate())) {
       const newDate = getFullDate(date);
-      sessionStorage.setItem('birth', newDate);
+      // sessionStorage.setItem('birth', newDate);
       setAccountInfo({ ...accountInfo, birthday: newDate });
     } else {
       setAccountInfo({ ...accountInfo, birthday: "" });
@@ -194,7 +194,9 @@ const VerifyAge = ({ Banner }) => {
     })
   };
 
-  /***** HTML ******/
+  console.log(accountInfo);
+
+  /***** JSX ******/
   return (
     <section css={[noPaddingTop, section, sectionUserAccount]}>
       <div css={[column10, push2]}>

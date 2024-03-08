@@ -2,23 +2,22 @@
 import { css } from "@emotion/react";
 import {
   capitalizeFirstLetter,
-  setBackGroundForTypes,
-  setFontColorForTypes,
 } from "../../features/Pokedex/utils/ConvToolUtils";
 import { clearTable } from "../CommonCss/Layout";
 import { Link } from "react-router-dom";
+import { li_pill } from "../CommonCss/PokedexCss";  
 
 const TypeWeaksBox = ({ id, list }) => {
   /***** Definition ******/
-  const cssObj = useCssPokemonDetails();
+  const c = useCssPokemonDetails();
 
   return (
     <div id={id}>
-      <h3 css={cssObj.h3_style}>{capitalizeFirstLetter(id)}</h3>
-      <ul css={[cssObj.ul_style, clearTable]}>
+      <h3 css={c.h3_style}>{capitalizeFirstLetter(id)}</h3>
+      <ul css={[c.ul_style, clearTable]}>
         {list.map((_list, i) => (
-          <li css={[cssObj.li_style(i), cssObj.li_pill(_list.name)]}>
-            <Link to="/pokedex">{_list.name}</Link>
+          <li css={[c.li_style(i), li_pill(_list.name)]}>
+            <Link to="/pokedex">{capitalizeFirstLetter(_list.name)}</Link>
           </li>
         ))}
       </ul>
@@ -69,21 +68,10 @@ const useCssPokemonDetails = () => {
       width: 100%;
     }
   `
-
-  /**
-   * 背景色、文字色をセット
-   * @param {Strig} typeName - タイプ名
-   */
-  const li_pill = (typeName) => css`
-    background: ${setBackGroundForTypes(typeName)};
-    color: ${setFontColorForTypes(typeName)};
-  `;
-
   return {
     h3_style,
     ul_style,
 		li_style,
-    li_pill,
   };
 };
 

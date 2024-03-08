@@ -1,53 +1,48 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { hiddenMobile } from "../../../../components/CommonCss/Layout";
-import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
-const Pagination = ({ pokeId, pokeName }) => {
+const Pagination = ({ pokeId, pokeName, pokePrevNextData }) => {
   /***** Definition ******/
-  const cssObj = useCssPagination();
+  const c = useCssPagination();
 
-  /* ★ 後で消すテストデータ */
-  const list_link = [
-    { id: 1, name: "Bulbasaur", page: "previous" },
-    { id: 3, name: "Venusaur", page: "next" },
-  ];
-
-  /***** JS ******/
+  /***** JSX ******/
   return (
     <>
-      <div css={cssObj.pagination}>
-        {list_link.map((link) => (
+      <div css={c.pagination}>
+        {pokePrevNextData.map((link, i) => (
           <Link
-            key={link.name}
-            to={`/pokedex/${link.name}`}
-            state={link.id}
-            css={[cssObj.pagination_a, cssObj.page(link.page)]}
-            className={link.page}
+            key={link.pokemonName}
+            to={`/pokedex/${link.pokemonName}`}
+            state={link.pokemonId}
+            css={[c.pagination_a, c.page(i)]}
+            className={i}
+            onClick="window.location.reload(true);"
           >
             <div>
-              <span css={cssObj.icon_arrow(link.page)}>
-                {link.page === "previous" ? (
+              <span css={c.icon_arrow(i)}>
+                {i === 0 ? (
                   <IoIosArrowBack />
                 ) : (
                   <IoIosArrowForward />
                 )}
               </span>
-              <span css={cssObj.pokeNumber(link.page)}>
-                #{Number(link.id).toString().padStart(4, "0")}
+              <span css={c.pokeNumber(i)}>
+                #{Number(link.pokemonId).toString().padStart(4, "0")}
               </span>
-              <span css={[cssObj.pokeName(link.page), hiddenMobile]}>
-                {link.name}
+              <span css={[c.pokeName(i), hiddenMobile]}>
+                {link.pokemonName}
               </span>
             </div>
           </Link>
         ))}
       </div>
-      <div css={cssObj.pagination_title}>
+      <div css={c.pagination_title}>
         <div>
           {pokeName}{" "}
-          <span css={cssObj.pokeNumber_title}>
+          <span css={c.pokeNumber_title}>
             #{Number(pokeId).toString().padStart(4, "0")}
           </span>
         </div>
@@ -87,10 +82,10 @@ const useCssPagination = () => {
   const page = (flg) => css`
     // 戻る方のスタイル
     margin: 0;
-    border-right: ${flg === "previous" && "4px solid #fff"};
+    border-right: ${flg === 0 && "4px solid #fff"};
     > div {
-      float: ${flg === "previous" ? "right" : "left"};
-      ${flg === "previous" ? "margin-right: 0" : "margin-left: 0"};
+      float: ${flg === 0 ? "right" : "left"};
+      ${flg === 0 ? "margin-right: 0" : "margin-left: 0"};
       padding: 1em 0 4em;
       width: 100%;
       max-width: 448px;
@@ -102,7 +97,7 @@ const useCssPagination = () => {
     background-color: #fff;
     border-radius: 20px;
     color: #616161;
-    float: ${flg === "previous" ? "left" : "right"};
+    float: ${flg === 0 ? "left" : "right"};
     font-size: 65%;
     font-weight: bold;
     height: 26px;
@@ -117,7 +112,7 @@ const useCssPagination = () => {
   `;
 
   const pokeNumber = (flg) => css`
-    float: ${flg === "previous" ? "left" : "right"};
+    float: ${flg === 0 ? "left" : "right"};
     font-family: "Flexo-Bold", arial, sans-serif;
     color: #fff;
     font-size: 150%;
@@ -126,7 +121,7 @@ const useCssPagination = () => {
   `;
 
   const pokeName = (flg) => css`
-    float: ${flg === "previous" ? "left" : "right"};
+    float: ${flg === 0 ? "left" : "right"};
     color: #616161;
     margin: 0 0.5em;
     font-family: "Flexo-Bold", arial, sans-serif;
@@ -159,7 +154,7 @@ const useCssPagination = () => {
       width: 75px;
     }
     ::after {
-			right: -75px;
+      right: -75px;
       background-position: right top;
       background-image: url("../background/notch-white-xxl.png");
       background-repeat: none;

@@ -126,7 +126,7 @@ const Filter = () => {
 
   /***** JS ******/
   
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <section css={filter}>

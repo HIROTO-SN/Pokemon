@@ -39,7 +39,7 @@ const UserDashboard = () => {
   `;
 
   const dashboardOpen = css`
-    background-image: url("./background/profile-nav-repeat-bg.png");
+    background-image: url("../background/profile-nav-repeat-bg.png");
     background-repeat: repeat-y;
     float: left;
     margin-top: 15px;
@@ -70,12 +70,12 @@ const UserDashboard = () => {
     min-height: 84.25px;
 
     :before {
-      background: transparent url("./background/profile-nav-bg.png") left -34px;
+      background: transparent url("../background/profile-nav-bg.png") left -34px;
     }
   `;
 
   const bottomAngle = css`
-    background: transparent url("./background/profile-nav-bg.png") left top;
+    background: transparent url("../background/profile-nav-bg.png") left top;
     width: 68px;
     height: 17px;
     transform: scaleY(-1);

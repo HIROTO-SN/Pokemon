@@ -70,12 +70,42 @@ export const getSearchedPokemonList = async (search) => {
     const response = await axios.post(POKEURL.POKELIST, search);
     if (response.status === 204) {
       // 検索結果が1件も見つからなかった時
-      return { ... response, data: [] };
+      return { ...response, data: [] };
     } else if (response.status === 200) {
       // 検索結果が見つかった時
       return response;
     }
   } catch(e) {
     return { data: [], status: 500 };
+  }
+};
+
+/**
+ * PokemonIdに紐づくPokemon詳細を取得する
+ * @param {Number} pokeId - PokemonId
+ */
+export const getPokemonDetails = async (pokeId) => {
+  try {
+    return await axios.get(POKEURL.POKEDETAILS, {
+      params: {
+        pokemonId: pokeId
+      }});
+  } catch(e) {
+    console.log("サーバーとの通信に失敗:" + e);
+  }
+};
+
+/**
+ * PokemonIdの前後情報を取得
+ * @param {Number} pokeId - PokemonId
+ */
+export const getPokemonPrevNext = async (pokeId) => {
+  try {
+    return await axios.get(POKEURL.POKE_PREV_NEXT, {
+      params: {
+        pokemonId: pokeId
+      }});
+  } catch(e) {
+    console.log("サーバーとの通信に失敗:" + e);
   }
 };

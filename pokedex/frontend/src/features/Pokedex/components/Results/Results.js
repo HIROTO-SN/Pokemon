@@ -126,7 +126,7 @@ const Results = () => {
     }
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <section id="result" css={[results, clearTable]}>
       {pokemonData.length > 0 && typeof pokemonData !== void 0 ?

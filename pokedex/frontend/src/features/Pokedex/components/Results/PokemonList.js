@@ -1,5 +1,5 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { Link } from "react-router-dom";
 import { EXTERNAL_POKEAPI } from "../../../../constants/ApiUrls";
@@ -9,9 +9,25 @@ import {
   setBackGroundForTypes,
   setFontColorForTypes,
 } from "../../utils/ConvToolUtils";
+import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 
 const PokemonList = ({ pokemon }) => {
+  /***** CSS ******/
+  // keyframes定義
+  const mouseOverHop = keyframes`
+    0% {
+      opacity: 1;
+      transform: translate(0, 0px);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, -5px);
+    }
+  `;
+
+  // スタイル定義
   const Li_pokemon = styled.li`
+    /* transform: translateY(0px); */
     opacity: 1;
     top: 0px;
     left: 0px;
@@ -37,6 +53,11 @@ const PokemonList = ({ pokemon }) => {
         position: relative;
         top: 0;
       }
+    }
+
+    // ポケモン画像をMouseOverでゆらゆら揺らす
+    :hover {
+      animation: ${mouseOverHop} 0.2s ease-in-out;
     }
   `;
 
@@ -80,8 +101,9 @@ const PokemonList = ({ pokemon }) => {
     color: ${setFontColorForTypes(typeName)};
   `;
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
+    // <Li_pokemon css={animeFadeIn}>
     <Li_pokemon>
       <Link to={`/pokedex/${pokemon.pokemonName}`} state={pokemon.pokemonId}>
         <img src={EXTERNAL_POKEAPI.IMAGE.replace("{0}", pokemon.pokemonId)} />
@@ -96,13 +118,11 @@ const PokemonList = ({ pokemon }) => {
         </H5_names>
         {pokemon.types.map((_type) => {
           return (
-            _type.type_id != 99 && (
-              <div key={_type.name}>
-                <span css={pill(_type.name)}>
-                  {capitalizeFirstLetter(_type.name)}
-                </span>
-              </div>
-            )
+            <div key={_type.name}>
+              <span css={pill(_type.name)}>
+                {capitalizeFirstLetter(_type.name)}
+              </span>
+            </div>
           );
         })}
       </div>

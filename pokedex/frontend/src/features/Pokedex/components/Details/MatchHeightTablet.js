@@ -31,20 +31,30 @@ export const MatchHeightTablet = ({ attribute }) => {
     setAbilityInfoShow(null);
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div
       css={[cssObj.pokeAttributeBox, cssObj.lightBlue]}
     >
       <div css={column7}>
         <ul>
-          {attribute.att_left.map((att) => (
+          {Object.values(attribute.att_left).map((att) => (
             <li key={att.name}>
               <span css={cssObj.attribute_title}>{att.name}</span>
               {att.name === "Gender" ? (
                 <span css={cssObj.attribute_value}>
-                  <IoMale css={cssObj.symbol("male")} />
-                  <IoFemale css={cssObj.symbol("female")} />
+                  {att.val === 3 ? 
+                    <>
+                      <IoMale css={cssObj.symbol("male")} />
+                      <IoFemale css={cssObj.symbol("female")} />
+                    </>
+                    : att.val === 2 ? 
+                      <IoFemale css={cssObj.symbol("female")} />
+                    : att.val === 1 ?
+                      <IoMale css={cssObj.symbol("male")} />
+                    : 
+                      <div>{"Unknown"}</div>
+                  }
                 </span>
               ) : (
                 <span css={cssObj.attribute_value}>{att.val}</span>
@@ -55,7 +65,7 @@ export const MatchHeightTablet = ({ attribute }) => {
       </div>
       <div css={[column7, push7]}>
         <ul>
-          {attribute.att_right.map((att) => (
+          {Object.values(attribute.att_right).map((att) => (
             <li key={att.name}>
               <span css={cssObj.attribute_title}>{att.name}</span>
               {att.name !== "Abilities" ? (
@@ -78,7 +88,7 @@ export const MatchHeightTablet = ({ attribute }) => {
           ))}
         </ul>
       </div>
-      {attribute.att_right.map(
+      {Object.values(attribute.att_right).map(
         (att) =>
           att.name === "Abilities" &&
           att.val.map((ability) => (
@@ -94,7 +104,7 @@ export const MatchHeightTablet = ({ attribute }) => {
               </span>
               <span css={cssObj.title}>Ability Info</span>
               <h3>{ability.name}</h3>
-              <p>{ability.description}</p>
+              <p>{ability.val}</p>
             </div>
           ))
       )}
@@ -188,6 +198,7 @@ const useMatchHeightTabletCss = () => {
    * @param {Boolean} disp - ability詳細を表示する判定
    */
   const ability_detail = (disp) => css`
+    width: 100%;
     display: ${disp ? "block" : "none"};
     opacity: ${disp ? 1 : 0};
     position: absolute;

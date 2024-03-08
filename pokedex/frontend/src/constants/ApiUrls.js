@@ -20,5 +20,7 @@ export const EXTERNAL_POKEAPI = {
 }
 // Pokemonリスト取得 (Internal）
 export const POKEURL = {
-	POKELIST: "http://localhost:8080/pokedex/pokeList"
+	POKELIST: "http://localhost:8080/pokedex/pokeList",
+	POKEDETAILS: "http://localhost:8080/pokedex/pokedetails",
+	POKE_PREV_NEXT: "http://localhost:8080/pokedex/pokePrevNext",
 }

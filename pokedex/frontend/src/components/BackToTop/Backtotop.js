@@ -55,7 +55,7 @@ const Backtotop = () => {
     window.scroll({ top: 0, behavior: "smooth" });
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div id="back-to-top" css={[visibleMobile, backToTop]} onClick={()=> scrollOnTop()}>
 			<label css={iconPosition}>

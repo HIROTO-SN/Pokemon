@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.payload.pokemon;
+package pokedex.pxt.mbo.pokedex.payload.pokemon.details;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Types {
-	private int type_id;
+public class DetailsDblVal {
 	private String name;
+	private double val;
 }

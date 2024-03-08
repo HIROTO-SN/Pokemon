@@ -40,7 +40,7 @@ const CustomSelect = ({ type: typeAction, state, dispatch, list, custom, clickSu
     setIsListOpened(!isListOpened);
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div css={useCss.wrapper}>
       <label onClick={() => arrowClickHandler()}>
@@ -164,8 +164,8 @@ const useSelectCss = () => {
 
     ::-webkit-scrollbar-button {
       background: ${custom.scrollbarColor === "dark"
-        ? "url('./background/scrollbar_bg_dark.png') 2px 0 no-repeat"
-        : "url('./background/scrollbar_bg.png') 2px 0 no-repeat"};
+        ? "url('../background/scrollbar_bg_dark.png') 2px 0 no-repeat"
+        : "url('../background/scrollbar_bg.png') 2px 0 no-repeat"};
       width: 19px;
       height: 14px;
     }

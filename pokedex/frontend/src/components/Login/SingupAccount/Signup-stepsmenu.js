@@ -67,7 +67,7 @@ const StepsMenu = ({ pageNo }) => {
   `;
 
   // 各リストスタイルを個別に定義するスタイルを呼び出す
-  const listClass = ({ list }, currentPage) => {
+  const listClass = (list , currentPage) => {
     switch (list.class) {
       case "first":
         return first(list.pageNo === currentPage);
@@ -115,12 +115,12 @@ const StepsMenu = ({ pageNo }) => {
   /***** Definition ******/
   const currentPage = pageNo;
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div>
       <ul css={stepMenu}>
         {stepMenuList.map((list) => (
-          <li key={list.class} css={listClass({ list }, currentPage)}>
+          <li key={list.class} css={listClass(list, currentPage)}>
             <span>{list.name}</span>
           </li>
         ))}

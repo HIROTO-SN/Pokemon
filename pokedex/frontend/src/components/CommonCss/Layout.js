@@ -83,7 +83,7 @@ export const clearTable = css`
     content: "";
     display: table;
   }
-`
+`;
 
 /*
  *　色/ディスプレイ要素調整系
@@ -119,7 +119,7 @@ export const hiddenMobile = css`
  */
 export const container = css`
   box-sizing: border-box;
-  background: #fff url("./background/container_bg.png");
+  background: #fff url("../background/container_bg.png");
   clear: both;
   display: block;
   margin: 0 auto;
@@ -130,8 +130,8 @@ export const container = css`
 
 export const section = css`
   padding: 1em 0;
-  background: transparent url("./background/content_bg.png") left top;
-  background-size: 100% 1px;  
+  background: transparent url("../background/content_bg.png") left top;
+  background-size: 100% 1px;
   display: block;
   margin: 0 auto;
   overflow: hidden;
@@ -141,6 +141,15 @@ export const section = css`
   :first-of-type {
     padding-top: 25px;
   }
+`;
+
+export const sliderWidet = css`
+  position: relative;
+  overflow: hidden;
+  padding-top: 3em;
+  padding-bottom: 2em;
+  width: 100%;
+  /* min-height: 336px; */
 `;
 
 // アラート系
@@ -204,7 +213,7 @@ export const viewport = css`
   }
 
   ::-webkit-scrollbar-button {
-    background: url("./background/scrollbar_bg.png") 2px 0 no-repeat;
+    background: url("../background/scrollbar_bg.png") 2px 0 no-repeat;
     width: 19px;
     height: 14px;
   }

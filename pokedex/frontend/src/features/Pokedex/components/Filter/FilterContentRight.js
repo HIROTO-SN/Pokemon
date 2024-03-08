@@ -19,6 +19,7 @@ import {
 } from "../../contexts/SearchContext";
 import { pokeSearchSubmit } from "../../utils/PokeCommmonFunc.js";
 import { Link as Scroll } from "react-scroll";
+import { button, buttonGray, buttonOrange } from "../../../../components/CommonCss/PokedexCss.js";
 
 const FilterContentRight = () => {
   /* ブロック全体CSS */
@@ -110,39 +111,6 @@ const FilterContentRight = () => {
       top: -1px;
       vertical-align: middle;
       margin-right: 5px;
-    }
-  `;
-
-  const button = css`
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
-    line-height: 125%;
-    margin: 1.5625%;
-    padding: 0.75em 1.25em 0.675em;
-    vertical-align: middle;
-    text-align: center;
-    text-transform: none;
-    font-family: "Flexo-Demi", arial, sans-serif;
-  `;
-
-  const buttonOrange = css`
-    color: #fff;
-    background-color: #ee6b2f;
-    transition: 0.2s;
-
-    :hover {
-      background-color: #d05f2b;
-    }
-  `;
-
-  const buttonGray = css`
-    background-color: #a4a4a4;
-    color: #fff;
-    transition: 0.2s;
-
-    :hover {
-      background-color: #8c8585;
     }
   `;
 
@@ -243,7 +211,7 @@ const FilterContentRight = () => {
     setLoader(false);
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       <ContentBlock>

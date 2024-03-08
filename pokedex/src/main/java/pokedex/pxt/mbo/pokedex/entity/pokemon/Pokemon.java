@@ -60,26 +60,16 @@ public class Pokemon {
 	
 	@ManyToOne
 	@JoinColumn(name = "ability_hidden",insertable = false)
-	private Abilities ability_hidden;
-
-	// @Column(name = "ability1")
-	// private String ability_1;
+	private Abilities abilityHidden;
 	
-	// @Column(name = "ability2")
-	// private String ability_2;
-	
-	// @Column(name = "ability_hidden")
-	// private String ability_hidden;
-	
-	// private int gender;
-	// private int category;
-	// private String v1_description;
-	// private String v2_description;
-	// @ManyToOne
-	// private int stats_hp;
-	// private int stats_attack;
-	// private int stats_defense;
-	// private int stats_specialAttack;
-	// private int stats_specialDefense;
-	// private int stats_speed;
+	private int gender;
+	private String category;
+	private int hp;
+	private int attack;
+	private int defense;
+	private int specialAttack;
+	private int specialDefense;
+	private int speed;
+	private String v1_description;
+	private String v2_description;
 }
