@@ -1,6 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import CustomSelectBase from "../../../../components/Common/CustomSelectBase";
 import TypeWeaksBox from "../../../../components/Common/TypeWeakBox";
@@ -19,7 +19,7 @@ import {
 import UserDashboard from "../../../../components/Dashboard/UserDashboard";
 import {
   useSelectedForm,
-  useSetSelectedForm
+  useSetSelectedForm,
 } from "../../contexts/DetailContext";
 import { MatchHeightTablet } from "./MatchHeightTablet";
 import Pagination from "./Pagination";
@@ -29,8 +29,9 @@ import VersionDescri from "./VersionDescri";
 import VersionLabel from "./VersionLabel";
 import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 import Evolution from "./Evolution";
-import { evo_1 } from "./EvolutionData";
+import { evo_1, evo_1_3 } from "./EvolutionData";
 import ExploreMore from "./ExploreMore";
+import { getPokemonDetails, getPokemonPrevNext } from "../../../../components/api/PokemoApi";
 
 const PokemonDetails = () => {
   /***** Definition ******/
@@ -54,32 +55,28 @@ const PokemonDetails = () => {
         { name: "Special Defense", val: 100 },
         { name: "Speed", val: 80 },
       ],
-      attributeList: {
-        attBox: {
-          att_left: [
-            { name: "Height", val: "6.07" },
-            { name: "Weight", val: "220.5" },
-            { name: "Gender", val: 2 },
-          ],
-          att_right: [
-            { name: "Category", val: "Seed" },
-            {
-              name: "Abilities",
-              val: [
-                {
-                  name: "Overgrow",
-                  description:
-                    "Powers up Grass-type moves when the Pokémon’s HP is low.",
-                },
-                {
-                  name: "Thick Fat",
-                  description:
-                    "The Pokémon is protected by a layer of thick fat, which halves the damage taken from Fire- and Ice-type moves.",
-                },
-              ],
-            },
-          ],
-        },
+      attribute: {
+        att_left: [
+          { name: "Height", val: "6.07" },
+          { name: "Weight", val: "220.5" },
+          { name: "Gender", val: 2 },
+        ],
+        att_right: [
+          { name: "Category", val: "Seed" },
+          {
+            name: "Abilities",
+            val: [
+              {
+                name: "Overgrow",
+                val: "Powers up Grass-type moves when the Pokémon’s HP is low.",
+              },
+              {
+                name: "Thick Fat",
+                val: "The Pokémon is protected by a layer of thick fat, which halves the damage taken from Fire- and Ice-type moves.",
+              },
+            ],
+          },
+        ],
         types: [
           { type_id: 5, name: "grass" },
           { type_id: 8, name: "poison" },
@@ -104,32 +101,28 @@ const PokemonDetails = () => {
         { name: "Special Defense", val: 120 },
         { name: "Speed", val: 80 },
       ],
-      attributeList: {
-        attBox: {
-          att_left: [
-            { name: "Height", val: "7.1" },
-            { name: "Weight", val: "342.8" },
-            { name: "Gender", val: 2 },
-          ],
-          att_right: [
-            { name: "Category", val: "Seed" },
-            {
-              name: "Abilities",
-              val: [
-                {
-                  name: "Overgrow",
-                  description:
-                    "Powers up Grass-type moves when the Pokémon’s HP is low.",
-                },
-                {
-                  name: "Thick Fat",
-                  description:
-                    "The Pokémon is protected by a layer of thick fat, which halves the damage taken from Fire- and Ice-type moves.",
-                },
-              ],
-            },
-          ],
-        },
+      attribute: {
+        att_left: [
+          { name: "Height", val: "7.1" },
+          { name: "Weight", val: "342.8" },
+          { name: "Gender", val: 0 },
+        ],
+        att_right: [
+          { name: "Category", val: "Seed" },
+          {
+            name: "Abilities",
+            val: [
+              {
+                name: "Overgrow",
+                val: "Powers up Grass-type moves when the Pokémon’s HP is low.",
+              },
+              {
+                name: "Thick Fat",
+                val: "The Pokémon is protected by a layer of thick fat, which halves the damage taken from Fire- and Ice-type moves.",
+              },
+            ],
+          },
+        ],
         types: [
           { type_id: 5, name: "grass" },
           { type_id: 8, name: "poison" },
@@ -154,32 +147,28 @@ const PokemonDetails = () => {
         { name: "Special Defense", val: 100 },
         { name: "Speed", val: 80 },
       ],
-      attributeList: {
-        attBox: {
-          att_left: [
-            { name: "Height", val: "78.09" },
-            { name: "Weight", val: "999999" },
-            { name: "Gender", val: 2 },
-          ],
-          att_right: [
-            { name: "Category", val: "Seed" },
-            {
-              name: "Abilities",
-              val: [
-                {
-                  name: "Overgrow",
-                  description:
-                    "Powers up Grass-type moves when the Pokémon’s HP is low.",
-                },
-                {
-                  name: "Thick Fat",
-                  description:
-                    "The Pokémon is protected by a layer of thick fat, which halves the damage taken from Fire- and Ice-type moves.",
-                },
-              ],
-            },
-          ],
-        },
+      attribute: {
+        att_left: [
+          { name: "Height", val: "78.09" },
+          { name: "Weight", val: "999999" },
+          { name: "Gender", val: 3 },
+        ],
+        att_right: [
+          { name: "Category", val: "Seed" },
+          {
+            name: "Abilities",
+            val: [
+              {
+                name: "Overgrow",
+                val: "Powers up Grass-type moves when the Pokémon’s HP is low.",
+              },
+              {
+                name: "Thick Fat",
+                val: "The Pokémon is protected by a layer of thick fat, which halves the damage taken from Fire- and Ice-type moves.",
+              },
+            ],
+          },
+        ],
         types: [
           { type_id: 5, name: "grass" },
           { type_id: 8, name: "poison" },
@@ -195,7 +184,7 @@ const PokemonDetails = () => {
   ];
 
   // 進化リスト
-  const evolutionList = evo_1;
+  const evolutionList = evo_1_3;
   // const evolution = [
   //   {
   //     formId: 1 [
@@ -225,68 +214,85 @@ const PokemonDetails = () => {
 
   const selectedForm = useSelectedForm();
   const setSelectedForm = useSetSelectedForm();
+  const [pokemonDetails, setPokemonDetails] = useState([]);
+  const [pokePrevNextData, setPokePrevNextData] = useState([]);
 
   /***** JS ******/
+
+  /**
+   * 初期表示時処理
+   * PokemonIdに紐づくPokemon詳細情報を取得
+   */
   useEffect(() => {
     window.scroll({ top: 0, behavior: "instant" });
-  },[]);
+    const fetchPokemonData = async () => {
+      // 初期表示用ポケモンリストを取得
+      const res = await getPokemonDetails(location.state);
+      const res_paging = await getPokemonPrevNext(location.state);
+      // console.log(res_paging.data);
+      console.log(res.data);
+      setPokemonDetails(res.data);
+      setPokePrevNextData(res_paging.data);
+    };
+    fetchPokemonData();
+  }, []);
 
   /**
    * リストアイテム選択時アクション
-	 * @param {Number} formId - 選択されたポケモンのフォームID
+   * @param {Number} formId - 選択されたポケモンのフォームID
    */
   const formSelectAction = (formId) => {
     setSelectedForm(formId);
   };
 
-  /***** JSX ******/
+  /***** HTML ******/
   return (
     <>
       <UserDashboard />
       <div css={container}>
         <section css={[c.pokedexHeader, (90, 0, 0, 0), clearTable]}>
-          <Pagination pokeId={location.state} pokeName={params.pokemonName} />
+          <Pagination pokeId={location.state} pokeName={params.pokemonName} pokePrevNextData={pokePrevNextData} />
         </section>
         <section
-          css={[
-            c.pokemonForm,
-            section,
-            overflowVisible,
-            c.backgroundMod,
-          ]}
+          css={[c.pokemonForm, section, overflowVisible, c.backgroundMod]}
         >
-          <div css={[column12, push1]}>
-            <CustomSelectBase
-              style={formSelectStyle}
-              state={selectedForm}
-              list={pokeDataList}
-              action={formSelectAction}
-            />
-          </div>
+          {pokemonDetails.length > 1 &&
+            <div css={[column12, push1]}>
+              <CustomSelectBase
+                style={formSelectStyle}
+                state={selectedForm}
+                list={pokemonDetails}
+                action={formSelectAction}
+              />
+            </div>
+          }
         </section>
         <section css={[section, c.backgroundMod]}>
           <div css={[column6, push1, animeFadeIn]}>
-          {pokeDataList.map((poke) => (
-            <div css={c.isShow(poke.id === selectedForm)} key={poke.name + "_form_attribute_left"}>
-              <ProfileImage name={poke.name} src={poke.src} />
-              <StatusInfo stat={poke.statList} />
-            </div>
-          ))}
+            {pokemonDetails.map((poke) => (
+              <div
+                css={c.isShow(poke.id === selectedForm)}
+                key={poke.name + "_form_attribute_left"}
+              >
+                <ProfileImage name={poke.name} src={poke.src} />
+                <StatusInfo stat={poke.statList} />
+              </div>
+            ))}
           </div>
           <div css={[column6, push7]}>
             <div css={c.details_right}>
-              <VersionDescri />
+              <VersionDescri pokemonDetails={pokemonDetails}/>
               <h3>Versions:</h3>
-              <VersionLabel />
-              {pokeDataList.map((poke) => (
-                <div css={c.isShow(poke.id === selectedForm)} key={poke.name + "_form_attribute_right"}>
-                  <MatchHeightTablet attribute={poke.attributeList.attBox} />
+              <VersionLabel pokemonDetails={pokemonDetails}/>
+              {pokemonDetails.map((poke) => (
+                <div
+                  css={c.isShow(poke.id === selectedForm)}
+                  key={poke.name + "_form_attribute_right"}
+                >
+                  <MatchHeightTablet attribute={poke.attribute} />
                   <div css={animeFadeIn}>
-                    <TypeWeaksBox id="type" list={poke.attributeList.types} />
-                    <TypeWeaksBox
-                      id="weaknesses"
-                      list={poke.attributeList.weaks}
-                    />
+                    <TypeWeaksBox id="type" list={poke.attribute.types} />
+                    <TypeWeaksBox id="weaknesses" list={poke.attribute.weaks} />
                   </div>
                 </div>
               ))}
@@ -298,7 +304,7 @@ const PokemonDetails = () => {
           <Evolution evolutionList={evolutionList} />
         </section>
         <section css={[section, c.backgroundMod, noPaddingTop]}>
-          <ExploreMore/>
+          <ExploreMore />
         </section>
         <section css={[sliderWidet]}></section>
       </div>
@@ -353,7 +359,7 @@ const useCssPokemonDetails = () => {
    */
   const isShow = (disp) => css`
     display: ${disp ? "block" : "none"};
-  `
+  `;
 
   return {
     pokedexHeader,

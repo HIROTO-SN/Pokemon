@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.payload.pokemon;
+package pokedex.pxt.mbo.pokedex.payload.pokemon.details;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,8 +9,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class Abilities {
+public class DetailsIntVal {
 	private String name;
-	private Boolean isHidden;
-	private int slot;
+	private int val;
 }

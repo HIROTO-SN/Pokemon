@@ -12,6 +12,20 @@ import pokedex.pxt.mbo.pokedex.common.Constants;
 
 public class PokemonSpecification<Pokemon> {
 	/**
+	 * PokemonIdで検索
+	 * 
+	 * @return Specification<Pokemon>
+	 */
+	public Specification<Pokemon> pokeIdIn(List<Integer> pokeIds) {
+		return new Specification<Pokemon>() {
+			@Override
+			public Predicate toPredicate(Root<Pokemon> root, CriteriaQuery<?> query, CriteriaBuilder builder) {
+				return root.get("pokemonId").in(pokeIds);
+			}
+		};
+	}
+
+	/**
 	 * FormIdで検索
 	 * 
 	 * @return Specification<Pokemon>
@@ -96,7 +110,7 @@ public class PokemonSpecification<Pokemon> {
 	public Specification<Pokemon> typeEqual(Integer type, String no) {
 		return type == null ? null : (root, query, builder) -> {
 			return builder
-					.equal(root.join("type" + no, JoinType.INNER)
+					.equal(root.join("type" + no, JoinType.LEFT)
 							.get("type_id"), type.intValue());
 		};
 	}
@@ -121,7 +135,7 @@ public class PokemonSpecification<Pokemon> {
 	public Specification<Pokemon> abilityEqual(int ability, String no) {
 		return (root, query, builder) -> {
 			return builder
-					.equal(root.join("ability" + no, JoinType.INNER)
+					.equal(root.join("ability" + no, JoinType.LEFT)
 							.get("ability_id"), ability);
 		};
 	}

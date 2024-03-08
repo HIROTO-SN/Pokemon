@@ -7,7 +7,7 @@ import { versionLabelList } from "../../../../constants/ConstantsGeneral";
 
 const VersionLabel = () => {
   /***** Definition ******/
-  const cssObj = useCssVersionLabel();
+  const c = useCssVersionLabel();
 	const versionLabel = useVersionLabel();
 	const setVersionLabel = useSetVersionLabel();
 
@@ -18,8 +18,6 @@ const VersionLabel = () => {
    */
   const versionLabelSwitch = (e) => {
 		const id = e.target.id
-		// console.log(e.target);
-		// console.log(id);
 		setVersionLabel(id);
 	};
 
@@ -27,16 +25,18 @@ const VersionLabel = () => {
   return (
     <div css={clearTable}>
       {versionLabelList.map((version) => (
-        <span
-					id={version.name}
-					key={version.name}
-          css={cssObj.versionLabel(version.name === versionLabel, version.name)}
-          onClick={(e) => versionLabelSwitch(e)}
-        >
+        <span key={version.name + "_version_label"}>
+          <span
+            id={version.name}
+            key={version.name}
+            css={c.versionLabel(version.name === versionLabel, version.name)}
+            onClick={(e) => versionLabelSwitch(e)}
+          >
+          </span>
           <TbPokeball
             fill={version.name === "x" ? "#0072b0" : "#dd2d51"}
             viewBox="0 2 24 24"
-            css={cssObj.pokeBall}
+            css={[c.pokeBall]}
           />
         </span>
       ))}
@@ -54,13 +54,14 @@ const useCssVersionLabel = () => {
    * @param {String} name - バージョン名
    */
   const versionLabel = (active, name) => css`
+    position: absolute;
+    /* border-color: #17adff; */
     border-color: ${active ? (name === "x" ? "#17adff" : "#dd2d51") : "#fff"};
     border-style: solid;
     border-width: 4px;
     border-radius: 32px;
-    float: left;
     height: 32px;
-    margin: 0.75em 0 0.75em 0.5em;
+    margin: 0.75em 0.55em 0.5em -0.05em;
     text-align: center;
     width: 32px;
     cursor: pointer;
@@ -69,7 +70,8 @@ const useCssVersionLabel = () => {
 	// svgタグスタイル
   const pokeBall = css`
     font-size: 40px;
-    margin: 0px 3px 0px -3px;
+    margin: 0.35em 0.25em 0px -0.05em;
+    z-index: -2;
   `;
 
   return {

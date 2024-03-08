@@ -9,7 +9,7 @@ import { capitalizeFirstLetter } from "../../utils/ConvToolUtils";
 const Evolution = ({ evolutionList }) => {
   /***** Definition ******/
   const c = useCssEvolution();
-  console.log(evolutionList.length);
+  // console.log(evolutionList.length);
 
   const point = 1;
 

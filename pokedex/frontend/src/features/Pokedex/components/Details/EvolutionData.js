@@ -3,28 +3,55 @@ export const evo_1 = [
     stage: 1,
     formId: 1,
     pokemonId: 1,
-		pokemonName: "Venusaur",
-		src: "../test/003.png",
-		link: "/pokedex/Ivysaur",
-		types: [
-			{ type_id: 5, name: "grass" },
-			{ type_id: 8, name: "poison" },
-		],
+    pokemonName: "Venusaur",
+    src: "../pokemon/0003.png",
+    link: "/pokedex/Ivysaur",
+    types: [
+      { type_id: 5, name: "grass" },
+      { type_id: 8, name: "poison" },
+    ],
     next: [],
   },
 ];
 
-export const evo_1_1 = [
+export const evo_1_3 = [
   {
     stage: 1,
     formId: 1,
     pokemonId: 1,
+    pokemonName: "Bulbasaur",
+    src: "../pokemon/0003.png",
+    link: "/pokedex/Ivysaur",
+    types: [
+      { type_id: 5, name: "grass" },
+      { type_id: 8, name: "poison" },
+    ],
     next: [
       {
         stage: 2,
         formId: 1,
         pokemonId: 2,
-        next: [],
+        pokemonName: "Ivysaur",
+        src: "../pokemon/0002.png",
+        link: "/pokedex/Ivysaur",
+        types: [
+          { type_id: 5, name: "grass" },
+          { type_id: 8, name: "poison" },
+        ],
+        next: [
+          {
+            stage: 3,
+            formId: 1,
+            pokemonId: 3,
+            pokemonName: "Venusaur",
+            src: "../pokemon/0003.png",
+            link: "/pokedex/Venusaur",
+            types: [
+              { type_id: 5, name: "grass" },
+              { type_id: 8, name: "poison" },
+            ],
+          },
+        ],
       },
     ],
   },

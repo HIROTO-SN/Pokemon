@@ -5,7 +5,7 @@
 // ステップリスト
 export const stepMenuList = [
   { name: "Verify Age", pageNo: 1, class: "first" },
-  { name: "Create Account", pageNo: 2, class: "mtype_iddle" },
+  { name: "Create Account", pageNo: 2, class: "middle" },
   { name: "Verify Email", pageNo: 3, class: "last" },
 ];
 

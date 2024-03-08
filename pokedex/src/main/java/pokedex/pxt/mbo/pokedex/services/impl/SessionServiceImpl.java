@@ -1,20 +1,13 @@
 package pokedex.pxt.mbo.pokedex.services.impl;
-import java.util.Map;
-import java.util.List;
 import java.util.ArrayList;
-import java.util.HashMap;
+import java.util.List;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.databind.JsonNode;
-
 import pokedex.pxt.mbo.pokedex.common.ApiEndPoints;
-import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.payload.SessionDto;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.Abilities;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.Types;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.services.SessionService;
 

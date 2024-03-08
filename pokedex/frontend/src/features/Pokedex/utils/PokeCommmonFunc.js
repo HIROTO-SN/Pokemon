@@ -14,7 +14,7 @@ export const pokeSearchSubmit = async (
   setNoResult,
   actionType = "search"
 ) => {
-  setPoke([]);
+  // setPoke([]);
   const newSearch = {
     ...search,
     pokeIdList: [],

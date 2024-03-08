@@ -1,38 +1,31 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
+import { useSelectedForm, useVersionLabel } from "../../contexts/DetailContext";
 
 /**
  * 【COMPONENT】
  * Version Description
  */
-const VersionDescri = ({ descriFlg = "x" }) => {
+const VersionDescri = ({ pokemonDetails }) => {
   /***** Definition ******/
-  const cssObj = useCssVersion();
+  const c = useCssVersion();
 
-  /* ★ 後で消すテストデータ */
-  const description_list = [
-    {
-      version: "x",
-      description:
-        "While it basks in the sun, it can convert the light into energy. As a result, it is more powerful in the summertime.",
-			disp: descriFlg === "x" ? true : false,
-    },
-    {
-      version: "y",
-      description:
-        "By spreading the broad petals of its flower and catching the sun’s rays, it fills its body with power.",
-			disp: descriFlg === "y" ? true : false,
-    },
-  ];
+  console.log(pokemonDetails)
+  const versionLabel = useVersionLabel();
+  const selectedForm = useSelectedForm();
 
-  /***** JSX ******/
+  /***** HTML ******/
   return (
-    <div css={animeFadeIn}>
-      {description_list.map((desc) => (
-        <p key={desc.version} css={cssObj.descriInfo(desc.disp)}>
-					{desc.description}
-				</p>
+    <div>
+      {pokemonDetails.map((poke) => (
+        <div key={poke.name + "_versions"} css={c.descriptionShow(selectedForm === poke.id)}>
+            {poke.versions.map((ver) => (
+              <p key={ver.name} css={c.descriInfo(versionLabel === ver.name)}>
+                {ver.val}
+              </p>
+            )
+            )}
+        </div>
 			))}
     </div>
   );
@@ -42,6 +35,11 @@ const VersionDescri = ({ descriFlg = "x" }) => {
  * CSS定義
  */
 const useCssVersion = () => {
+  
+  const descriptionShow = (disp) => css`
+    display: ${disp ? "block" : "none"};
+  `
+
   const descriInfo = (disp) => css`
     display: ${disp ? "block" : "none"};
     opacity: 1;
@@ -52,6 +50,7 @@ const useCssVersion = () => {
   `;
 
   return {
+    descriptionShow,
     descriInfo,
   };
 };
