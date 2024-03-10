@@ -16,7 +16,7 @@ public class AttributeDetails {
 	private AttLeft att_left;
 	private AttRight att_right;
 	private List<TypesDto> types;
-	private List<TypesDto> weaks;
+	private List<String> weaks;
 
 	@Getter
 	@Setter
