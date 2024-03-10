@@ -199,59 +199,6 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		String src= String.format("%04d", pokemon.getPokemonId());
 		src = "../pokemon/" + src + ".png";
 		
-		List<Integer> typeList = new ArrayList<Integer>();
-		typeList.add(pokemon.getType1().getType_id());
-		if (pokemon.getType2() != null) {
-			typeList.add(pokemon.getType2().getType_id());
-		}
-		List<Weaknesses> weaknesses = weaknessRepository.findAll(
-			Specification.where(spec_weak.getWeaknesses(typeList))
-		);
-
-		List<String> weakDtoList = new ArrayList<String>();
-		weaknesses.forEach(w -> {
-			if (w.getBug() >= 2 ) {
-				weakDtoList.add("bug");
-			} else if (w.getDark() >= 2) {
-				weakDtoList.add("dark");
-			} else if (w.getDragon() >= 2) {
-				weakDtoList.add("dragon");
-			} else if (w.getElectric() >= 2) {
-				weakDtoList.add("electric");
-			} else if (w.getFairy() >= 2) {
-				weakDtoList.add("fairy");
-			} else if (w.getFighting() >= 2) {
-				weakDtoList.add("fighting");
-			} else if (w.getFire() >= 2) {
-				weakDtoList.add("fire");
-			} else if (w.getFlying() >= 2) {
-				weakDtoList.add("flying");
-			} else if (w.getGhost() >= 2) {
-				weakDtoList.add("ghost");
-			} else if (w.getGrass() >= 2) {
-				weakDtoList.add("grass");
-			} else if (w.getGround() >= 2) {
-				weakDtoList.add("ground");
-			} else if (w.getDragon() >= 2) {
-				weakDtoList.add("dragon");
-			} else if (w.getIce() >= 2) {
-				weakDtoList.add("ice");
-			} else if (w.getNormal() >= 2) {
-				weakDtoList.add("normal");
-			} else if (w.getPoison() >= 2) {
-				weakDtoList.add("poison");
-			} else if (w.getPsychic() >= 2) {
-				weakDtoList.add("psychic");
-			} else if (w.getRock() >= 2) {
-				weakDtoList.add("rock");
-			} else if (w.getSteel() >= 2) {
-				weakDtoList.add("steel");
-			} else if (w.getWater() >= 2) {
-				weakDtoList.add("water");
-			}
-		});
-
-		
 		return new PokemonDetailsDto(
 				pokemon.getFormId(),
 				pokemon.getPokemonName(),
@@ -293,28 +240,85 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 										: Arrays.asList(
 												new TypesDto(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
 												new TypesDto(pokemon.getType2().getType_id(), pokemon.getType2().getName()))),
-												new ArrayList<TypesDto>(
-													pokemon.getType2() == null ? Arrays.asList(
-															new TypesDto(pokemon.getType1().getType_id(), pokemon.getType1().getName()))
-															: Arrays.asList(
-																	new TypesDto(2, "fire"),
-																	new TypesDto(6, "ice"),
-																	new TypesDto(10, "flying"),
-																	new TypesDto(11, "psychic")
-																	))
+						getWeakList(pokemon)
 					));
 	}
 
 	/**
-	 * Pokemonリストをソート
+	 * PokemonのWeaknessesリストを取得
 	 * 
-	 * @param sortBy <String> sort内容
-	 * @return <Direction> Directionオブジェクト
+	 * @return <TypesDto> TypesDtoオブジェクト(Weakenessesリスト)
 	 */
-	// private TypesDto setWeakDtoList(List<Weaknesses> list) {
-	// 	TypesDto types = new TypesDto();
-		
-	// }
+	private List<TypesDto> getWeakList(Pokemon pokemon) {
+
+		Weaknesses w;
+		if (pokemon.getType2() != null) {
+			w = weaknessRepository.findByType1AndType2(pokemon.getType1().getType_id(), pokemon.getType2().getType_id());
+		} else {
+			w = weaknessRepository.findByType1(pokemon.getType1().getType_id());
+		}
+
+		List<String> weakDtoList = new ArrayList<String>();
+		if (w.getBug() >= 2 ) {
+			weakDtoList.add("bug");
+		}
+		if (w.getDark() >= 2) {
+			weakDtoList.add("dark");
+		}
+		if (w.getDragon() >= 2) {
+			weakDtoList.add("dragon");
+		}
+		if (w.getElectric() >= 2) {
+			weakDtoList.add("electric");
+		}
+		if (w.getFairy() >= 2) {
+			weakDtoList.add("fairy");
+		}
+		if (w.getFighting() >= 2) {
+			weakDtoList.add("fighting");
+		}
+		if (w.getFire() >= 2) {
+			weakDtoList.add("fire");
+		}
+		if (w.getFlying() >= 2) {
+			weakDtoList.add("flying");
+		}
+		if (w.getGhost() >= 2) {
+			weakDtoList.add("ghost");
+		}
+		if (w.getGrass() >= 2) {
+			weakDtoList.add("grass");
+		}
+		if (w.getGround() >= 2) {
+			weakDtoList.add("ground");
+		}
+		if (w.getDragon() >= 2) {
+			weakDtoList.add("dragon");
+		}
+		if (w.getIce() >= 2) {
+			weakDtoList.add("ice");
+		}
+		if (w.getNormal() >= 2) {
+			weakDtoList.add("normal");
+		}
+		if (w.getPoison() >= 2) {
+			weakDtoList.add("poison");
+		}
+		if (w.getPsychic() >= 2) {
+			weakDtoList.add("psychic");
+		}
+		if (w.getRock() >= 2) {
+			weakDtoList.add("rock");
+		}
+		if (w.getSteel() >= 2) {
+			weakDtoList.add("steel");
+		}
+		if (w.getWater() >= 2) {
+			weakDtoList.add("water");
+		}
+
+		return weakDtoList;	
+	}
 
 	/**
 	 * Pokemonリストをソート
