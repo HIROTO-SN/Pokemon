@@ -20,7 +20,8 @@ import lombok.Setter;
 public class Types {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private int type_id;
+	@Column(name = "type_id")
+	private int typeId;
 	@Column(nullable = false)
 	private String name;
 	// @Column(nullable = false)

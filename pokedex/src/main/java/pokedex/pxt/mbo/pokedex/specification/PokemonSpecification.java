@@ -111,7 +111,7 @@ public class PokemonSpecification<Pokemon> {
 		return type == null ? null : (root, query, builder) -> {
 			return builder
 					.equal(root.join("type" + no, JoinType.LEFT)
-							.get("type_id"), type.intValue());
+							.get("typeId"), type.intValue());
 		};
 	}
 

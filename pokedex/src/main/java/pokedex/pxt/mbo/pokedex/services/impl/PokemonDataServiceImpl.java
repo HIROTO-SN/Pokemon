@@ -14,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
-import pokedex.pxt.mbo.pokedex.entity.pokemon.Weaknesses;
+import pokedex.pxt.mbo.pokedex.entity.pokemon.TypeChart;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.TypesDto;
@@ -27,10 +27,11 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsIntVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsStrVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsDto;
 import pokedex.pxt.mbo.pokedex.repository.PokemonRepository;
-import pokedex.pxt.mbo.pokedex.repository.WeaknessRepository;
+import pokedex.pxt.mbo.pokedex.repository.TypeChartRepository;
+import pokedex.pxt.mbo.pokedex.repository.TypesRepository;
 import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
 import pokedex.pxt.mbo.pokedex.specification.PokemonSpecification;
-import pokedex.pxt.mbo.pokedex.specification.WeaknessSpecification;
+import pokedex.pxt.mbo.pokedex.specification.TypeChartSpecification;
 
 @Service
 public class PokemonDataServiceImpl implements PokemonDataService {
@@ -39,14 +40,17 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	private PokemonRepository pokemonRepository;
 
 	@Autowired
-	private WeaknessRepository weaknessRepository;
+	private TypeChartRepository typeChartRepository;
+
+	@Autowired
+	private TypesRepository typesRepository;
 
 	private PokemonSpecification<Pokemon> spec;
-	private WeaknessSpecification<Weaknesses> spec_weak;
+	private TypeChartSpecification<TypeChart> spec_weak;
 
 	public PokemonDataServiceImpl() {
 		this.spec = new PokemonSpecification<Pokemon>();
-		this.spec_weak = new WeaknessSpecification<Weaknesses>();
+		this.spec_weak = new TypeChartSpecification<TypeChart>();
 	}
 
 	/**
@@ -74,7 +78,6 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			}
 			case "search": {
 				// 初回以外の検索または'Surprise Me!'ではない時の「Load more」押下時
-				List<Weaknesses> weaknesses = weaknessRepository.findAll();
 
 				pokemonRepository.findAll(
 						Specification
@@ -155,16 +158,17 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	public List<PokemonDto> getPokemonPrevNextData(int pokemonId) {
 		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
 		Integer prevId = (pokemonId - 1) < 1 ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId - 1);
-		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId + 1);
+		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("LAST_POKEMON_ID")
+				: (pokemonId + 1);
 		List<Integer> pokeIds = new ArrayList<>(Arrays.asList(prevId, nextId));
 
 		pokemonRepository.findAll(
-			Specification
-					.where(spec.formIdEquals(1))
-					.and(spec.pokeIdIn(pokeIds)))
-						.forEach(poke -> {
-							pokemonDto.add(setPokemonDtoList(poke));
-						});
+				Specification
+						.where(spec.formIdEquals(1))
+						.and(spec.pokeIdIn(pokeIds)))
+				.forEach(poke -> {
+					pokemonDto.add(setPokemonDtoList(poke));
+				});
 
 		return pokemonDto;
 	}
@@ -182,10 +186,10 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 				pokemon.getPokemonName(),
 				new ArrayList<TypesDto>(
 						pokemon.getType2() == null ? Arrays.asList(
-								new TypesDto(pokemon.getType1().getType_id(), pokemon.getType1().getName()))
+								new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()))
 								: Arrays.asList(
-										new TypesDto(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
-										new TypesDto(pokemon.getType2().getType_id(), pokemon.getType2().getName()))));
+										new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()),
+										new TypesDto(pokemon.getType2().getTypeId(), pokemon.getType2().getName()))));
 	}
 
 	/**
@@ -196,19 +200,17 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 */
 	private PokemonDetailsDto setPokemonDetailsDto(Pokemon pokemon) {
 
-		String src= String.format("%04d", pokemon.getPokemonId());
+		String src = String.format("%04d", pokemon.getPokemonId());
 		src = "../pokemon/" + src + ".png";
-		
+
 		return new PokemonDetailsDto(
 				pokemon.getFormId(),
 				pokemon.getPokemonName(),
 				src,
 				new ArrayList<DetailsStrVal>(
-					Arrays.asList(
-						new DetailsStrVal("x", pokemon.getV1_description()),
-						new DetailsStrVal("y", pokemon.getV2_description())
-					)
-				),
+						Arrays.asList(
+								new DetailsStrVal("x", pokemon.getV1_description()),
+								new DetailsStrVal("y", pokemon.getV2_description()))),
 				new ArrayList<DetailsIntVal>(
 						Arrays.asList(
 								new DetailsIntVal("HP", pokemon.getHp()),
@@ -236,12 +238,11 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 																		pokemon.getAbility2().getDescription()))))),
 						new ArrayList<TypesDto>(
 								pokemon.getType2() == null ? Arrays.asList(
-										new TypesDto(pokemon.getType1().getType_id(), pokemon.getType1().getName()))
+										new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()))
 										: Arrays.asList(
-												new TypesDto(pokemon.getType1().getType_id(), pokemon.getType1().getName()),
-												new TypesDto(pokemon.getType2().getType_id(), pokemon.getType2().getName()))),
-						getWeakList(pokemon)
-					));
+												new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()),
+												new TypesDto(pokemon.getType2().getTypeId(), pokemon.getType2().getName()))),
+						getWeakList(pokemon)));
 	}
 
 	/**
@@ -251,73 +252,66 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 */
 	private List<TypesDto> getWeakList(Pokemon pokemon) {
 
-		Weaknesses w;
-		if (pokemon.getType2() != null) {
-			w = weaknessRepository.findByType1AndType2(pokemon.getType1().getType_id(), pokemon.getType2().getType_id());
-		} else {
-			w = weaknessRepository.findByType1(pokemon.getType1().getType_id());
+		TypeChart tc;
+		tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), pokemon.getType2().getTypeId());
+
+		List<TypesDto> weakDtoList = new ArrayList<TypesDto>();
+		if (tc.effective1Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective1Id, typesRepository.findByTypeId(tc.effective1Id).getName()));
+		}
+		if (tc.effective2Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective2Id, typesRepository.findByTypeId(tc.effective2Id).getName()));
+		}
+		if (tc.effective3Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective3Id, typesRepository.findByTypeId(tc.effective3Id).getName()));
+		}
+		if (tc.effective4Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective4Id, typesRepository.findByTypeId(tc.effective4Id).getName()));
+		}
+		if (tc.effective5Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective5Id, typesRepository.findByTypeId(tc.effective5Id).getName()));
+		}
+		if (tc.effective6Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective6Id, typesRepository.findByTypeId(tc.effective6Id).getName()));
+		}
+		if (tc.effective7Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective7Id, typesRepository.findByTypeId(tc.effective7Id).getName()));
+		}
+		if (tc.effective8Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective8Id, typesRepository.findByTypeId(tc.effective8Id).getName()));
+		}
+		if (tc.effective9Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective9Id, typesRepository.findByTypeId(tc.effective9Id).getName()));
+		}
+		if (tc.effective10Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective10Id, typesRepository.findByTypeId(tc.effective10Id).getName()));
+		}
+		if (tc.effective11Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective11Id, typesRepository.findByTypeId(tc.effective11Id).getName()));
+		}
+		if (tc.effective12Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective12Id, typesRepository.findByTypeId(tc.effective12Id).getName()));
+		}
+		if (tc.effective13Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective13Id, typesRepository.findByTypeId(tc.effective13Id).getName()));
+		}
+		if (tc.effective14Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective14Id, typesRepository.findByTypeId(tc.effective14Id).getName()));
+		}
+		if (tc.effective15Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective15Id, typesRepository.findByTypeId(tc.effective15Id).getName()));
+		}
+		if (tc.effective16Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective16Id, typesRepository.findByTypeId(tc.effective16Id).getName()));
+		}
+		if (tc.effective17Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective17Id, typesRepository.findByTypeId(tc.effective17Id).getName()));
+		}
+		if (tc.effective18Point >= 2) {
+			weakDtoList.add(new TypesDto(tc.effective18Id, typesRepository.findByTypeId(tc.effective18Id).getName()));
 		}
 
-		List<String> weakDtoList = new ArrayList<String>();
-		if (w.getBug() >= 2 ) {
-			weakDtoList.add("bug");
-		}
-		if (w.getDark() >= 2) {
-			weakDtoList.add("dark");
-		}
-		if (w.getDragon() >= 2) {
-			weakDtoList.add("dragon");
-		}
-		if (w.getElectric() >= 2) {
-			weakDtoList.add("electric");
-		}
-		if (w.getFairy() >= 2) {
-			weakDtoList.add("fairy");
-		}
-		if (w.getFighting() >= 2) {
-			weakDtoList.add("fighting");
-		}
-		if (w.getFire() >= 2) {
-			weakDtoList.add("fire");
-		}
-		if (w.getFlying() >= 2) {
-			weakDtoList.add("flying");
-		}
-		if (w.getGhost() >= 2) {
-			weakDtoList.add("ghost");
-		}
-		if (w.getGrass() >= 2) {
-			weakDtoList.add("grass");
-		}
-		if (w.getGround() >= 2) {
-			weakDtoList.add("ground");
-		}
-		if (w.getDragon() >= 2) {
-			weakDtoList.add("dragon");
-		}
-		if (w.getIce() >= 2) {
-			weakDtoList.add("ice");
-		}
-		if (w.getNormal() >= 2) {
-			weakDtoList.add("normal");
-		}
-		if (w.getPoison() >= 2) {
-			weakDtoList.add("poison");
-		}
-		if (w.getPsychic() >= 2) {
-			weakDtoList.add("psychic");
-		}
-		if (w.getRock() >= 2) {
-			weakDtoList.add("rock");
-		}
-		if (w.getSteel() >= 2) {
-			weakDtoList.add("steel");
-		}
-		if (w.getWater() >= 2) {
-			weakDtoList.add("water");
-		}
-
-		return weakDtoList;	
+		return weakDtoList;
 	}
 
 	/**
