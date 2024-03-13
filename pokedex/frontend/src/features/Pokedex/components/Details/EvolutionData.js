@@ -50,6 +50,7 @@ export const evo_1_3 = [
               { type_id: 5, name: "grass" },
               { type_id: 8, name: "poison" },
             ],
+            next: [],
           },
         ],
       },
