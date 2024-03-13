@@ -10,7 +10,6 @@ const VersionDescri = ({ pokemonDetails }) => {
   /***** Definition ******/
   const c = useCssVersion();
 
-  console.log(pokemonDetails)
   const versionLabel = useVersionLabel();
   const selectedForm = useSelectedForm();
 
