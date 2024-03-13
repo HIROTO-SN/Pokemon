@@ -194,8 +194,6 @@ const VerifyAge = ({ Banner }) => {
     })
   };
 
-  console.log(accountInfo);
-
   /***** JSX ******/
   return (
     <section css={[noPaddingTop, section, sectionUserAccount]}>

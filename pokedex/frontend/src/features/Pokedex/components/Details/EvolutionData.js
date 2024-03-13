@@ -20,7 +20,7 @@ export const evo_1_3 = [
     formId: 1,
     pokemonId: 1,
     pokemonName: "Bulbasaur",
-    src: "../pokemon/0003.png",
+    src: "../pokemon/0001.png",
     link: "/pokedex/Ivysaur",
     types: [
       { type_id: 5, name: "grass" },
