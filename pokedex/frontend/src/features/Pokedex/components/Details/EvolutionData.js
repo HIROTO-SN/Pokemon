@@ -2,13 +2,13 @@ export const evo_1 = [
   {
     stage: 1,
     formId: 1,
-    pokemonId: 1,
-    pokemonName: "Venusaur",
-    src: "../pokemon/0003.png",
-    link: "/pokedex/Ivysaur",
+    pokemonId: 146,
+    pokemonName: "Moltres",
+    src: "../pokemon/0146.png",
+    link: "/pokedex/Moltres",
     types: [
-      { type_id: 5, name: "grass" },
-      { type_id: 8, name: "poison" },
+      { type_id: 2, name: "Fire" },
+      { type_id: 10, name: "Flying" },
     ],
     next: [],
   },
@@ -21,7 +21,7 @@ export const evo_1_3 = [
     pokemonId: 1,
     pokemonName: "Bulbasaur",
     src: "../pokemon/0001.png",
-    link: "/pokedex/Ivysaur",
+    link: "/pokedex/Bulbasaur",
     types: [
       { type_id: 5, name: "grass" },
       { type_id: 8, name: "poison" },
