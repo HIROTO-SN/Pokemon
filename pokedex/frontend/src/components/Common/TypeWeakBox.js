@@ -6,6 +6,7 @@ import {
 import { clearTable } from "../CommonCss/Layout";
 import { Link } from "react-router-dom";
 import { li_pill } from "../CommonCss/PokedexCss";  
+import { generateUUID } from "../CommonFunc/Common";
 
 const TypeWeaksBox = ({ id, list }) => {
   /***** Definition ******/
@@ -16,7 +17,7 @@ const TypeWeaksBox = ({ id, list }) => {
       <h3 css={c.h3_style}>{capitalizeFirstLetter(id)}</h3>
       <ul css={[c.ul_style, clearTable]}>
         {list.map((_list, i) => (
-          <li css={[c.li_style(i), li_pill(_list.name)]}>
+          <li key={generateUUID()} css={[c.li_style(i), li_pill(_list.name)]}>
             <Link to="/pokedex">{capitalizeFirstLetter(_list.name)}</Link>
           </li>
         ))}

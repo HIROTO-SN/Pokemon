@@ -11,10 +11,6 @@ const Evolution = ({ evolutionList }) => {
   const c = useCssEvolution();
   // console.log(evolutionList[0]);
   // console.log(evolutionList[0].next);
-  evolutionList.map((list) => {
-    console.log(list);
-    console.log(list.next);
-  });
 
   const [evolutionPoint, setEvolutionPoint] = useState(1);
 
@@ -65,7 +61,7 @@ const Evolution = ({ evolutionList }) => {
             />
           </li>
           {list1.next.map((list2, i) => (
-            <>
+            <div key={"evolution_2_list" + i}>
               <li
                 css={c.evolution_li(
                   evolutionPoint,
@@ -74,7 +70,6 @@ const Evolution = ({ evolutionList }) => {
                 )}
               >
                 <EvolutionList
-                  key={"evolution_2_list" + i}
                   evolutionPoint={evolutionPoint}
                   list={list2}
                   arrowFlg={list2.next.length > 0}
@@ -87,16 +82,16 @@ const Evolution = ({ evolutionList }) => {
                   list3.stage,
                   list3.next.length > 0
                 )}
+                key={"evolution_3_list" + i}
               >
                 <EvolutionList
-                  key={"evolution_3_list" + i}
                   evolutionPoint={evolutionPoint}
                   list={list3}
                   arrowFlg={list3.next.length > 0}
                 />
               </li>
               ))}
-            </>
+            </div>
           ))}
         </ul>
       ))}

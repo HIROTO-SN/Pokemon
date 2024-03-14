@@ -41,6 +41,11 @@ const PokemonDetails = () => {
   // console.log(params);
   const c = useCssPokemonDetails();
 
+  const selectedForm = useSelectedForm();
+  const setSelectedForm = useSetSelectedForm();
+  const [pokemonDetails, setPokemonDetails] = useState([]);
+  const [pokePrevNextData, setPokePrevNextData] = useState([]);
+
   /* ★ 後で消すテストデータ */
   const pokeDataList = [
     {
@@ -212,13 +217,7 @@ const PokemonDetails = () => {
     },
   };
 
-  const selectedForm = useSelectedForm();
-  const setSelectedForm = useSetSelectedForm();
-  const [pokemonDetails, setPokemonDetails] = useState([]);
-  const [pokePrevNextData, setPokePrevNextData] = useState([]);
-
   /***** JS ******/
-
   /**
    * 初期表示時処理
    * PokemonIdに紐づくPokemon詳細情報を取得
@@ -229,12 +228,12 @@ const PokemonDetails = () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonDetails(location.state);
       const res_paging = await getPokemonPrevNext(location.state);
-      // console.log(res.data);
+      console.log(res.data);
       setPokemonDetails(res.data);
       setPokePrevNextData(res_paging.data);
     };
     fetchPokemonData();
-  }, []);
+  }, [params]);
 
   /**
    * リストアイテム選択時アクション

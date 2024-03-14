@@ -13,7 +13,11 @@ const EvolutionList = ({ evolutionPoint: p = 1, list }) => {
 
   /***** JSX ******/
   return (
-    <Link to={list.link} state={list.pokemonId} onClick={() => window.location.reload(true)}>
+    <Link
+      to={`/pokedex/${list.pokemonName}`}
+      state={list.pokemonId}
+      // onClick={() => window.location.reload(false)}
+    >
       <img css={c.li_img(p)} src={list.src} alt={list.pokemonName} />
       <h3 css={c.li_h3(p)}>
         {" "}
