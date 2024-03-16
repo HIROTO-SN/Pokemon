@@ -36,18 +36,21 @@ public class Evolution {
 	@Column(name = "form_id")
 	private int formId;
 
-	@Column(name = "next_pokemon_id", nullable = true)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "next_pokemon_id")
 	private int nextPokemonId;
 
-	@Column(name = "next_form_id", nullable = true)
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "next_form_id")
 	private int nextFormId;
 
 	@Column(nullable = false)
 	private int stage;
 
-	// @Transient
-	// @ManyToOne
-	// @JoinColumn(name = "pokemon_id", referencedColumnName = "pokemon_id")
-	// private Pokemon pokemon;
+	@ManyToOne
+	@JoinColumn(name = "pokemon_id", referencedColumnName = "pokemon_id")
+	private Pokemon pokemon;
 
 }

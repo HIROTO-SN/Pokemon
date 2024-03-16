@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsInfoDto;
 import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
 
 @RestController
@@ -50,12 +50,12 @@ public class PokemonController {
 	 * @return response <PokemonDetailsDto>
 	 */
 	@GetMapping("/pokedetails")
-	public ResponseEntity<List<PokemonDetailsDto>> getPokemonDetails(@RequestParam("pokemonId") int pokemonId) {
-		List<PokemonDetailsDto> response = pokemonDataService.getPokemonDetails(pokemonId);
-		if (response.size() == 0) {
-			return new ResponseEntity<List<PokemonDetailsDto>>(response, HttpStatus.NO_CONTENT);
+	public ResponseEntity<PokemonDetailsInfoDto> getPokemonDetails(@RequestParam("pokemonId") int pokemonId) {
+		PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonId);
+		if (response == null) {
+			return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.NO_CONTENT);
 		} else {
-			return new ResponseEntity<List<PokemonDetailsDto>>(response, HttpStatus.OK);
+			return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.OK);
 		}
 	}
 
