@@ -29,7 +29,7 @@ import VersionDescri from "./VersionDescri";
 import VersionLabel from "./VersionLabel";
 import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 import Evolution from "./Evolution";
-import { evo_1, evo_1_3 } from "./EvolutionData";
+import { evo_1, evo_1_1_1, evo_1_3 } from "./EvolutionData";
 import ExploreMore from "./ExploreMore";
 import { getPokemonDetails, getPokemonPrevNext } from "../../../../components/api/PokemoApi";
 
@@ -189,7 +189,7 @@ const PokemonDetails = () => {
   ];
 
   // 進化リスト
-  const evolutionList = evo_1_3;
+  const evolutionList = evo_1;
   // const evolution = [
   //   {
   //     formId: 1 [

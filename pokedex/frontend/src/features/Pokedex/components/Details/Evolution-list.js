@@ -9,7 +9,7 @@ const EvolutionList = ({ evolutionPoint: p = 1, list }) => {
   const c = useCssEvolutionList();
 
   // console.log("*********************");
-  // console.log(list.types);
+  console.log(list.types);
 
   /***** JSX ******/
   return (
