@@ -13,6 +13,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import pokedex.pxt.mbo.pokedex.common.Constants;
+import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.TypeChart;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
@@ -26,6 +27,7 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsDblVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsIntVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsStrVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsDto;
+import pokedex.pxt.mbo.pokedex.repository.EvolutionRepository;
 import pokedex.pxt.mbo.pokedex.repository.PokemonRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypeChartRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypesRepository;
@@ -44,6 +46,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 	@Autowired
 	private TypesRepository typesRepository;
+
+	@Autowired
+	private EvolutionRepository evolutionRepository;
 
 	private PokemonSpecification<Pokemon> spec;
 	private TypeChartSpecification<TypeChart> spec_weak;
@@ -179,70 +184,140 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
 	 * @return <PokemonDto> PokemonDtoオブジェクト
 	 */
-	private PokemonDto setPokemonDtoList(Pokemon pokemon) {
-		return new PokemonDto(
-				pokemon.getPokemonId(),
-				pokemon.getFormId(),
-				pokemon.getPokemonName(),
-				new ArrayList<TypesDto>(
-						pokemon.getType2() == null ? Arrays.asList(
-								new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()))
-								: Arrays.asList(
-										new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()),
-										new TypesDto(pokemon.getType2().getTypeId(), pokemon.getType2().getName()))));
+	private PokemonDto setPokemonDtoList(Pokemon poke) {
+
+		PokemonDto dto = new PokemonDto();
+		dto.setPokemonId(poke.getPokemonId());
+		dto.setFormId(poke.getFormId());
+		dto.setPokemonName(poke.getPokemonName());
+		// タイプを取得しセット
+		List<TypesDto> typeList = new ArrayList<>();
+		typeList.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
+		if (poke.getType2() != null) {
+			typeList.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
+		}
+		dto.setTypes(typeList);
+
+		return dto;
 	}
 
 	/**
 	 * Pokemon詳細をSET
 	 * 
-	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
+	 * @param poke <Pokemon> Pokemonエンティティオブジェクト
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	private PokemonDetailsDto setPokemonDetailsDto(Pokemon pokemon) {
+	private PokemonDetailsDto setPokemonDetailsDto(Pokemon poke) {
 
-		String src = String.format("%04d", pokemon.getPokemonId());
-		src = "../pokemon/" + src + ".png";
+		String src = String.format("%04d", poke.getPokemonId());
+		// イメージソース先を定義
+		if (poke.getFormId() == 1) {
+			src = "../pokemon/" + src + ".png";
+		} else {
+			src = "../pokemon/" + src + "_f" + poke.getFormId() + ".png";
+		}
 
-		return new PokemonDetailsDto(
-				pokemon.getFormId(),
-				pokemon.getPokemonName(),
-				src,
-				new ArrayList<DetailsStrVal>(
-						Arrays.asList(
-								new DetailsStrVal("x", pokemon.getV1_description()),
-								new DetailsStrVal("y", pokemon.getV2_description()))),
-				new ArrayList<DetailsIntVal>(
-						Arrays.asList(
-								new DetailsIntVal("HP", pokemon.getHp()),
-								new DetailsIntVal("Attack", pokemon.getAttack()),
-								new DetailsIntVal("Defense", pokemon.getDefense()),
-								new DetailsIntVal("Special Attack", pokemon.getSpecialAttack()),
-								new DetailsIntVal("Special Defense", pokemon.getSpecialDefense()),
-								new DetailsIntVal("Speed", pokemon.getSpeed()))),
-				new AttributeDetails(
-						new AttLeft(
-								new DetailsDblVal("Height", pokemon.getHeight()),
-								new DetailsDblVal("Weight", pokemon.getWeight()),
-								new DetailsIntVal("Gender", pokemon.getGender())),
-						new AttRight(
-								new DetailsStrVal("Category", pokemon.getCategory()),
-								new Abilities(
-										"Abilities",
-										new ArrayList<DetailsStrVal>(
-												pokemon.getAbility2() == null ? Arrays.asList(
-														new DetailsStrVal(pokemon.getAbility1().getName(), pokemon.getAbility1().getDescription()))
-														: Arrays.asList(
-																new DetailsStrVal(pokemon.getAbility1().getName(),
-																		pokemon.getAbility1().getDescription()),
-																new DetailsStrVal(pokemon.getAbility2().getName(),
-																		pokemon.getAbility2().getDescription()))))),
-						new ArrayList<TypesDto>(
-								pokemon.getType2() == null ? Arrays.asList(
-										new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()))
-										: Arrays.asList(
-												new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()),
-												new TypesDto(pokemon.getType2().getTypeId(), pokemon.getType2().getName()))),
-						getWeakList(pokemon)));
+		PokemonDetailsDto dto = new PokemonDetailsDto();
+		// FormId
+		dto.setId(poke.getFormId());
+		// Pokemon名
+		dto.setName(poke.getPokemonName());
+		// イメージソース先
+		dto.setSrc(src);
+		// バージョン情報
+		dto.setVersions(new ArrayList<DetailsStrVal>(
+				Arrays.asList(
+						new DetailsStrVal("x", poke.getV1_description()),
+						new DetailsStrVal("y", poke.getV2_description()))));
+		// ステータス（HP・Attack・Defenseなど）
+		dto.setStatList(new ArrayList<DetailsIntVal>(
+				Arrays.asList(
+						new DetailsIntVal("HP", poke.getHp()),
+						new DetailsIntVal("Attack", poke.getAttack()),
+						new DetailsIntVal("Defense", poke.getDefense()),
+						new DetailsIntVal("Special Attack", poke.getSpecialAttack()),
+						new DetailsIntVal("Special Defense", poke.getSpecialDefense()),
+						new DetailsIntVal("Speed", poke.getSpeed()))));
+
+		// Attribute情報（性質・アビリティ・大きさなど）
+		AttributeDetails attributes = new AttributeDetails();
+
+		// Attribute 画面左側（Height, Weight, Gender）
+		AttLeft attLeft = new AttLeft(
+			new DetailsDblVal("Height", poke.getHeight()),
+			new DetailsDblVal("Weight", poke.getWeight()),
+			new DetailsIntVal("Gender", poke.getGender())
+		);
+		// Abilitiesを取得
+		Abilities abilities = new Abilities();
+		abilities.setName("Abilities");
+		List<DetailsStrVal> abilityList = new ArrayList<>();
+		abilityList.add(new DetailsStrVal(poke.getAbility1().getName(), poke.getAbility1().getDescription()));
+		if (poke.getAbility2() != null) {
+			abilityList.add(new DetailsStrVal(poke.getAbility2().getName(), poke.getAbility2().getDescription()));
+		}
+		abilities.setVal(abilityList);
+		// Attribute 画面右側（Category, Abilities）
+		AttRight attRight = new AttRight();
+		attRight.setCategory(new DetailsStrVal("Category", poke.getCategory()));
+		attRight.setAbilities(abilities);
+		// タイプを取得
+		List<TypesDto> typesDto = new ArrayList<>();
+		typesDto.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
+		if (poke.getType2() != null) {
+			typesDto.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
+		}
+		attributes.setAtt_left(attLeft);
+		attributes.setAtt_right(attRight);
+		attributes.setTypes(typesDto);
+		attributes.setWeaks(getWeakList(poke));
+
+		dto.setAttribute(attributes);
+
+		List<Evolution> evolutions = evolutionRepository.findAll();
+
+		return dto;
+
+		// return new PokemonDetailsDto(
+		// 		poke.getFormId(),
+		// 		poke.getPokemonName(),
+		// 		src,
+		// 		new ArrayList<DetailsStrVal>(
+		// 				Arrays.asList(
+		// 						new DetailsStrVal("x", poke.getV1_description()),
+		// 						new DetailsStrVal("y", poke.getV2_description()))),
+		// 		new ArrayList<DetailsIntVal>(
+		// 				Arrays.asList(
+		// 						new DetailsIntVal("HP", poke.getHp()),
+		// 						new DetailsIntVal("Attack", poke.getAttack()),
+		// 						new DetailsIntVal("Defense", poke.getDefense()),
+		// 						new DetailsIntVal("Special Attack", poke.getSpecialAttack()),
+		// 						new DetailsIntVal("Special Defense", poke.getSpecialDefense()),
+		// 						new DetailsIntVal("Speed", poke.getSpeed()))),
+		// 		new AttributeDetails(
+		// 				new AttLeft(
+		// 						new DetailsDblVal("Height", poke.getHeight()),
+		// 						new DetailsDblVal("Weight", poke.getWeight()),
+		// 						new DetailsIntVal("Gender", poke.getGender())),
+		// 				new AttRight(
+		// 						new DetailsStrVal("Category", poke.getCategory()),
+		// 						new Abilities(
+		// 								"Abilities",
+		// 								new ArrayList<DetailsStrVal>(
+		// 										poke.getAbility2() == null ? Arrays.asList(
+		// 												new DetailsStrVal(poke.getAbility1().getName(), poke.getAbility1().getDescription()))
+		// 												: Arrays.asList(
+		// 														new DetailsStrVal(poke.getAbility1().getName(),
+		// 																poke.getAbility1().getDescription()),
+		// 														new DetailsStrVal(poke.getAbility2().getName(),
+		// 																poke.getAbility2().getDescription()))))),
+		// 				new ArrayList<TypesDto>(
+		// 						poke.getType2() == null ? Arrays.asList(
+		// 								new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()))
+		// 								: Arrays.asList(
+		// 										new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()),
+		// 										new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()))),
+		// 				getWeakList(poke)));
 	}
 
 	/**

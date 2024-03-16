@@ -13,7 +13,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PokemonPkey implements Serializable{
+public class EvolutionPkey implements Serializable{
 	public int pokemonId;
-	public int formId; 
+	public int formId;
+	public int nextPokemonId;
+	public int nextFormId;
 }

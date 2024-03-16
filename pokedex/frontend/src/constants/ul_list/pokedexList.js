@@ -14,7 +14,7 @@ export const typeList = [
   { type_id: 4, name: "Electric", background: "#eed535", color: "#212121" },
   { type_id: 18, name: "Fairy", background: "#fdb9e9", color: "#212121" },
   { type_id: 7, name: "Fighting", background: "#d56723" },
-  { type_id: 2, name: "Fire", background: "#fd7d24" },
+  { type_id: 2, name: "Fire", background: "#fd7d24", color: "#ffffff" },
   {
     type_id: 10,
     name: "Flying",
