@@ -26,12 +26,15 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttRight
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsDblVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsIntVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsStrVal;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.EvolutionDetails;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetails;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsInfoDto;
 import pokedex.pxt.mbo.pokedex.repository.EvolutionRepository;
 import pokedex.pxt.mbo.pokedex.repository.PokemonRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypeChartRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypesRepository;
 import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
+import pokedex.pxt.mbo.pokedex.specification.EvolutionSpecification;
 import pokedex.pxt.mbo.pokedex.specification.PokemonSpecification;
 import pokedex.pxt.mbo.pokedex.specification.TypeChartSpecification;
 
@@ -52,10 +55,12 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 	private PokemonSpecification<Pokemon> spec;
 	private TypeChartSpecification<TypeChart> spec_weak;
+	private EvolutionSpecification<Evolution> spec_evol;
 
 	public PokemonDataServiceImpl() {
 		this.spec = new PokemonSpecification<Pokemon>();
 		this.spec_weak = new TypeChartSpecification<TypeChart>();
+		this.spec_evol = new EvolutionSpecification<Evolution>();
 	}
 
 	/**
@@ -76,7 +81,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 						Constants.POKE.get("PAGE_SIZE"))
 						.ifPresent(poke -> {
 							poke.forEach(_poke -> {
-								pokemonDto.add(setPokemonDtoList(_poke));
+								pokemonDto.add(setPokemonDto(_poke));
 							});
 						});
 				break;
@@ -97,7 +102,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 								Constants.POKE.get("PAGE_SIZE"),
 								manageSort(searchDto.getSortBy())))
 						.forEach(poke -> {
-							pokemonDto.add(setPokemonDtoList(poke));
+							pokemonDto.add(setPokemonDto(poke));
 						});
 
 				break;
@@ -128,7 +133,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 								.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
 								.and(spec.idInclude(idList)))
 						.forEach(poke -> {
-							pokemonDto.add(setPokemonDtoList(poke));
+							pokemonDto.add(setPokemonDto(poke));
 						});
 				break;
 			}
@@ -137,13 +142,16 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	}
 
 	/**
-	 * Pokemon詳細を取得
+	 * Pokemon個々の詳細情報を取得
 	 * 
 	 * @param request <int> PokemonId
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	public List<PokemonDetailsDto> getPokemonDetails(int pokemonId) {
-		List<PokemonDetailsDto> pokemonDetailsDto = new ArrayList<PokemonDetailsDto>();
+	public PokemonDetailsInfoDto getPokemonDetails(int pokemonId) {
+		PokemonDetailsInfoDto pokemonDetailsInfo = new PokemonDetailsInfoDto();
+
+		// Pokemon詳細を取得
+		List<PokemonDetails> pokemonDetailsDto = new ArrayList<PokemonDetails>();
 		pokemonRepository.findByPokemonId(pokemonId)
 				.ifPresent(poke -> {
 					poke.forEach(_poke -> {
@@ -151,7 +159,19 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 					});
 				});
 
-		return pokemonDetailsDto;
+		// Pokemon進化情報を取得
+		List<EvolutionDetails> evolutionDetails = new ArrayList<EvolutionDetails>();
+		evolutionRepository.findAll(
+			Specification
+					.where(spec_evol.pokemonIdEquals(pokemonId)))
+			.forEach(evol -> {
+				evolutionDetails.add(setEvolutionDetailsDto(evol));
+			});
+
+		pokemonDetailsInfo.setPokemonDetails(pokemonDetailsDto);
+		pokemonDetailsInfo.setEvolutionDetails(evolutionDetails);
+
+		return pokemonDetailsInfo;
 	}
 
 	/**
@@ -172,7 +192,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 						.where(spec.formIdEquals(1))
 						.and(spec.pokeIdIn(pokeIds)))
 				.forEach(poke -> {
-					pokemonDto.add(setPokemonDtoList(poke));
+					pokemonDto.add(setPokemonDto(poke));
 				});
 
 		return pokemonDto;
@@ -184,7 +204,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
 	 * @return <PokemonDto> PokemonDtoオブジェクト
 	 */
-	private PokemonDto setPokemonDtoList(Pokemon poke) {
+	private PokemonDto setPokemonDto(Pokemon poke) {
 
 		PokemonDto dto = new PokemonDto();
 		dto.setPokemonId(poke.getPokemonId());
@@ -207,7 +227,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param poke <Pokemon> Pokemonエンティティオブジェクト
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	private PokemonDetailsDto setPokemonDetailsDto(Pokemon poke) {
+	private PokemonDetails setPokemonDetailsDto(Pokemon poke) {
 
 		String src = String.format("%04d", poke.getPokemonId());
 		// イメージソース先を定義
@@ -217,7 +237,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			src = "../pokemon/" + src + "_f" + poke.getFormId() + ".png";
 		}
 
-		PokemonDetailsDto dto = new PokemonDetailsDto();
+		PokemonDetails dto = new PokemonDetails();
 		// FormId
 		dto.setId(poke.getFormId());
 		// Pokemon名
@@ -244,10 +264,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 		// Attribute 画面左側（Height, Weight, Gender）
 		AttLeft attLeft = new AttLeft(
-			new DetailsDblVal("Height", poke.getHeight()),
-			new DetailsDblVal("Weight", poke.getWeight()),
-			new DetailsIntVal("Gender", poke.getGender())
-		);
+				new DetailsDblVal("Height", poke.getHeight()),
+				new DetailsDblVal("Weight", poke.getWeight()),
+				new DetailsIntVal("Gender", poke.getGender()));
 		// Abilitiesを取得
 		Abilities abilities = new Abilities();
 		abilities.setName("Abilities");
@@ -274,50 +293,42 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 		dto.setAttribute(attributes);
 
-		List<Evolution> evolutions = evolutionRepository.findAll();
-
 		return dto;
+	}
 
-		// return new PokemonDetailsDto(
-		// 		poke.getFormId(),
-		// 		poke.getPokemonName(),
-		// 		src,
-		// 		new ArrayList<DetailsStrVal>(
-		// 				Arrays.asList(
-		// 						new DetailsStrVal("x", poke.getV1_description()),
-		// 						new DetailsStrVal("y", poke.getV2_description()))),
-		// 		new ArrayList<DetailsIntVal>(
-		// 				Arrays.asList(
-		// 						new DetailsIntVal("HP", poke.getHp()),
-		// 						new DetailsIntVal("Attack", poke.getAttack()),
-		// 						new DetailsIntVal("Defense", poke.getDefense()),
-		// 						new DetailsIntVal("Special Attack", poke.getSpecialAttack()),
-		// 						new DetailsIntVal("Special Defense", poke.getSpecialDefense()),
-		// 						new DetailsIntVal("Speed", poke.getSpeed()))),
-		// 		new AttributeDetails(
-		// 				new AttLeft(
-		// 						new DetailsDblVal("Height", poke.getHeight()),
-		// 						new DetailsDblVal("Weight", poke.getWeight()),
-		// 						new DetailsIntVal("Gender", poke.getGender())),
-		// 				new AttRight(
-		// 						new DetailsStrVal("Category", poke.getCategory()),
-		// 						new Abilities(
-		// 								"Abilities",
-		// 								new ArrayList<DetailsStrVal>(
-		// 										poke.getAbility2() == null ? Arrays.asList(
-		// 												new DetailsStrVal(poke.getAbility1().getName(), poke.getAbility1().getDescription()))
-		// 												: Arrays.asList(
-		// 														new DetailsStrVal(poke.getAbility1().getName(),
-		// 																poke.getAbility1().getDescription()),
-		// 														new DetailsStrVal(poke.getAbility2().getName(),
-		// 																poke.getAbility2().getDescription()))))),
-		// 				new ArrayList<TypesDto>(
-		// 						poke.getType2() == null ? Arrays.asList(
-		// 								new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()))
-		// 								: Arrays.asList(
-		// 										new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()),
-		// 										new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()))),
-		// 				getWeakList(poke)));
+	/**
+	 * Pokemon進化情報をSET
+	 * 
+	 * @param Evolution <Evolution> Evolutionエンティティオブジェクト
+	 * @return <EvolutionDetails> EvolutionDetailsオブジェクト
+	 */
+	private EvolutionDetails setEvolutionDetailsDto(Evolution evol) {
+		EvolutionDetails evolutionDetails = new EvolutionDetails();
+		evolutionDetails.setStage(evol.getStage());
+		evolutionDetails.setFormId(evol.getFormId());
+		evolutionDetails.setPokemonId(evol.getPokemonId());
+		evolutionDetails.setPokemonName(evol.getPokemon().getPokemonName());
+
+		String src = String.format("%04d", evol.getPokemonId());
+		// イメージソース先を定義
+		if (evol.getFormId() == 1) {
+			src = "../pokemon/" + src + ".png";
+		} else {
+			src = "../pokemon/" + src + "_f" + evol.getFormId() + ".png";
+		}
+		evolutionDetails.setSrc(src);
+
+		// タイプを取得
+		List<TypesDto> typesDto = new ArrayList<>();
+		Pokemon poke = evol.getPokemon();
+		typesDto.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
+		if (poke.getType2() != null) {
+			typesDto.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
+		}
+		evolutionDetails.setTypes(typesDto);
+		evolutionDetails.setNext(null);
+		
+		return evolutionDetails;
 	}
 
 	/**

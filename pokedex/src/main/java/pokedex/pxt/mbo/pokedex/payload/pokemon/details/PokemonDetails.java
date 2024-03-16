@@ -11,7 +11,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PokemonDetailsDto {
+public class PokemonDetails {
 	private int id;
 	private String name;
 	private String src;

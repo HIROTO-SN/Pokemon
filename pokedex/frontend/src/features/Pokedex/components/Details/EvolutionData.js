@@ -5,7 +5,6 @@ export const evo_1 = [
     pokemonId: 146,
     pokemonName: "Moltres",
     src: "../pokemon/0146.png",
-    link: "/pokedex/Moltres",
     types: [
       { type_id: 2, name: "fire" },
       { type_id: 10, name: "flying" },
