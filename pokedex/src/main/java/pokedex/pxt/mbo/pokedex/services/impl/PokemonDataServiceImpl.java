@@ -161,11 +161,39 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 		// Pokemon進化情報を取得
 		List<EvolutionDetails> evolutionDetails = new ArrayList<EvolutionDetails>();
+		// evolutionRepository.findAll(
+		// 	Specification
+		// 		.where(spec_evol.findGroupByPokemonId(pokemonId)))
+		// 		.forEach(evol -> {
+					
+		// 		});
+
+
+		
 		evolutionRepository.findAll(
 			Specification
 					.where(spec_evol.pokemonIdEquals(pokemonId)))
 			.forEach(evol -> {
-				evolutionDetails.add(setEvolutionDetailsDto(evol));
+				List<EvolutionDetails> evolutionStage2 = new ArrayList<EvolutionDetails>();
+				// 進化系がある場合はオブジェクトnextに追加
+				if(evol.getNextPokemonId() != -1) {
+					evolutionRepository.findAll(
+						Specification
+							.where(spec_evol.pokemonIdEquals(pokemonId)))
+						.forEach(_evol -> {
+							List<EvolutionDetails> evolutionStage3 = new ArrayList<EvolutionDetails>();
+							if(_evol.getNextPokemonId() != -1) {
+								evolutionRepository.findAll(
+									Specification
+										.where(spec_evol.pokemonIdEquals(pokemonId)))
+									.forEach(__evol -> {
+										evolutionStage3.add(setEvolutionDetailsDto(__evol, null));
+									});
+							}
+							evolutionStage2.add(setEvolutionDetailsDto(_evol, evolutionStage3));
+						});
+				}
+				evolutionDetails.add(setEvolutionDetailsDto(evol, evolutionStage2));
 			});
 
 		pokemonDetailsInfo.setPokemonDetails(pokemonDetailsDto);
@@ -300,9 +328,10 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * Pokemon進化情報をSET
 	 * 
 	 * @param Evolution <Evolution> Evolutionエンティティオブジェクト
+	 * @param evol_next <List<EvolutionDetails>> セットするPokemonの進化系詳細EvolutionDetailsリスト
 	 * @return <EvolutionDetails> EvolutionDetailsオブジェクト
 	 */
-	private EvolutionDetails setEvolutionDetailsDto(Evolution evol) {
+	private EvolutionDetails setEvolutionDetailsDto(Evolution evol, List<EvolutionDetails> evol_nexts) {
 		EvolutionDetails evolutionDetails = new EvolutionDetails();
 		evolutionDetails.setStage(evol.getStage());
 		evolutionDetails.setFormId(evol.getFormId());
@@ -326,8 +355,8 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			typesDto.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
 		}
 		evolutionDetails.setTypes(typesDto);
-		evolutionDetails.setNext(null);
-		
+		evolutionDetails.setNext(evol_nexts);
+
 		return evolutionDetails;
 	}
 

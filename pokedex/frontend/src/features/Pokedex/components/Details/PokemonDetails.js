@@ -229,7 +229,7 @@ const PokemonDetails = () => {
       const res = await getPokemonDetails(location.state);
       const res_paging = await getPokemonPrevNext(location.state);
       console.log(res.data);
-      setPokemonDetails(res.data);
+      setPokemonDetails(res.data.pokemonDetails);
       setPokePrevNextData(res_paging.data);
     };
     fetchPokemonData();
