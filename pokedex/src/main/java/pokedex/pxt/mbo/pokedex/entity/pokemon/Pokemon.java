@@ -77,6 +77,6 @@ public class Pokemon {
 	private String v1_description;
 	private String v2_description;
 
-	@OneToMany(mappedBy = "pokemon", cascade=CascadeType.ALL)
-	private List<Evolution> evolutions;
+	// @OneToMany(mappedBy = "pokemon", cascade=CascadeType.ALL)
+	// private List<Evolution> evolutions;
 }
