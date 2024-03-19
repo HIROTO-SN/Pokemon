@@ -23,9 +23,9 @@ public class TypeChart {
 	@Column(name = "chart_id")
 	public int chartId;
 	@Column(name = "type_1")
-	public int type1;
+	public Integer type1;
 	@Column(name = "type_2")
-	public int type2;
+	public Integer type2;
 	@Column(name = "effective1_id")
 	public int effective1Id;
 	@Column(name = "effective1_point")
