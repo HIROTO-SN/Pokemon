@@ -7,17 +7,16 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
-import pokedex.pxt.mbo.pokedex.entity.pokemon.EvolutionPkey;
 
-public interface EvolutionRepository extends JpaRepository<Evolution, EvolutionPkey>, JpaSpecificationExecutor<Evolution>{
+public interface EvolutionRepository extends JpaRepository<Evolution, Integer>, JpaSpecificationExecutor<Evolution>{
 	/*
 	 * 特定のPokemonIdに紐づく進化系を取得
 	 */
-	public Evolution findByPokemonId(int pokemonId);	
+	public Evolution findFirstByPokemonId(int pokemonId);	
 
 	/*
 	 * 1つのグループに紐づく進化系を取得
 	 */
-	public Optional<List<Evolution>> findByGroupIdOrderByStage(int groupId);	
+	public Optional<List<Evolution>> findByGroupIdOrderByStageAscPokemonIdAscFormIdAsc(String groupId);	
 
 }
