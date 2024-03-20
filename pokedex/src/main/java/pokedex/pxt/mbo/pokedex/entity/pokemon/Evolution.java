@@ -21,38 +21,34 @@ import lombok.Setter;
 @AllArgsConstructor
 @Entity
 @Table(name = "evolutions")
-@IdClass(value = EvolutionPkey.class)
 public class Evolution {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "pokemon_id")
+	@Column(name = "evolution_id")
+	private int evolutionId;
+
+	@Column(name = "pokemon_id", nullable = false)
 	private int pokemonId;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "form_id")
+	@Column(name = "form_id", nullable = false)
 	private int formId;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "next_pokemon_id")
-	private int nextPokemonId;
+	@Column(name = "next_pokemon_id", nullable = true)
+	private String nextPokemonId;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "next_form_id")
-	private int nextFormId;
+	@Column(name = "next_form_id", nullable = true)
+	private String nextFormId;
 
-	@Column(nullable = false)
-	private int stage;
+	@Column(name = "stage", nullable = true)
+	private String stage;
 
-	@Column(name="group_id", nullable = false)
-	private int groupId;
+	@Column(name="group_id", nullable = true)
+	private String groupId;
 
 	@ManyToOne
 	@JoinColumns({
-		@JoinColumn(name = "pokemon_id", referencedColumnName = "pokemon_id"),
-		@JoinColumn(name = "form_id", referencedColumnName = "form_id")
+		@JoinColumn(name = "pokemon_id", referencedColumnName = "pokemon_id", insertable = false, updatable = false),
+		@JoinColumn(name = "form_id", referencedColumnName = "form_id", insertable = false, updatable = false)
 	})
 	private Pokemon pokemon;
 
