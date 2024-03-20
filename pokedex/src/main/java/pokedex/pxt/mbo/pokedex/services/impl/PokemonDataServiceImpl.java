@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -152,6 +154,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 		// Pokemon詳細を取得
 		List<PokemonDetails> pokemonDetailsDto = new ArrayList<PokemonDetails>();
+		// Dtoオブジェクトに成形
 		pokemonRepository.findByPokemonId(pokemonId)
 				.ifPresent(poke -> {
 					poke.forEach(_poke -> {
@@ -161,40 +164,17 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 		// Pokemon進化情報を取得
 		List<EvolutionDetails> evolutionDetails = new ArrayList<EvolutionDetails>();
-		// evolutionRepository.findAll(
-		// 	Specification
-		// 		.where(spec_evol.findGroupByPokemonId(pokemonId)))
-		// 		.forEach(evol -> {
-					
-		// 		});
+		// Pokemonが属する進化グループを取得
+		String groupId = evolutionRepository.findFirstByPokemonId(pokemonId).getGroupId();
 
-
-		
-		evolutionRepository.findAll(
-			Specification
-					.where(spec_evol.pokemonIdEquals(pokemonId)))
-			.forEach(evol -> {
-				List<EvolutionDetails> evolutionStage2 = new ArrayList<EvolutionDetails>();
-				// 進化系がある場合はオブジェクトnextに追加
-				if(evol.getNextPokemonId() != -1) {
-					evolutionRepository.findAll(
-						Specification
-							.where(spec_evol.pokemonIdEquals(pokemonId)))
-						.forEach(_evol -> {
-							List<EvolutionDetails> evolutionStage3 = new ArrayList<EvolutionDetails>();
-							if(_evol.getNextPokemonId() != -1) {
-								evolutionRepository.findAll(
-									Specification
-										.where(spec_evol.pokemonIdEquals(pokemonId)))
-									.forEach(__evol -> {
-										evolutionStage3.add(setEvolutionDetailsDto(__evol, null));
-									});
-							}
-							evolutionStage2.add(setEvolutionDetailsDto(_evol, evolutionStage3));
-						});
-				}
-				evolutionDetails.add(setEvolutionDetailsDto(evol, evolutionStage2));
-			});
+		// 進化系リストを取得し、Dtoオブジェクトに成形
+		Optional<List<Evolution>> evolutions = evolutionRepository
+				.findByGroupIdOrderByStageAscPokemonIdAscFormIdAsc(groupId);
+		if (evolutions.isPresent()) {
+			for (Evolution evol : evolutions.get()) {
+				evolutionDetails.add(loopEvolutionNexts(evol, evolutions));
+			}
+		}
 
 		pokemonDetailsInfo.setPokemonDetails(pokemonDetailsDto);
 		pokemonDetailsInfo.setEvolutionDetails(evolutionDetails);
@@ -325,15 +305,44 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	}
 
 	/**
-	 * Pokemon進化情報をSET
+	 * 各Pokemonの進化ツリー情報をSET
 	 * 
-	 * @param Evolution <Evolution> Evolutionエンティティオブジェクト
-	 * @param evol_next <List<EvolutionDetails>> セットするPokemonの進化系詳細EvolutionDetailsリスト
+	 * @param evol        <Evolution> Evolutionエンティティオブジェクト（対象進化系）
+	 * @param evolListAll <Optional<List<Evolution>>> DBから取得した進化リスト全て
+	 * @return <EvolutionDetails> 成形した進化リスト（EvolutionDetailsオブジェクト）
+	 */
+	private EvolutionDetails loopEvolutionNexts(Evolution evol, Optional<List<Evolution>> evolListAll) {
+		// 進化系が存在しない場合
+		if (evol.getNextPokemonId() == null) {
+			return setEvolutionDetailsDto(evol, null);
+			// 次の進化系が存在する場合
+		} else {
+			Optional<List<Evolution>> next_evolutions = evolListAll.map(list -> list.stream()
+					.filter(e -> e.getPokemonId() == Integer.parseInt(evol.getNextPokemonId()))
+					.collect(Collectors.toList()));
+
+			List<EvolutionDetails> next_evolution_detail = new ArrayList<EvolutionDetails>();
+			next_evolutions.ifPresent(next_evol_list -> {
+				next_evol_list.forEach(_evol -> {
+					next_evolution_detail.add(loopEvolutionNexts(_evol, evolListAll));
+				});
+			});
+
+			return setEvolutionDetailsDto(evol, next_evolution_detail);
+		}
+	}
+
+	/**
+	 * EvolutionDetailsをSET
+	 * 
+	 * @param Evolution      <Evolution> Evolutionエンティティオブジェクト
+	 * @param evol_next_list <List<EvolutionDetails>>
+	 *                       セットするPokemonの進化系詳細Evolutionリスト
 	 * @return <EvolutionDetails> EvolutionDetailsオブジェクト
 	 */
-	private EvolutionDetails setEvolutionDetailsDto(Evolution evol, List<EvolutionDetails> evol_nexts) {
+	private EvolutionDetails setEvolutionDetailsDto(Evolution evol, List<EvolutionDetails> evol_next_list) {
 		EvolutionDetails evolutionDetails = new EvolutionDetails();
-		evolutionDetails.setStage(evol.getStage());
+		evolutionDetails.setStage(Integer.parseInt(evol.getStage()));
 		evolutionDetails.setFormId(evol.getFormId());
 		evolutionDetails.setPokemonId(evol.getPokemonId());
 		evolutionDetails.setPokemonName(evol.getPokemon().getPokemonName());
@@ -355,7 +364,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			typesDto.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
 		}
 		evolutionDetails.setTypes(typesDto);
-		evolutionDetails.setNext(evol_nexts);
+
+		// 進化系をセット
+		evolutionDetails.setNext(evol_next_list);
 
 		return evolutionDetails;
 	}
@@ -368,7 +379,11 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	private List<TypesDto> getWeakList(Pokemon pokemon) {
 
 		TypeChart tc;
-		tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), pokemon.getType2().getTypeId());
+		if (pokemon.getType2() == null) {
+			tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), null);
+		} else {
+			tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), pokemon.getType2().getTypeId());
+		}
 
 		List<TypesDto> weakDtoList = new ArrayList<TypesDto>();
 		if (tc.effective1Point >= 2) {
