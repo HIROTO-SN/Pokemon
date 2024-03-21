@@ -6,95 +6,64 @@ import { dogEarBl } from "../../../../components/CommonCss/PokedexCss";
 import { noEvolution } from "../../../../constants/ConstantsGeneral";
 import EvolutionList from "./Evolution-list";
 
-const Evolution = ({ evolutionList }) => {
+const Evolution = ({ evolutionList, evolutionPoint }) => {
+  console.log(evolutionList);
+  console.log("evolutionList[0].next ::" + evolutionPoint);
   /***** Definition ******/
   const c = useCssEvolution();
-  // console.log(evolutionList[0]);
-  // console.log(evolutionList[0].next);
-
-  const [evolutionPoint, setEvolutionPoint] = useState(1);
-
-  useEffect(() => {
-    setEvolutionPoint(() => {
-      switch (evolutionList.length) {
-        case 1:
-          if (evolutionList[0].next.length === 0) {
-            // 進化なし
-            return 1;
-          } else if (evolutionList[0].next.length === 1) {
-            // 進化あり
-            const len = evolutionList[0].next;
-            if (len[0].next.length === 0) {
-              // 2段階進化
-              return 2;
-            } else if (len[0].next.length === 1) {
-              // 3段階進化
-              return 3;
-            }
-          } else {
-            return 1;
-          }
-        default:
-          return 1;
-      }
-    });
-  }, []);
 
   /***** JSX ******/
   return (
     <div css={[push1, column12, c.evolutionWrapper, dogEarBl]}>
       <h2>Evolutions</h2>
       {evolutionPoint === 1 && <p>{noEvolution}</p>}
-      {evolutionList.map((list1, i) => (
-        <ul key={"evolution_1_list" + i}>
-          <li
-            css={c.evolution_li(
-              evolutionPoint,
-              list1.stage,
-              list1.next.length > 0
-            )}
-          >
-            <EvolutionList
-              evolutionPoint={evolutionPoint}
-              list={list1}
-              arrowFlg={list1.next.length > 0}
-            />
-          </li>
-          {list1.next.map((list2, i) => (
-            <div key={"evolution_2_list" + i}>
-              <li
-                css={c.evolution_li(
-                  evolutionPoint,
-                  list2.stage,
-                  list2.next.length > 0
-                )}
-              >
-                <EvolutionList
-                  evolutionPoint={evolutionPoint}
-                  list={list2}
-                  arrowFlg={list2.next.length > 0}
-                />
-              </li>
-              {list2.next.map((list3, i) => (
-              <li
-                css={c.evolution_li(
-                  evolutionPoint,
-                  list3.stage,
-                  list3.next.length > 0
-                )}
-                key={"evolution_3_list" + i}
-              >
-                <EvolutionList
-                  evolutionPoint={evolutionPoint}
-                  list={list3}
-                  arrowFlg={list3.next.length > 0}
-                />
-              </li>
+      {evolutionList !== null &&
+        evolutionList.map((list1, i) => (
+          <ul key={"evolution_1_list" + i}>
+            <li
+              css={c.evolution_li(
+                evolutionPoint,
+                list1.stage,
+                list1.next != null && list1.next.length > 0
+              )}
+            >
+              <EvolutionList evolutionPoint={evolutionPoint} list={list1} />
+            </li>
+            {list1.next != null &&
+              list1.next.map((list2, i) => (
+                <div key={"evolution_2_list" + i}>
+                  <li
+                    css={c.evolution_li(
+                      evolutionPoint,
+                      list2.stage,
+                      list2.next != null && list2.next.length > 0
+                    )}
+                  >
+                    <EvolutionList
+                      evolutionPoint={evolutionPoint}
+                      list={list2}
+                    />
+                  </li>
+                  {list2.next != null &&
+                    list2.next.map((list3, i) => (
+                      <li
+                        css={c.evolution_li(
+                          evolutionPoint,
+                          list3.stage,
+                          list3.next != null && list3.next.length > 0
+                        )}
+                        key={"evolution_3_list" + i}
+                      >
+                        <EvolutionList
+                          evolutionPoint={evolutionPoint}
+                          list={list3}
+                        />
+                      </li>
+                    ))}
+                </div>
               ))}
-            </div>
-          ))}
-        </ul>
-      ))}
+          </ul>
+        ))}
     </div>
   );
 };

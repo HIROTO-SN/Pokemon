@@ -14,6 +14,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.val;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
@@ -63,6 +67,31 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		this.spec = new PokemonSpecification<Pokemon>();
 		this.spec_weak = new TypeChartSpecification<TypeChart>();
 		this.spec_evol = new EvolutionSpecification<Evolution>();
+	}
+
+	@Setter
+	@Getter
+	private class IdWrapper {
+		private int pokemonId;
+		private int formId;
+		private List<Integer> nextPokemonIdList;
+		private List<Integer> nextFormIdList;
+
+		public IdWrapper(int pokemonId, int formId) {
+			this.pokemonId = pokemonId;
+			this.formId = formId;
+			this.nextPokemonIdList = new ArrayList<Integer>();
+			this.nextFormIdList = new ArrayList<Integer>();
+		}
+
+		public void addNextPokemonIds(int nextPokemonId) {
+			this.nextPokemonIdList.add(nextPokemonId);
+		}
+
+		public void addNextFormIds(int nextFormId) {
+			this.nextFormIdList.add(nextFormId);
+		}
+
 	}
 
 	/**
@@ -150,7 +179,6 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
 	public PokemonDetailsInfoDto getPokemonDetails(int pokemonId) {
-		PokemonDetailsInfoDto pokemonDetailsInfo = new PokemonDetailsInfoDto();
 
 		// Pokemon詳細を取得
 		List<PokemonDetails> pokemonDetailsDto = new ArrayList<PokemonDetails>();
@@ -170,16 +198,21 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		// 進化系リストを取得し、Dtoオブジェクトに成形
 		Optional<List<Evolution>> evolutions = evolutionRepository
 				.findByGroupIdOrderByStageAscPokemonIdAscFormIdAsc(groupId);
+		IdWrapper idWrapper = new IdWrapper(0, 0);
 		if (evolutions.isPresent()) {
 			for (Evolution evol : evolutions.get()) {
-				evolutionDetails.add(loopEvolutionNexts(evol, evolutions));
+				if (evol.getStage().equals("1")
+						&& ((idWrapper.getPokemonId() != evol.getPokemonId() || idWrapper.getFormId() != evol.getFormId()))) {
+					evolutionDetails.add(loopEvolutionNexts(evol, evolutions));
+					idWrapper.setPokemonId(evol.getPokemonId());
+					idWrapper.setFormId(evol.getFormId());
+				}
 			}
 		}
 
-		pokemonDetailsInfo.setPokemonDetails(pokemonDetailsDto);
-		pokemonDetailsInfo.setEvolutionDetails(evolutionDetails);
-
-		return pokemonDetailsInfo;
+		return new PokemonDetailsInfoDto(
+				pokemonDetailsDto,
+				evolutionDetails);
 	}
 
 	/**
@@ -312,23 +345,43 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @return <EvolutionDetails> 成形した進化リスト（EvolutionDetailsオブジェクト）
 	 */
 	private EvolutionDetails loopEvolutionNexts(Evolution evol, Optional<List<Evolution>> evolListAll) {
+
 		// 進化系が存在しない場合
 		if (evol.getNextPokemonId() == null) {
 			return setEvolutionDetailsDto(evol, null);
 			// 次の進化系が存在する場合
 		} else {
+			IdWrapper idWrapper = new IdWrapper(evol.getPokemonId(), evol.getFormId());
 			Optional<List<Evolution>> next_evolutions = evolListAll.map(list -> list.stream()
-					.filter(e -> e.getPokemonId() == Integer.parseInt(evol.getNextPokemonId()))
+					.filter(e -> {
+						// 同じpokemonIdとformIdから別々の進化系がある場合には同じグループ
+						if (idWrapper.getPokemonId() == e.getPokemonId()
+								&& idWrapper.getFormId() == e.getFormId()) {
+							idWrapper.addNextPokemonIds(Integer.parseInt(e.getNextPokemonId()));
+							idWrapper.addNextFormIds((Integer.parseInt(e.getNextFormId())));
+						}
+
+						// 同じpokemonId, formIdから進化する進化系であれば、全てリストへ格納(true), 違えばスキップ(false)
+						return (idWrapper.getNextPokemonIdList().contains(e.getPokemonId())
+								&& idWrapper.getNextFormIdList().contains(e.getFormId()))
+										? true
+										: false;
+					})
 					.collect(Collectors.toList()));
 
-			List<EvolutionDetails> next_evolution_detail = new ArrayList<EvolutionDetails>();
+			IdWrapper idWrapperLoop = new IdWrapper(0, 0);
+			List<EvolutionDetails> next_evolutions_details = new ArrayList<EvolutionDetails>();
 			next_evolutions.ifPresent(next_evol_list -> {
 				next_evol_list.forEach(_evol -> {
-					next_evolution_detail.add(loopEvolutionNexts(_evol, evolListAll));
+					if (idWrapperLoop.getPokemonId() != _evol.getPokemonId() || idWrapperLoop.getFormId() != _evol.getFormId()) {
+						next_evolutions_details.add(loopEvolutionNexts(_evol, evolListAll));
+						idWrapperLoop.setPokemonId(_evol.getPokemonId());
+						idWrapperLoop.setFormId(_evol.getFormId());
+					}
 				});
 			});
 
-			return setEvolutionDetailsDto(evol, next_evolution_detail);
+			return setEvolutionDetailsDto(evol, next_evolutions_details);
 		}
 	}
 

@@ -37,14 +37,14 @@ const PokemonDetails = () => {
   /***** Definition ******/
   const params = useParams();
   const location = useLocation();
-  // console.log(location.state);
-  // console.log(params);
   const c = useCssPokemonDetails();
 
   const selectedForm = useSelectedForm();
   const setSelectedForm = useSetSelectedForm();
   const [pokemonDetails, setPokemonDetails] = useState([]);
+  const [evolutionDetails, setEvolutionDetails] = useState([]);
   const [pokePrevNextData, setPokePrevNextData] = useState([]);
+  const [evolutionPoint, setEvolutionPoints] = useState(1);
 
   /* ★ 後で消すテストデータ */
   const pokeDataList = [
@@ -205,7 +205,7 @@ const PokemonDetails = () => {
     wrapper: {
       width: "41.96%",
       margin: "0 -100% 0 29.0225%",
-      visibility: pokeDataList.length > 1 ? "visible" : "none",
+      visibility: pokemonDetails.length > 1 ? "visible" : "none",
     },
     scroll: {
       backgroundColor: "#616161",
@@ -228,9 +228,11 @@ const PokemonDetails = () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonDetails(location.state);
       const res_paging = await getPokemonPrevNext(location.state);
-      console.log(res.data);
+      // console.log(res.data);
       setPokemonDetails(res.data.pokemonDetails);
+      setEvolutionDetails(res.data.evolutionDetails);
       setPokePrevNextData(res_paging.data);
+      setEvolutionPoints(getEvolutionPoints(res.data.evolutionDetails));
     };
     fetchPokemonData();
   }, [params]);
@@ -242,6 +244,34 @@ const PokemonDetails = () => {
   const formSelectAction = (formId) => {
     setSelectedForm(formId);
   };
+
+  /**
+   * 進化ポイント（CSS成形用）をセット
+   * @param {List} evolutionList - 進化リスト
+   */
+  const getEvolutionPoints = (evolutionList) => {
+    switch (evolutionList.length) {
+      case 1:
+        if (evolutionList[0].next === null) {
+          // 進化なし
+          return 1;
+        } else if (evolutionList[0].next.length === 1) {
+          // 進化あり
+          const len = evolutionList[0].next;
+          if (len[0].next === null) {
+            // 2段階進化
+            return 2;
+          } else if (len[0].next.length === 1) {
+            // 3段階進化
+            return 3;
+          }
+        } else {
+          return 1;
+        }
+      default:
+        return 1;
+    }
+  }
 
   /***** HTML ******/
   return (
@@ -299,7 +329,7 @@ const PokemonDetails = () => {
           </div>
         </section>
         <section css={[section, c.backgroundMod]}>
-          <Evolution evolutionList={evolutionList} />
+          <Evolution evolutionList={evolutionDetails} evolutionPoint={evolutionPoint} />
         </section>
         <section css={[section, c.backgroundMod, noPaddingTop]}>
           <ExploreMore />
