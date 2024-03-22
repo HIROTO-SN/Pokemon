@@ -13,7 +13,6 @@ const EvolutionList = ({ evolutionPoint: p = 1, list }) => {
     <Link
       to={`/pokedex/${list.pokemonName}`}
       state={list.pokemonId}
-      // onClick={() => window.location.reload(false)}
     >
       <img css={c.li_img(p)} src={list.src} alt={list.pokemonName} />
       <h3 css={c.li_h3(p)}>
@@ -21,7 +20,7 @@ const EvolutionList = ({ evolutionPoint: p = 1, list }) => {
         {list.pokemonName}{" "}
         <span>#{Number(list.pokemonId).toString().padStart(4, "0")}</span>
       </h3>
-      <ul css={c.evolution_types}>
+      <ul css={c.evolution_types(list.types.length)}>
         {list.types.map((type) => (
           <li key={list.pokemonName + "-" + type.name} css={li_pill(type.name)}>
             {capitalizeFirstLetter(type.name)}
@@ -97,10 +96,13 @@ const useCssEvolutionList = () => {
     }
   `;
 
-  // タイプ部
-  const evolution_types = css`
+  /**
+   * タイプ部分
+   * @param {Number} len - タイプの数
+   */
+  const evolution_types = (len) => css`
     display: block;
-    float: left;
+    float: ${len === 1 ? "none" : "left"};
     text-align: center;
     width: 100%;
 
@@ -117,10 +119,10 @@ const useCssEvolutionList = () => {
       word-break: break-all;
     }
     > li:first-of-type {
-      float: left;
+      ${len === 2 && "float: left"};
     }
     > li:last-of-type {
-      float: right;
+      ${len === 2 && "float: right"};
     }
   `;
 

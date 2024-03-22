@@ -31,7 +31,10 @@ import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 import Evolution from "./Evolution";
 import { evo_1, evo_1_1_1, evo_1_3 } from "./EvolutionData";
 import ExploreMore from "./ExploreMore";
-import { getPokemonDetails, getPokemonPrevNext } from "../../../../components/api/PokemoApi";
+import {
+  getPokemonDetails,
+  getPokemonPrevNext,
+} from "../../../../components/api/PokemoApi";
 
 const PokemonDetails = () => {
   /***** Definition ******/
@@ -228,7 +231,7 @@ const PokemonDetails = () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonDetails(location.state);
       const res_paging = await getPokemonPrevNext(location.state);
-      // console.log(res.data);
+      console.log(res.data);
       setPokemonDetails(res.data.pokemonDetails);
       setEvolutionDetails(res.data.evolutionDetails);
       setPokePrevNextData(res_paging.data);
@@ -246,32 +249,21 @@ const PokemonDetails = () => {
   };
 
   /**
-   * 進化ポイント（CSS成形用）をセット
+   * 進化ポイント（CSS成形用）を再帰的に計算
    * @param {List} evolutionList - 進化リスト
+   * @param {number} coef - 係数
+   * @returns {number} - 進化ポイント
    */
-  const getEvolutionPoints = (evolutionList) => {
-    switch (evolutionList.length) {
-      case 1:
-        if (evolutionList[0].next === null) {
-          // 進化なし
-          return 1;
-        } else if (evolutionList[0].next.length === 1) {
-          // 進化あり
-          const len = evolutionList[0].next;
-          if (len[0].next === null) {
-            // 2段階進化
-            return 2;
-          } else if (len[0].next.length === 1) {
-            // 3段階進化
-            return 3;
-          }
-        } else {
-          return 1;
-        }
-      default:
-        return 1;
-    }
-  }
+  const getEvolutionPoints = (evolutionList, coef = 1) => {
+    let evolutionPoint = coef * evolutionList.length;
+    // ネストされた進化リストが存在する場合、再帰的に処理
+    evolutionList.forEach((list) => {
+      if (list.next !== null) {
+        evolutionPoint += getEvolutionPoints(list.next, coef * 10);
+      }
+    });
+    return evolutionPoint;
+  };
 
   /***** HTML ******/
   return (
@@ -279,12 +271,16 @@ const PokemonDetails = () => {
       <UserDashboard />
       <div css={container}>
         <section css={[c.pokedexHeader, (90, 0, 0, 0), clearTable]}>
-          <Pagination pokeId={location.state} pokeName={params.pokemonName} pokePrevNextData={pokePrevNextData} />
+          <Pagination
+            pokeId={location.state}
+            pokeName={params.pokemonName}
+            pokePrevNextData={pokePrevNextData}
+          />
         </section>
         <section
           css={[c.pokemonForm, section, overflowVisible, c.backgroundMod]}
         >
-          {pokemonDetails.length > 1 &&
+          {pokemonDetails.length > 1 && (
             <div css={[column12, push1]}>
               <CustomSelectBase
                 style={formSelectStyle}
@@ -293,7 +289,7 @@ const PokemonDetails = () => {
                 action={formSelectAction}
               />
             </div>
-          }
+          )}
         </section>
         <section css={[section, c.backgroundMod]}>
           <div css={[column6, push1, animeFadeIn]}>
@@ -309,9 +305,9 @@ const PokemonDetails = () => {
           </div>
           <div css={[column6, push7]}>
             <div css={c.details_right}>
-              <VersionDescri pokemonDetails={pokemonDetails}/>
+              <VersionDescri pokemonDetails={pokemonDetails} />
               <h3>Versions:</h3>
-              <VersionLabel pokemonDetails={pokemonDetails}/>
+              <VersionLabel pokemonDetails={pokemonDetails} />
               {pokemonDetails.map((poke) => (
                 <div
                   css={c.isShow(poke.id === selectedForm)}
@@ -329,7 +325,10 @@ const PokemonDetails = () => {
           </div>
         </section>
         <section css={[section, c.backgroundMod]}>
-          <Evolution evolutionList={evolutionDetails} evolutionPoint={evolutionPoint} />
+          <Evolution
+            evolutionList={evolutionDetails}
+            evolutionPoint={evolutionPoint}
+          />
         </section>
         <section css={[section, c.backgroundMod, noPaddingTop]}>
           <ExploreMore />

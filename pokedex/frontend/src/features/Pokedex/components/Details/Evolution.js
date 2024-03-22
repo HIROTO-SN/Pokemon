@@ -1,14 +1,11 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useEffect, useState } from "react";
 import { column12, push1 } from "../../../../components/CommonCss/Layout";
 import { dogEarBl } from "../../../../components/CommonCss/PokedexCss";
 import { noEvolution } from "../../../../constants/ConstantsGeneral";
 import EvolutionList from "./Evolution-list";
 
 const Evolution = ({ evolutionList, evolutionPoint }) => {
-  console.log(evolutionList);
-  console.log("evolutionList[0].next ::" + evolutionPoint);
   /***** Definition ******/
   const c = useCssEvolution();
 
@@ -134,6 +131,8 @@ const useCssEvolution = () => {
   const calcMarginTop = (p) => {
     switch (p) {
       case 1:
+      case 11:
+      case 111:
       default:
         return "1em";
     }
@@ -148,6 +147,8 @@ const useCssEvolution = () => {
   const calcMarginRight = (p) => {
     switch (p) {
       case 1:
+      case 11:
+      case 111:
       default:
         return "-100%";
     }
@@ -162,6 +163,8 @@ const useCssEvolution = () => {
   const calcMarginBottom = (p) => {
     switch (p) {
       case 1:
+      case 11:
+      case 111:
       default:
         return "2em";
     }
@@ -177,7 +180,13 @@ const useCssEvolution = () => {
     switch (p) {
       case 1:
         return "29.0225%";
-      case 3:
+      case 11:
+        if (s === 1) {
+          return  "21.7625%";
+        } else if (s === 2) {
+          return  "58.0325%";
+        }
+      case 111:
         if (s === 1) {
           return "7.2525%";
         } else if (s === 2) {
