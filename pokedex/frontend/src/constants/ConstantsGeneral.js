@@ -19,7 +19,7 @@ export const lal_term_check = "I accept the Pokemon.com Terms of Use.";
 /* POKEDEX */
 export const NUMBER_RANGE = {
   MIN: 1,
-  MAX: 151,
+  MAX: 1025,
 };
 export const CLICKED_COLOR = {
   TW: "#30a7d7",
