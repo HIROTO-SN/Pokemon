@@ -191,18 +191,6 @@ const PokemonDetails = () => {
     },
   ];
 
-  // 進化リスト
-  const evolutionList = evo_1;
-  // const evolution = [
-  //   {
-  //     formId: 1 [
-  //       { stage: 1, pokemonId: 1},
-  //       { stage: 2, pokemonId: 2},
-  //       { stage: 3, pokemonId: 3}
-  //     ]
-  //   },
-  // ]
-
   // カスタムセレクトボックススタイル定義
   const formSelectStyle = {
     wrapper: {

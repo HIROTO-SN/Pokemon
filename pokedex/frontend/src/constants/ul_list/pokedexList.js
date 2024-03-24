@@ -4,8 +4,8 @@
 
 // Pokemonタイプリスト
 export const typeList = [
-  { type_id: 12, name: "Bug", background: "#729f3f" },
-  { type_id: 16, name: "Dark", background: "#707070" },
+  { type_id: 12, name: "Bug", background: "#729f3f", color: "#ffffff" },
+  { type_id: 16, name: "Dark", background: "#707070", color: "#ffffff"  },
   {
     type_id: 15,
     name: "Dragon",
@@ -13,7 +13,7 @@ export const typeList = [
   },
   { type_id: 4, name: "Electric", background: "#eed535", color: "#212121" },
   { type_id: 18, name: "Fairy", background: "#fdb9e9", color: "#212121" },
-  { type_id: 7, name: "Fighting", background: "#d56723" },
+  { type_id: 7, name: "Fighting", background: "#d56723", color: "#ffffff" },
   { type_id: 2, name: "Fire", background: "#fd7d24", color: "#ffffff" },
   {
     type_id: 10,
@@ -21,7 +21,7 @@ export const typeList = [
     background: "linear-gradient(180deg, #3dc7ef 50%, #bdb9b8 50%)",
     color: "#212121",
   },
-  { type_id: 14, name: "Ghost", background: "#7b62a3" },
+  { type_id: 14, name: "Ghost", background: "#7b62a3", color: "#ffffff" },
   { type_id: 5, name: "Grass", background: "#9bcc50", color: "#212121" },
   {
     type_id: 9,
@@ -32,10 +32,10 @@ export const typeList = [
   { type_id: 6, name: "Ice", background: "#51c4e7", color: "#212121" },
   { type_id: 1, name: "Normal", background: "#a4acaf", color: "#212121" },
   { type_id: 8, name: "Poison", background: "#b97fc9", color: "#ffffff" },
-  { type_id: 11, name: "Psychic", background: "#f366b9" },
+  { type_id: 11, name: "Psychic", background: "#f366b9", color: "#ffffff"  },
   { type_id: 13, name: "Rock", background: "#a38c21", color: "#ffffff" },
-  { type_id: 17, name: "Steel", background: "#9eb7b8", color: "#" },
-  { type_id: 3, name: "Water", background: "#4592c4" },
+  { type_id: 17, name: "Steel", background: "#9eb7b8", color: "#ffffff" },
+  { type_id: 3, name: "Water", background: "#4592c4", color: "#ffffff"  },
 ];
 
 // Pokemonタイプリスト
