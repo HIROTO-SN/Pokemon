@@ -10,11 +10,8 @@ const EvolutionList = ({ evolutionPoint: p = 1, list }) => {
 
   /***** JSX ******/
   return (
-    <Link
-      to={`/pokedex/${list.pokemonName}`}
-      state={list.pokemonId}
-    >
-      <img css={c.li_img(p)} src={list.src} alt={list.pokemonName} />
+    <Link to={`/pokedex/${list.pokemonName}`} state={list.pokemonId}>
+      <img css={c.li_img(list,p)} src={list.src} alt={list.pokemonName} />
       <h3 css={c.li_h3(p)}>
         {" "}
         {list.pokemonName}{" "}
@@ -62,18 +59,33 @@ const useCssEvolutionList = () => {
 
   /**
    * 各imgタグスタイル
+   * @param {List} list - pokemon情報リスト
    * @param {Number} p - Evolutionポイント
    */
-  const li_img = (p) => css`
+  const li_img = (list, p) => css`
     box-shadow: 0 4px 4px 0px #212121;
     background-color: #616161;
     border: 5px solid #fff;
     border-radius: 50%;
     display: block;
     margin: 0 auto;
-    max-width: 150px;
+    max-width: ${cal_maxWidth(list.stage, p)};
     width: 100%;
   `;
+
+  /**
+   * imgの最大幅を計算
+   * @param {Number} s - 対象ぽpokemonの進化ステージ
+   * @param {Number} p - Evolutionポイント
+   */
+  const cal_maxWidth = (s, p) => {
+    switch (p) {
+      case 81:
+        return s === 1 ? "150px" : "80px";
+      default: 
+        return "150px";
+    }
+  }
 
   /**
    * 各ポケモン名、Idへ充てるスタイル

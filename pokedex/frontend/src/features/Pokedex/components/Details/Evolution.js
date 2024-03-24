@@ -7,6 +7,8 @@ import EvolutionList from "./Evolution-list";
 
 const Evolution = ({ evolutionList, evolutionPoint }) => {
   /***** Definition ******/
+  console.log(evolutionPoint);
+  console.log(evolutionList);
   const c = useCssEvolution();
 
   /***** JSX ******/
@@ -16,7 +18,7 @@ const Evolution = ({ evolutionList, evolutionPoint }) => {
       {evolutionPoint === 1 && <p>{noEvolution}</p>}
       {evolutionList !== null &&
         evolutionList.map((list1, i) => (
-          <ul key={"evolution_1_list" + i}>
+          <ul key={"evolution_1_list" + i} css={c.evolution_ul}>
             <li
               css={c.evolution_li(
                 evolutionPoint,
@@ -26,39 +28,47 @@ const Evolution = ({ evolutionList, evolutionPoint }) => {
             >
               <EvolutionList evolutionPoint={evolutionPoint} list={list1} />
             </li>
-            {list1.next != null &&
-              list1.next.map((list2, i) => (
-                <div key={"evolution_2_list" + i}>
-                  <li
-                    css={c.evolution_li(
-                      evolutionPoint,
-                      list2.stage,
-                      list2.next != null && list2.next.length > 0
-                    )}
-                  >
-                    <EvolutionList
-                      evolutionPoint={evolutionPoint}
-                      list={list2}
-                    />
-                  </li>
-                  {list2.next != null &&
-                    list2.next.map((list3, i) => (
-                      <li
-                        css={c.evolution_li(
-                          evolutionPoint,
-                          list3.stage,
-                          list3.next != null && list3.next.length > 0
-                        )}
-                        key={"evolution_3_list" + i}
-                      >
-                        <EvolutionList
-                          evolutionPoint={evolutionPoint}
-                          list={list3}
-                        />
-                      </li>
-                    ))}
-                </div>
-              ))}
+            {list1.next !== null && (
+              <ul css={c.evolution_ul_stage2(list1.next.length > 1)}>
+                {list1.next.map((list2, i) => (
+                  <>
+                    <li
+                      css={c.evolution_li(
+                        evolutionPoint,
+                        list2.stage,
+                        list2.next != null && list2.next.length > 0
+                      )}
+                      div
+                      key={"evolution_2_list" + i}
+                    >
+                      <EvolutionList
+                        evolutionPoint={evolutionPoint}
+                        list={list2}
+                      />
+                    </li>
+                    {list2.next != null &&
+                      <ul key={"evolution_3_ul" + i}>
+                        {list2.next.map((list3, i) => (
+                          <li
+                            css={c.evolution_li(
+                              evolutionPoint,
+                              list3.stage,
+                              list3.next != null && list3.next.length > 0
+                            )}
+                            key={"evolution_3_list" + i}
+                          >
+                            <EvolutionList
+                              evolutionPoint={evolutionPoint}
+                              list={list3}
+                            />
+                          </li>
+                        ))}
+                      </ul>
+                    }
+                  </>
+                ))}
+              </ul>
+            )}
           </ul>
         ))}
     </div>
@@ -95,6 +105,29 @@ const useCssEvolution = () => {
   `;
 
   /**
+   * 進化リスト大元ul
+   */
+  const evolution_ul = css`
+    clear: both;
+  `;
+
+  /**
+   * 進化リストステージ2ul
+   * @param {Boolean} flg - ステージ２にリストが２つ以上存在するかどうか
+   */
+  const evolution_ul_stage2 = (flg) => ({
+    ...(flg && {
+      float: "left",
+      marginRight: "-100%",
+      width: "70.98%",
+      marginLeft: "7.2525%",
+      marginTop: "1em",
+      marginBottom: "2em",
+      position: "relative",
+    })
+  });
+
+  /**
    * 進化リスト位置、それぞれのImgファイルの幅調整
    * @param {Number} p - Evolutionポイント
    * @param {Number} s - 進化stage（何番目の進化系か）
@@ -125,16 +158,19 @@ const useCssEvolution = () => {
   /**
    * TOPマージン計算
    * @param {Number} p - Evolutionポイント
-   * @return {String} マージン比率（もしくはpx, em）
    * @param {Number} s - 進化stage（何番目の進化系か）
+   * @return {String} マージン比率（もしくはpx, em）
    */
-  const calcMarginTop = (p) => {
+  const calcMarginTop = (p, s) => {
     switch (p) {
-      case 1:
+      case 1: 
       case 11:
       case 111:
+      case 222:
       default:
         return "1em";
+      case 81:
+        return s === 1 ? "8em" : "0";
     }
   };
 
@@ -149,8 +185,11 @@ const useCssEvolution = () => {
       case 1:
       case 11:
       case 111:
+      case 222:
       default:
         return "-100%";
+      case 81:
+        return "2.06%";
     }
   };
 
@@ -165,8 +204,11 @@ const useCssEvolution = () => {
       case 1:
       case 11:
       case 111:
+      case 222:
       default:
         return "2em";
+      case 81:
+        return "5em";
     }
   };
 
@@ -182,11 +224,14 @@ const useCssEvolution = () => {
         return "29.0225%";
       case 11:
         if (s === 1) {
-          return  "21.7625%";
+          return "21.7625%";
         } else if (s === 2) {
-          return  "58.0325%";
+          return "58.0325%";
         }
+      case 81:
+        return s === 1 ? "3.6225%" : "0";
       case 111:
+      case 222:
         if (s === 1) {
           return "7.2525%";
         } else if (s === 2) {
@@ -216,6 +261,8 @@ const useCssEvolution = () => {
 
   return {
     evolutionWrapper,
+    evolution_ul,
+    evolution_ul_stage2,
     evolution_li,
   };
 };
