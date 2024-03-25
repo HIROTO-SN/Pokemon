@@ -123,8 +123,8 @@ const useCssEvolution = () => {
     ...(flg && {
       float: "left",
       marginRight: "-100%",
-      width: p === 81 ? "70.98%" : "92.75%",
-      marginLeft: "7.2525%",
+      width: (p === 81 || p === 31) ? "70.98%" : "92.75%",
+      marginLeft: p === 31 ? "37.8325%" : "7.2525%",
       marginTop: "1em",
       marginBottom: p === 81 ? "2em" : "3em",
       position: "relative",
@@ -152,7 +152,7 @@ const useCssEvolution = () => {
 
   const arrowStageBefore = (p) => css`
     :before {
-      right: ${p < 100 ? "-50%" : "-40%"};
+      right: ${arrowStagePosition(p)};
       top: 73%;
       content: ">";
       font-size: 450%;
@@ -161,9 +161,19 @@ const useCssEvolution = () => {
     }
   `;
 
+  const arrowStagePosition = (p) => {
+    if (p === 31) {
+      return "-35%";
+    } else if (p < 100) {
+      return "-50%";
+    } else {
+      return "-40%";
+    }
+  }
+
   const arrowStageAfter = (p, flg) => css`
     :after {
-      right: ${p < 100 ? "-50%" : "-40%"};
+      right: ${arrowStagePosition(p)};
       top: ${flg ? "-40%" : "11%"};
       content: ">";
       font-size: 450%;
@@ -186,6 +196,8 @@ const useCssEvolution = () => {
       case 222:
       default:
         return "1em";
+      case 31:
+        return "2em";
       case 81:
         return s === 1 ? "8em" : "0";
       case 211:
@@ -207,6 +219,8 @@ const useCssEvolution = () => {
       case 222:
       default:
         return "-100%";
+      case 31:
+        return s === 1 ? "-100%" : "6.06%";
       case 81:
         return "2.06%";
       case 211:
@@ -228,6 +242,8 @@ const useCssEvolution = () => {
       case 222:
       default:
         return "2em";
+      case 31:
+        return s === 1 ? "2em" : "0";
       case 81:
         return "5em";
       case 211:
@@ -251,6 +267,7 @@ const useCssEvolution = () => {
         } else if (s === 2) {
           return "58.0325%";
         }
+      case 31:
       case 81:
         return s === 1 ? "3.6225%" : "0";
       case 111:
@@ -275,10 +292,12 @@ const useCssEvolution = () => {
    * @param {Number} s - 進化stage（何番目の進化系か）
    * @return {String} マージン比率（もしくはpx, em）
    */
-  const calcWidth = (p) => {
+  const calcWidth = (p, s) => {
     switch (p) {
       case 1:
         return "41.96%";
+      case 1:
+        return s === 1 ? "20.2%" : "27.46%";
       default:
         return "20.2%";
     }

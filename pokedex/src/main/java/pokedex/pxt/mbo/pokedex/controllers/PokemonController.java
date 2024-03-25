@@ -50,8 +50,8 @@ public class PokemonController {
 	 * @return response <PokemonDetailsDto>
 	 */
 	@GetMapping("/pokedetails")
-	public ResponseEntity<PokemonDetailsInfoDto> getPokemonDetails(@RequestParam("pokemonId") int pokemonId) {
-		PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonId);
+	public ResponseEntity<PokemonDetailsInfoDto> getPokemonDetails(@RequestParam("pokemonName") String pokemonName) {
+		PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonName);
 		if (response == null) {
 			return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.NO_CONTENT);
 		} else {
@@ -66,8 +66,8 @@ public class PokemonController {
 	 * @return response <PokemonDto>
 	 */
 	@GetMapping("/pokePrevNext")
-	public ResponseEntity<List<PokemonDto>> getPokemonPrevNextData(@RequestParam("pokemonId") int pokemonId) {
-		List<PokemonDto> response = pokemonDataService.getPokemonPrevNextData(pokemonId);
+	public ResponseEntity<List<PokemonDto>> getPokemonPrevNextData(@RequestParam("pokemonName") String pokemonName) {
+		List<PokemonDto> response = pokemonDataService.getPokemonPrevNextData(pokemonName);
 		return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.OK);
 	}
 

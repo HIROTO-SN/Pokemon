@@ -80,6 +80,8 @@ const useCssEvolutionList = () => {
    */
   const cal_maxWidth = (s, p) => {
     switch (p) {
+      case 31:
+        return s === 1 ? "150px" : "100px";
       case 81:
         return s === 1 ? "150px" : "80px";
       default: 

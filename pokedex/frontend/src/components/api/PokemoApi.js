@@ -81,14 +81,14 @@ export const getSearchedPokemonList = async (search) => {
 };
 
 /**
- * PokemonIdに紐づくPokemon詳細を取得する
- * @param {Number} pokeId - PokemonId
+ * PokemonNameに紐づくPokemon詳細を取得する
+ * @param {String} pokeName - PokemonName
  */
-export const getPokemonDetails = async (pokeId) => {
+export const getPokemonDetails = async (pokeName) => {
   try {
     return await axios.get(POKEURL.POKEDETAILS, {
       params: {
-        pokemonId: pokeId
+        pokemonName: pokeName
       }});
   } catch(e) {
     console.log("サーバーとの通信に失敗:" + e);
@@ -96,14 +96,14 @@ export const getPokemonDetails = async (pokeId) => {
 };
 
 /**
- * PokemonIdの前後情報を取得
- * @param {Number} pokeId - PokemonId
+ * PokemonNameに紐づくPokemon詳細を取得する
+ * @param {String} pokeName - PokemonName
  */
-export const getPokemonPrevNext = async (pokeId) => {
+export const getPokemonPrevNext = async (pokeName) => {
   try {
     return await axios.get(POKEURL.POKE_PREV_NEXT, {
       params: {
-        pokemonId: pokeId
+        pokemonName: pokeName
       }});
   } catch(e) {
     console.log("サーバーとの通信に失敗:" + e);

@@ -175,10 +175,13 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	/**
 	 * Pokemon個々の詳細情報を取得
 	 * 
-	 * @param request <int> PokemonId
+	 * @param urlパラメータ String - pokemonName
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	public PokemonDetailsInfoDto getPokemonDetails(int pokemonId) {
+	public PokemonDetailsInfoDto getPokemonDetails(String pokemonName) {
+
+		// Pokemon名からIdを取得
+		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
 
 		// Pokemon詳細を取得
 		List<PokemonDetails> pokemonDetailsDto = new ArrayList<PokemonDetails>();
@@ -218,10 +221,13 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	/**
 	 * 前後のPOKEMONデータ取得
 	 * 
-	 * @param request <int> PokemonId
+	 * @param urlパラメータ String - pokemonName
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	public List<PokemonDto> getPokemonPrevNextData(int pokemonId) {
+	public List<PokemonDto> getPokemonPrevNextData(String pokemonName) {
+		// Pokemon名からIdを取得
+		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
+		
 		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
 		Integer prevId = (pokemonId - 1) < 1 ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId - 1);
 		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("LAST_POKEMON_ID")
