@@ -217,8 +217,8 @@ const PokemonDetails = () => {
     window.scroll({ top: 0, behavior: "instant" });
     const fetchPokemonData = async () => {
       // 初期表示用ポケモンリストを取得
-      const res = await getPokemonDetails(location.state);
-      const res_paging = await getPokemonPrevNext(location.state);
+      const res = await getPokemonDetails(params.pokemonName);
+      const res_paging = await getPokemonPrevNext(params.pokemonName);
       console.log(res.data);
       setPokemonDetails(res.data.pokemonDetails);
       setEvolutionDetails(res.data.evolutionDetails);
