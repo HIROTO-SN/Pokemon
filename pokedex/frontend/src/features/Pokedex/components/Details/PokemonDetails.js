@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useEffect, useState } from "react";
-import { useLocation, useParams } from "react-router-dom";
+import { useLayoutEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import CustomSelectBase from "../../../../components/Common/CustomSelectBase";
 import TypeWeaksBox from "../../../../components/Common/TypeWeakBox";
 import {
@@ -16,34 +16,37 @@ import {
   section,
   sliderWidet,
 } from "../../../../components/CommonCss/Layout";
+import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 import UserDashboard from "../../../../components/Dashboard/UserDashboard";
+import {
+  getPokemonDetails,
+  getPokemonPrevNext,
+} from "../../../../components/api/PokemoApi";
 import {
   useSelectedForm,
   useSetSelectedForm,
 } from "../../contexts/DetailContext";
+import Evolution from "./Evolution";
+import ExploreMore from "./ExploreMore";
 import { MatchHeightTablet } from "./MatchHeightTablet";
 import Pagination from "./Pagination";
 import ProfileImage from "./ProfileImage";
 import StatusInfo from "./StatusInfo";
 import VersionDescri from "./VersionDescri";
 import VersionLabel from "./VersionLabel";
-import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
-import Evolution from "./Evolution";
-import { evo_1, evo_1_1_1, evo_1_3 } from "./EvolutionData";
-import ExploreMore from "./ExploreMore";
-import {
-  getPokemonDetails,
-  getPokemonPrevNext,
-} from "../../../../components/api/PokemoApi";
+import { useLoadFlg, useSetLoadFlg } from "../../../../contexts/LoadContext";
 
 const PokemonDetails = () => {
   /***** Definition ******/
   const params = useParams();
-  const location = useLocation();
   const c = useCssPokemonDetails();
+
+  const loadFlg = useLoadFlg();
+  const setloadFlg = useSetLoadFlg();
 
   const selectedForm = useSelectedForm();
   const setSelectedForm = useSetSelectedForm();
+  const [pokemonId, setPokemonId] = useState(1);
   const [pokemonDetails, setPokemonDetails] = useState([]);
   const [evolutionDetails, setEvolutionDetails] = useState([]);
   const [pokePrevNextData, setPokePrevNextData] = useState([]);
@@ -213,17 +216,20 @@ const PokemonDetails = () => {
    * 初期表示時処理
    * PokemonIdに紐づくPokemon詳細情報を取得
    */
-  useEffect(() => {
+  useLayoutEffect(() => {
     window.scroll({ top: 0, behavior: "instant" });
     const fetchPokemonData = async () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonDetails(params.pokemonName);
       const res_paging = await getPokemonPrevNext(params.pokemonName);
       console.log(res.data);
+      console.log(res_paging.data);
+      setPokemonId(res.data.pokemonId);
       setPokemonDetails(res.data.pokemonDetails);
       setEvolutionDetails(res.data.evolutionDetails);
       setPokePrevNextData(res_paging.data);
       setEvolutionPoints(getEvolutionPoints(res.data.evolutionDetails));
+      setloadFlg(true);
     };
     fetchPokemonData();
   }, [params]);
@@ -256,73 +262,80 @@ const PokemonDetails = () => {
   /***** HTML ******/
   return (
     <>
-      <UserDashboard />
-      <div css={container}>
-        <section css={[c.pokedexHeader, (90, 0, 0, 0), clearTable]}>
-          <Pagination
-            pokeId={location.state}
-            pokeName={params.pokemonName}
-            pokePrevNextData={pokePrevNextData}
-          />
-        </section>
-        <section
-          css={[c.pokemonForm, section, overflowVisible, c.backgroundMod]}
-        >
-          {pokemonDetails.length > 1 && (
-            <div css={[column12, push1]}>
-              <CustomSelectBase
-                style={formSelectStyle}
-                state={selectedForm}
-                list={pokemonDetails}
-                action={formSelectAction}
+      {loadFlg && (
+        <>
+          <UserDashboard />
+          <div css={container}>
+            <section css={[c.pokedexHeader, (90, 0, 0, 0), clearTable]}>
+              <Pagination
+                pokeId={pokemonId}
+                pokeName={params.pokemonName}
+                pokePrevNextData={pokePrevNextData}
               />
-            </div>
-          )}
-        </section>
-        <section css={[section, c.backgroundMod]}>
-          <div css={[column6, push1, animeFadeIn]}>
-            {pokemonDetails.map((poke) => (
-              <div
-                css={c.isShow(poke.id === selectedForm)}
-                key={poke.name + "_form_attribute_left"}
-              >
-                <ProfileImage name={poke.name} src={poke.src} />
-                <StatusInfo stat={poke.statList} />
-              </div>
-            ))}
-          </div>
-          <div css={[column6, push7]}>
-            <div css={c.details_right}>
-              <VersionDescri pokemonDetails={pokemonDetails} />
-              <h3>Versions:</h3>
-              <VersionLabel pokemonDetails={pokemonDetails} />
-              {pokemonDetails.map((poke) => (
-                <div
-                  css={c.isShow(poke.id === selectedForm)}
-                  key={poke.name + "_form_attribute_right"}
-                >
-                  <MatchHeightTablet attribute={poke.attribute} />
-                  <div css={animeFadeIn}>
-                    <TypeWeaksBox id="type" list={poke.attribute.types} />
-                    <TypeWeaksBox id="weaknesses" list={poke.attribute.weaks} />
-                  </div>
+            </section>
+            <section
+              css={[c.pokemonForm, section, overflowVisible, c.backgroundMod]}
+            >
+              {pokemonDetails.length > 1 && (
+                <div css={[column12, push1]}>
+                  <CustomSelectBase
+                    style={formSelectStyle}
+                    state={selectedForm}
+                    list={pokemonDetails}
+                    action={formSelectAction}
+                  />
                 </div>
-              ))}
-              <div css={clearTable}></div>
-            </div>
+              )}
+            </section>
+            <section css={[section, c.backgroundMod]}>
+              <div css={[column6, push1, animeFadeIn]}>
+                {pokemonDetails.map((poke) => (
+                  <div
+                    css={c.isShow(poke.id === selectedForm)}
+                    key={poke.name + "_form_attribute_left"}
+                  >
+                    <ProfileImage name={poke.name} src={poke.src} />
+                    <StatusInfo stat={poke.statList} />
+                  </div>
+                ))}
+              </div>
+              <div css={[column6, push7]}>
+                <div css={c.details_right}>
+                  <VersionDescri pokemonDetails={pokemonDetails} />
+                  <h3>Versions:</h3>
+                  <VersionLabel pokemonDetails={pokemonDetails} />
+                  {pokemonDetails.map((poke) => (
+                    <div
+                      css={c.isShow(poke.id === selectedForm)}
+                      key={poke.name + "_form_attribute_right"}
+                    >
+                      <MatchHeightTablet attribute={poke.attribute} />
+                      <div css={animeFadeIn}>
+                        <TypeWeaksBox id="type" list={poke.attribute.types} />
+                        <TypeWeaksBox
+                          id="weaknesses"
+                          list={poke.attribute.weaks}
+                        />
+                      </div>
+                    </div>
+                  ))}
+                  <div css={clearTable}></div>
+                </div>
+              </div>
+            </section>
+            <section css={[section, c.backgroundMod]}>
+              <Evolution
+                evolutionList={evolutionDetails}
+                evolutionPoint={evolutionPoint}
+              />
+            </section>
+            <section css={[section, c.backgroundMod, noPaddingTop]}>
+              <ExploreMore />
+            </section>
+            <section css={[sliderWidet]}></section>
           </div>
-        </section>
-        <section css={[section, c.backgroundMod]}>
-          <Evolution
-            evolutionList={evolutionDetails}
-            evolutionPoint={evolutionPoint}
-          />
-        </section>
-        <section css={[section, c.backgroundMod, noPaddingTop]}>
-          <ExploreMore />
-        </section>
-        <section css={[sliderWidet]}></section>
-      </div>
+        </>
+      )}
     </>
   );
 };

@@ -214,8 +214,10 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		}
 
 		return new PokemonDetailsInfoDto(
+				pokemonId,
 				pokemonDetailsDto,
-				evolutionDetails);
+				evolutionDetails
+		);
 	}
 
 	/**
@@ -227,7 +229,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	public List<PokemonDto> getPokemonPrevNextData(String pokemonName) {
 		// Pokemon名からIdを取得
 		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
-		
+
 		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
 		Integer prevId = (pokemonId - 1) < 1 ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId - 1);
 		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("LAST_POKEMON_ID")
@@ -445,61 +447,20 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		}
 
 		List<TypesDto> weakDtoList = new ArrayList<TypesDto>();
-		if (tc.effective1Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective1Id, typesRepository.findByTypeId(tc.effective1Id).getName()));
+		for (int i = 1; i <= Constants.POKE_TYPE.get("TYPE_COUNT"); i++) {
+			try {
+				double effectivePoint = (double) tc.getClass().getField("effective" + i + "Point").get(tc);
+				if (effectivePoint >= 2.0) {
+					int effectiveId = (int) tc.getClass().getField("effective" + i + "Id").get(tc);
+					String typeName = typesRepository.findByTypeId(effectiveId).getName();
+					weakDtoList.add(new TypesDto(effectiveId, typeName));
+				}
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace(); 
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
 		}
-		if (tc.effective2Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective2Id, typesRepository.findByTypeId(tc.effective2Id).getName()));
-		}
-		if (tc.effective3Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective3Id, typesRepository.findByTypeId(tc.effective3Id).getName()));
-		}
-		if (tc.effective4Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective4Id, typesRepository.findByTypeId(tc.effective4Id).getName()));
-		}
-		if (tc.effective5Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective5Id, typesRepository.findByTypeId(tc.effective5Id).getName()));
-		}
-		if (tc.effective6Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective6Id, typesRepository.findByTypeId(tc.effective6Id).getName()));
-		}
-		if (tc.effective7Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective7Id, typesRepository.findByTypeId(tc.effective7Id).getName()));
-		}
-		if (tc.effective8Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective8Id, typesRepository.findByTypeId(tc.effective8Id).getName()));
-		}
-		if (tc.effective9Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective9Id, typesRepository.findByTypeId(tc.effective9Id).getName()));
-		}
-		if (tc.effective10Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective10Id, typesRepository.findByTypeId(tc.effective10Id).getName()));
-		}
-		if (tc.effective11Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective11Id, typesRepository.findByTypeId(tc.effective11Id).getName()));
-		}
-		if (tc.effective12Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective12Id, typesRepository.findByTypeId(tc.effective12Id).getName()));
-		}
-		if (tc.effective13Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective13Id, typesRepository.findByTypeId(tc.effective13Id).getName()));
-		}
-		if (tc.effective14Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective14Id, typesRepository.findByTypeId(tc.effective14Id).getName()));
-		}
-		if (tc.effective15Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective15Id, typesRepository.findByTypeId(tc.effective15Id).getName()));
-		}
-		if (tc.effective16Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective16Id, typesRepository.findByTypeId(tc.effective16Id).getName()));
-		}
-		if (tc.effective17Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective17Id, typesRepository.findByTypeId(tc.effective17Id).getName()));
-		}
-		if (tc.effective18Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective18Id, typesRepository.findByTypeId(tc.effective18Id).getName()));
-		}
-
 		return weakDtoList;
 	}
 

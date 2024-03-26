@@ -18,7 +18,7 @@ const Evolution = ({ evolutionList, evolutionPoint }) => {
       {evolutionPoint === 1 && <p>{noEvolution}</p>}
       {evolutionList !== null &&
         evolutionList.map((list1, i) => (
-          <ul key={"evolution_1_list" + i} css={c.evolution_ul}>
+          <ul key={"evolution_1_ul" + i} css={c.evolution_ul}>
             <li
               css={c.evolution_li(
                 evolutionPoint,
@@ -26,11 +26,12 @@ const Evolution = ({ evolutionList, evolutionPoint }) => {
                 list1.next != null && list1.next.length > 0,
                 list1.next != null && list1.next === 2
               )}
+              key={"evolution_1_list" + i}
             >
               <EvolutionList evolutionPoint={evolutionPoint} list={list1} />
             </li>
             {list1.next !== null && (
-              <ul css={c.evolution_ul_stage2_3(list1.next.length > 1, evolutionPoint)}>
+              <ul key={"evolution_2_ul" + i} css={c.evolution_ul_stage2_3(list1.next.length > 1, evolutionPoint)}>
                 {list1.next.map((list2, i) => (
                   <>
                     <li
