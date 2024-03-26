@@ -16,6 +16,7 @@ import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
 import { getPokeIdList } from "../../utils/PokeCommmonFunc.js";
+import { useLoadFlg, useSetLoadFlg } from "../../../../contexts/LoadContext.js";
 
 const Results = () => {
   /***** CSS ******/
@@ -52,6 +53,8 @@ const Results = () => {
   `;
 
   /***** Definition ******/
+  const loadFlg = useLoadFlg();
+  const setloadFlg = useSetLoadFlg();
   const loader = useLoader();
   const setLoader = useSetLoader();
   const pokemonData = usePokemonData();
@@ -65,13 +68,18 @@ const Results = () => {
    * Pokemonリスト1～12を取得
    */
   useEffect(() => {
+    setloadFlg(true);
     const fetchPokemonData = async () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonList(search);
       loadPokemon(res.data, "init");
       setLoader(false);
     };
-    fetchPokemonData();
+    const timer = setTimeout(() => {
+      fetchPokemonData();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   /**

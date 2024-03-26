@@ -12,6 +12,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PokemonDetailsInfoDto {
+	private int pokemonId;
 	private List<PokemonDetails> pokemonDetails;
 	private List<EvolutionDetails> evolutionDetails;
 }

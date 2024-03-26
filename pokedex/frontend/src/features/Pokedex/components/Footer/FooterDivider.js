@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useLoadFlg } from "../../../../contexts/LoadContext";
 
 /**
  * ★Component★
@@ -31,8 +32,7 @@ const FooterDivider = () => {
       position: absolute;
       bottom: 0;
       width: 12px;
-      background: transparent url("../notches/notch-top-left.png")
-        no-repeat;
+      background: transparent url("../notches/notch-top-left.png") no-repeat;
       left: -11px;
     }
 
@@ -42,17 +42,23 @@ const FooterDivider = () => {
       position: absolute;
       bottom: 0;
       width: 12px;
-      background: transparent url("../notches/notch-top-right.png")
-        no-repeat;
+      background: transparent url("../notches/notch-top-right.png") no-repeat;
       right: -11px;
     }
   `;
 
+  /***** Definition ******/
+  const loadFlg = useLoadFlg();
+
   /***** JSX ******/
   return (
-    <div css={footerDivider}>
-      <span css={footerNotch}></span>
-    </div>
+    <>
+      {loadFlg && (
+        <div css={footerDivider}>
+          <span css={footerNotch}></span>
+        </div>
+      )}
+    </>
   );
 };
 

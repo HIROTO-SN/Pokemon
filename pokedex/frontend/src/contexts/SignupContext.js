@@ -1,36 +1,6 @@
 import { createContext, useContext, useState } from "react";
 
 /*
-* Context1 - Paging
-* アカウント作成(Signup)ページのページング管理
-*/ 
-// const CurrentPageContext = createContext();
-// const DefineCurrentPageContext = createContext();
-
-// // ページング初期値
-// const initPageState = { 
-// 	name: "Verify Age",
-// 	pageNo: 1 // 現在のアカウント作成画面でのページ位置
-// };
-
-// // Context定義
-// export const CurrentPageProvider = ({ children }) => {
-
-//   const [currentPage, setCurrentPage] = useState(initPageState);
-// 	return (
-// 		<CurrentPageContext.Provider value={currentPage}>
-// 			<DefineCurrentPageContext.Provider value={setCurrentPage} >
-// 				{ children }
-// 			</DefineCurrentPageContext.Provider>
-// 		</CurrentPageContext.Provider>
-// 	)
-// };
-
-// export const useCurrentPage = () => useContext(CurrentPageContext);
-// export const useCurrentPageDefiner = () => useContext(DefineCurrentPageContext);
-
-
-/*
 * Context1 - AccountInfo
 * アカウント作成(Signup)ページの登録情報管理
 */ 

@@ -28,7 +28,7 @@ public class Constants {
 			put("FORM_ID_FOR_LIST", 1);
 			put("OFFSET_FOR_INIT", 1);
 			put("PAGE_SIZE", 12);
-			put("LAST_POKEMON_ID", 1025); // 後ほど1025に換える
+			put("LAST_POKEMON_ID", 1025);
 		}
 	};
 	// 基準値キー名
@@ -47,6 +47,13 @@ public class Constants {
 		{
 			put(MIDDLE, 99.00); // これ未満はsmall, 以上はmedium
 			put(LARGE, 490.00); // これ未満はmedium, 以上はlarge
+		}
+	};
+
+	// Pokemon弱点（タイプ）基準
+	public static final Map<String, Integer> POKE_TYPE = new HashMap<>() {
+		{
+			put("TYPE_COUNT", 18); // タイプの数
 		}
 	};
 	
