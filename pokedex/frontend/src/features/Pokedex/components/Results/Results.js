@@ -1,15 +1,25 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { push1, column12 } from "../../../../components/CommonCss/Layout.js";
+import { useEffect } from "react";
+import { clearTable, column12, push1 } from "../../../../components/CommonCss/Layout.js";
+import { getPokemonList } from "../../../../components/api/PokemoApi.js";
+import {
+  useLoader,
+  usePokemonData,
+  useSearchCondition,
+  useSearchDispatch,
+  useSetLoader,
+  useSetPokemonData,
+} from "../../contexts/SearchContext.js";
 import Alert from "./Alert.js";
+import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
-import { useEffect, useState } from "react";
-import { getAllPokemon, getPokemon } from "../../../../components/api/PokemoApi.js";
-import { pokemonAcessApiUrl } from "../../../../constants/ApiUrls.js";
-import Load from "./Load.js";
+import { getPokeIdList } from "../../utils/PokeCommmonFunc.js";
+import { useLoadFlg, useSetLoadFlg } from "../../../../contexts/LoadContext.js";
 
 const Results = () => {
+  /***** CSS ******/
   const results = css`
     overflow: visible;
     position: relative;
@@ -22,16 +32,6 @@ const Results = () => {
     overflow: hidden;
     max-width: 1024px;
     width: 100%;
-
-    :before {
-      content: "";
-      display: table;
-    }
-    :after {
-      clear: both;
-      content: "";
-      display: table;
-    }
   `;
 
   const resultsList = css`
@@ -43,10 +43,6 @@ const Results = () => {
     list-style: none;
   `;
 
-  const noResults = css`
-    display: none;
-  `;
-
   const contentBlock = css`
     clear: both;
     display: block;
@@ -56,67 +52,113 @@ const Results = () => {
     position: relative;
   `;
 
-  const [loading, setLoading] = useState(true);
-  const [pokemonData, setPokemonData] = useState([]);
-  const [nextURL, setNextURL] = useState("");
+  /***** Definition ******/
+  const loadFlg = useLoadFlg();
+  const setloadFlg = useSetLoadFlg();
+  const loader = useLoader();
+  const setLoader = useSetLoader();
+  const pokemonData = usePokemonData();
+  const setPokemonData = useSetPokemonData();
+  const search = useSearchCondition();
+  const searchDipatch = useSearchDispatch();
 
+  /***** JS ******/
+  /**
+   * 初期表示時処理
+   * Pokemonリスト1～12を取得
+   */
   useEffect(() => {
+    setloadFlg(true);
     const fetchPokemonData = async () => {
-      // 全てのポケモンデータを取得
-      let res = await getAllPokemon(pokemonAcessApiUrl);
-      loadPokemon(res.results, "init");
-      setLoading(false);
-      setNextURL(res.next);
+      // 初期表示用ポケモンリストを取得
+      const res = await getPokemonList(search);
+      loadPokemon(res.data, "init");
+      setLoader(false);
     };
-    fetchPokemonData();
+    const timer = setTimeout(() => {
+      fetchPokemonData();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
-  const loadPokemon = async (data, type) => {
-    const _pokemon = await Promise.all(
-      data.map((pokemon) => {
-        const pokemonRecord = getPokemon(pokemon.url);
-        return pokemonRecord;
-      })
-    );
+  /**
+   * Load more クリックイベント
+   */
+  const clickedloadMorePokemon = async () => {
+    // ローダーを表示
+    setLoader(true);
+    const nextTwelvePokemon = await getPokemonList(search);
+    loadPokemon(nextTwelvePokemon.data, "more");
+    // ローダーを再度非表示
+    setLoader(false);
+  };
+
+  /**
+   * @param {List} data - 取得したPokemonデータ
+   * @param {String} type - Dispatchアクション名
+   * PokemonリストのState更新関数
+   */
+  const loadPokemon = (data, type) => {
     switch (type) {
       case "init": {
-        setPokemonData(_pokemon);
+        setPokemonData(data);
+        searchDipatch({
+          type: "setPageNumber",
+          pokeIdList: getPokeIdList(data),
+          val: 1,
+          actionType: "search",
+        });
         break;
       }
       case "more": {
-        const combinedPoekmonData = [...pokemonData, ..._pokemon];
-        setPokemonData(combinedPoekmonData);
+        const combinedPokemonData = [...pokemonData, ...data];
+        setPokemonData(combinedPokemonData);
+        if (search.actionType === "surprise") {
+          searchDipatch({
+            type: "setPageNumber",
+            pokeIdList: getPokeIdList(combinedPokemonData),
+            val: search.pageNumber + 1,
+            actionType: "surprise",
+          });
+        } else {
+          searchDipatch({
+            type: "setPageNumber",
+            pokeIdList: getPokeIdList(combinedPokemonData),
+            val: search.pageNumber + 1,
+            actionType: "search",
+          });
+        }
         break;
       }
     }
   };
 
-  const clickedloadMorePokemon = async () => {
-    // ローダーを表示
-    setLoading(true);
-    const nextTwentyPokemonData = await getAllPokemon(nextURL);
-    await loadPokemon(nextTwentyPokemonData.results, "more");
-
-    // 次のページのURLをセット
-    setNextURL(nextTwentyPokemonData.next);
-    // ローダーを再度非表示
-    setLoading(false);
-  };
-
+  /***** JSX ******/
   return (
-    <section css={results}>
-      <ul css={resultsList}>
-        {pokemonData.map((pokemon, i) => {
-          return <PokemonList key={i} number={i} pokemon={pokemon} />;
-        })}
-      </ul>
-      <div css={[push1, column12, noResults]}>
-        <Alert />
-      </div>
-      <div css={contentBlock}>
-        {loading && <Load />}
-        <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
-      </div>
+    <section id="result" css={[results, clearTable]}>
+      {pokemonData.length > 0 && typeof pokemonData !== void 0 ?
+        // Pokemonリストを取得できた時
+        <>
+          <ul css={resultsList}>
+            {pokemonData.map((pokemon, i) => {
+              return <PokemonList key={i} pokemon={pokemon} />;
+            })}
+          </ul>
+          <div css={contentBlock}>
+            {loader && <Load />}
+            <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
+          </div>
+        </>
+        :
+        // Pokemonリストを取得できず、エラーの時
+        <>
+          {loader && <Load />}
+          <div css={[push1, column12]}>
+            <Alert />
+          </div>
+        </>
+      }
     </section>
   );
 };

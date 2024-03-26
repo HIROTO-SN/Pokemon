@@ -1,6 +1,5 @@
 /* API接続テスト用 */
 export const itemUrl = "http://localhost:8080/items";
-export const pokeList = "http://localhost:8080/pokeList";
 
 /* Signin/SignUp */
 // ログイン認証
@@ -12,5 +11,16 @@ export const nameAvailabilityCheckUrl = "http://localhost:8080/api/auth/checknam
 
 
 /* Pokemonリスト */
-// 全ポケモンリスト取得（最初の20）
-export const pokemonAcessApiUrl = "https://pokeapi.co/api/v2/pokemon";
+// 全Pokemonリスト取得（External: 最初の20）
+export const pokemonExternalApiUrl = "https://pokeapi.co/api/v2/pokemon";
+// 外部APIからPokemonのImageを取得
+export const EXTERNAL_POKEAPI = {
+	// {0}をPokemonIdと置換してください
+	IMAGE: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/{0}.png"
+}
+// Pokemonリスト取得 (Internal）
+export const POKEURL = {
+	POKELIST: "http://localhost:8080/pokedex/pokeList",
+	POKEDETAILS: "http://localhost:8080/pokedex/pokedetails",
+	POKE_PREV_NEXT: "http://localhost:8080/pokedex/pokePrevNext",
+}

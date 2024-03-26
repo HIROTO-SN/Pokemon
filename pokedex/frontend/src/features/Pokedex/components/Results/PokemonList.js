@@ -1,11 +1,32 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
-import { capitalizeFirstLetter } from "../../utils/ConvToolUtils";
-import { setBackGroundForTypes, setFontColorForTypes } from "../../utils/ColorUtils";
+import { Link } from "react-router-dom";
+import { EXTERNAL_POKEAPI } from "../../../../constants/ApiUrls";
+import {
+  capitalizeFirstLetter,
+  extractString,
+  setBackGroundForTypes,
+  setFontColorForTypes,
+} from "../../utils/ConvToolUtils";
 
-const PokemonList = ({ number, pokemon }) => {
+const PokemonList = ({ pokemon }) => {
+  /***** CSS ******/
+  // keyframes定義
+  const mouseOverHop = keyframes`
+    0% {
+      opacity: 1;
+      transform: translate(0, 0px);
+    }
+    100% {
+      opacity: 1;
+      transform: translate(0, -5px);
+    }
+  `;
+
+  // スタイル定義
   const Li_pokemon = styled.li`
+    /* transform: translateY(0px); */
     opacity: 1;
     top: 0px;
     left: 0px;
@@ -23,6 +44,7 @@ const PokemonList = ({ number, pokemon }) => {
       border-radius: 5px;
       width: 100%;
       padding-top: 100;
+      cursor: pointer;
 
       > img {
         float: left;
@@ -30,6 +52,11 @@ const PokemonList = ({ number, pokemon }) => {
         position: relative;
         top: 0;
       }
+    }
+
+    // ポケモン画像をMouseOverでゆらゆら揺らす
+    :hover {
+      animation: ${mouseOverHop} 0.2s ease-in-out;
     }
   `;
 
@@ -59,35 +86,41 @@ const PokemonList = ({ number, pokemon }) => {
   `;
 
   const pill = (typeName) => css`
-      font-family: "Flexo-Medium", arial, sans-serif;
-      border-radius: 3px;
-      line-height: 18px;
-      max-width: 110px;
-      margin: 0 1.5625% 0 0;
-      width: 38.4375%;
-      float: left;
-      text-transform: none;
-      font-size: 11px;
-      text-align: center;
-			background: ${setBackGroundForTypes(typeName)};
-			color: ${setFontColorForTypes(typeName)};
+    font-family: "Flexo-Medium", arial, sans-serif;
+    border-radius: 3px;
+    line-height: 18px;
+    max-width: 110px;
+    margin: 0 1.5625% 0 0;
+    width: 38.4375%;
+    float: left;
+    text-transform: none;
+    font-size: 11px;
+    text-align: center;
+    background: ${setBackGroundForTypes(typeName)};
+    color: ${setFontColorForTypes(typeName)};
   `;
 
-	return (
+  /***** JSX ******/
+  return (
+    // <Li_pokemon css={animeFadeIn}>
     <Li_pokemon>
-      <a>
-        <img src={pokemon.sprites.other["official-artwork"].front_default} />
-      </a>
+      <Link to={`/pokedex/${pokemon.pokemonName}`} state={pokemon.pokemonId}>
+        <img src={EXTERNAL_POKEAPI.IMAGE.replace("{0}", pokemon.pokemonId)} />
+      </Link>
       <div css={pokemonInfo}>
         <p css={id}>
           <span>#</span>
-          {(number + 1).toString().padStart(4, "0")}
+          {Number(pokemon.pokemonId).toString().padStart(4, "0")}
         </p>
-        <H5_names>{capitalizeFirstLetter(pokemon.name)}</H5_names>
+        <H5_names>
+          {capitalizeFirstLetter(extractString(pokemon.pokemonName, 0, " "))}
+        </H5_names>
         {pokemon.types.map((_type) => {
           return (
-            <div key={_type.type.name}>
-              <span css={pill(_type.type.name)}>{_type.type.name}</span>
+            <div key={_type.name}>
+              <span css={pill(_type.name)}>
+                {capitalizeFirstLetter(_type.name)}
+              </span>
             </div>
           );
         })}

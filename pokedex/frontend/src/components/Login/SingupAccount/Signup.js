@@ -63,7 +63,7 @@ const Signup = ({ pageNo }) => {
 
     :before {
       left: -10px;
-      background: transparent url("./background/left-notch-bottom-right.png")
+      background: transparent url("../background/left-notch-bottom-right.png")
         no-repeat;
       background-size: 12px 8px;
       backface-visibility: hidden;
@@ -75,7 +75,7 @@ const Signup = ({ pageNo }) => {
     }
     :after {
       right: -10px;
-      background: transparent url("./background/right-notch-bottom-right.png")
+      background: transparent url("../background/right-notch-bottom-right.png")
         no-repeat;
       background-size: 12px 8px;
       backface-visibility: hidden;
@@ -87,7 +87,7 @@ const Signup = ({ pageNo }) => {
     }
   `;
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <div css={[container]}>
       <section css={[section, useraccount]}>
@@ -114,7 +114,7 @@ const Signup = ({ pageNo }) => {
  * pageNo = 3: Verify Email
  */
 const PageController = ({ pageNo }) => {
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <>
       {pageNo === 1 ? (
@@ -179,13 +179,13 @@ const Banner = ({ icon }) => {
     <div css={[characterBanner(icon), hiddenMobile]}>
       {icon === 1 ? (
         <img
-          src="./icons/pokemon-signup.png"
+          src="../icons/pokemon-signup.png"
           alt="Create Your Account"
           css={customImg1}
         />
       ) : (
         <img
-          src="./icons/picachu.png"
+          src="../icons/picachu.png"
           alt="Create Your Account"
           css={customImg2}
         />

@@ -7,7 +7,7 @@ import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolU
 const PrimaryNav = () => {
   
   
-  const iconPath = "./icons/";
+  const iconPath = "../icons/";
   const iconList = [
     { name: "home", backgroundCSS: "#AAAAAA", link: "/home" },
     { name: "pokedex", backgroundCSS: "#FF0033", link: "/pokedex" },

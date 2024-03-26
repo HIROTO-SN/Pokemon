@@ -1,21 +1,28 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { useRef, useState } from "react";
+import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import { Link, useNavigate } from "react-router-dom";
+import { valid_message_birthdayNoValid } from "../../../constants/ValidationMessage";
+import { countryList } from "../../../constants/ul_list/accountList";
 import {
-  formWrapper,
-  dogEarTl,
-  fieldRequired,
+  useInputAccountInfo,
+  useSetInputAccountInfo,
+} from "../../../contexts/SignupContext";
+import {
+  buttonBlack,
+  contentBlock,
+  contentBlockFull,
   customScrollbar,
   customSelectMenu,
   customSelectWrapper,
+  dogEarTl,
+  fieldRequired,
   formField,
-  submitButton,
   formInner,
-  contentBlockFull,
-  contentBlock,
-  buttonBlack
+  formWrapper,
+  submitButton
 } from "../../CommonCss/AccountCss";
-import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
 import {
   column10,
   noPaddingTop,
@@ -31,16 +38,9 @@ import {
   section,
   viewport,
 } from "../../CommonCss/Layout";
-import { countryList } from "../../../constants/UlList";
-import { useEffect, useRef, useState } from "react";
-import {
-  useInputAccountInfo,
-  useSetInputAccountInfo,
-} from "../../../contexts/SignupContext";
-import AlertSignUp from "./AlertSignUp";
-import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
-import { valid_message_birthdayNoValid } from "../../../constants/ValidationMessage";
 import { getFullDate, toHalfWidth } from "../../CommonFunc/Common";
+import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
+import AlertSignUp from "./AlertSignUp";
 
 const VerifyAge = ({ Banner }) => {
   /***** CSS ******/
@@ -154,7 +154,7 @@ const VerifyAge = ({ Banner }) => {
       country: { name: selList.name, value: selList.value },
     };
     setAccountInfo(newAccountInfo);
-    sessionStorage.setItem('country', JSON.stringify(newAccountInfo.country));
+    // sessionStorage.setItem('country', JSON.stringify(newAccountInfo.country));
     arrowClickHandler();
   };
   // Birth入力後チェンジイベント
@@ -168,7 +168,7 @@ const VerifyAge = ({ Banner }) => {
     const date = new Date(halvedVal);
     if (!isNaN(date.getDate())) {
       const newDate = getFullDate(date);
-      sessionStorage.setItem('birth', newDate);
+      // sessionStorage.setItem('birth', newDate);
       setAccountInfo({ ...accountInfo, birthday: newDate });
     } else {
       setAccountInfo({ ...accountInfo, birthday: "" });
@@ -194,7 +194,7 @@ const VerifyAge = ({ Banner }) => {
     })
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
     <section css={[noPaddingTop, section, sectionUserAccount]}>
       <div css={[column10, push2]}>

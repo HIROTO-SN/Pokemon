@@ -68,6 +68,23 @@ export const noPaddingTop = css`
   padding-top: 0 !important;
 `;
 
+export const overflowVisible = css`
+  overflow: visible;
+`;
+
+// レイアウト調整
+export const clearTable = css`
+  ::before {
+    content: "";
+    display: table;
+  }
+  ::after {
+    clear: both;
+    content: "";
+    display: table;
+  }
+`;
+
 /*
  *　色/ディスプレイ要素調整系
  */
@@ -102,7 +119,7 @@ export const hiddenMobile = css`
  */
 export const container = css`
   box-sizing: border-box;
-  background: #fff url("./background/container_bg.png");
+  background: #fff url("../background/container_bg.png");
   clear: both;
   display: block;
   margin: 0 auto;
@@ -113,7 +130,7 @@ export const container = css`
 
 export const section = css`
   padding: 1em 0;
-  background: transparent url("./background/content_bg.png") left top;
+  background: transparent url("../background/content_bg.png") left top;
   background-size: 100% 1px;
   display: block;
   margin: 0 auto;
@@ -126,9 +143,13 @@ export const section = css`
   }
 `;
 
-export const customScrollBar = css`
+export const sliderWidet = css`
   position: relative;
-  overflow: visible;
+  overflow: hidden;
+  padding-top: 3em;
+  padding-bottom: 2em;
+  width: 100%;
+  /* min-height: 336px; */
 `;
 
 // アラート系
@@ -158,7 +179,7 @@ export const alertH3 = (color) => css`
   text-transform: none;
   font-size: 125%;
   line-height: 125%;
-  font-family: "Flexo-Medium",arial,sans-serif;
+  font-family: "Flexo-Medium", arial, sans-serif;
 `;
 
 // アラートボックス色定義
@@ -174,7 +195,7 @@ const colorCtrl = (color) => {
     default:
       return "none";
   }
-}
+};
 
 // カスタムセレクトボックス スクロール制御
 export const viewport = css`
@@ -192,7 +213,7 @@ export const viewport = css`
   }
 
   ::-webkit-scrollbar-button {
-    background: url("./background/scrollbar_bg.png") 2px 0 no-repeat;
+    background: url("../background/scrollbar_bg.png") 2px 0 no-repeat;
     width: 19px;
     height: 14px;
   }

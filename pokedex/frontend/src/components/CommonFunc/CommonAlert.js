@@ -34,7 +34,7 @@ export const passwordCheck = (pass) => {
 	return errStr;
 }
 
-/*
+/**
  * メールアドレスチェック
  * @param email: メールアドレス - String
  * @param flg: 純粋なメールアドレス or 確認用メールアドレス を区別する - Boolean

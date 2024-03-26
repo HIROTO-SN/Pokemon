@@ -21,3 +21,15 @@ export const toHalfWidth = (str) => {
     return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
   });
 }
+
+/**
+ * UUIDを構築
+ * @return {String} : ランダムな16進数で構築されたUUID
+ */
+export const generateUUID = () => {
+	return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+    var r = Math.random() * 16 | 0,
+        v = c === 'x' ? r : (r & 0x3 | 0x8);
+    return v.toString(16);
+  });
+}

@@ -28,5 +28,4 @@ public class SessionDto implements Serializable {
 	private LocalDate birthday;
 	private Integer accountLoginFailureCount;
 	private LocalDateTime accountLockedDate;
-
 }

@@ -1,6 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { IoIosArrowUp } from "react-icons/io";
+import { useLoadFlg, useSetLoadFlg } from "../../contexts/LoadContext";
 
 const Backtotop = () => {
   /***** CSS ******/
@@ -23,7 +24,7 @@ const Backtotop = () => {
     height: 64px;
     opacity: 0.6;
     /* position: fixed; */
-		margin-left: 100px; /* 後で消す */
+    margin-left: 100px; /* 後で消す */
     bottom: -68px;
     right: 0;
     width: 64px;
@@ -31,17 +32,17 @@ const Backtotop = () => {
     transition: all 0.2s linear;
   `;
 
-	// iconの位置調整
-	const iconPosition = css`
-		cursor: pointer;
-		margin: 6px 0 0 0;
+  // iconの位置調整
+  const iconPosition = css`
+    cursor: pointer;
+    margin: 6px 0 0 0;
     display: flex;
     justify-content: center;
     align-items: center;
-	`;
+  `;
 
   const icon = css`
-		font-size: 320%;
+    font-size: 320%;
   `;
 
   const offscreen = css`
@@ -49,20 +50,30 @@ const Backtotop = () => {
     position: absolute;
   `;
 
-	
+  /***** Definition ******/
+  const loadFlg = useLoadFlg();
+
   /***** JS ******/
-	const scrollOnTop = () => {
+  const scrollOnTop = () => {
     window.scroll({ top: 0, behavior: "smooth" });
   };
 
-  /***** HTML ******/
+  /***** JSX ******/
   return (
-    <div id="back-to-top" css={[visibleMobile, backToTop]} onClick={scrollOnTop}>
-			<label css={iconPosition}>
-      	<IoIosArrowUp css={icon} />
-			</label>
-      <span css={offscreen}>Back To Top</span>
-    </div>
+    <>
+      {loadFlg && (
+        <div
+          id="back-to-top"
+          css={[visibleMobile, backToTop]}
+          onClick={() => scrollOnTop()}
+        >
+          <label css={iconPosition}>
+            <IoIosArrowUp css={icon} />
+          </label>
+          <span css={offscreen}>Back To Top</span>
+        </div>
+      )}
+    </>
   );
 };
 

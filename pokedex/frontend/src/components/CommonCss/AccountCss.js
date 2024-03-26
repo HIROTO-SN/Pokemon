@@ -32,7 +32,7 @@ export const formWrapper = css`
 export const dogEarTl = css`
   :before {
     content: " ";
-    background: url("./background/default-dog-ear.png") no-repeat 0 0;
+    background: url("../background/default-dog-ear.png") no-repeat 0 0;
     height: 2em;
     position: absolute;
     width: 2em;
@@ -189,6 +189,7 @@ export const customScrollbar = css`
 `;
 
 export const buttonBlack = css`
+  background-color: #313131;
   color: #fff !important;
 `;
 
@@ -235,7 +236,7 @@ export const customFormElements = css`
 
 // ボタンレイアウト
 export const buttonRight = css`
-  float: right;
+  float: right!important;
 `;
 
 // ボタン薄い青色
