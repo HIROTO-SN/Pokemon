@@ -1,10 +1,10 @@
 /** @jsxImportSource @emotion/react */
-import { css } from "@emotion/react";
+import { css, keyframes } from "@emotion/react";
 import { STATS_INFO } from "../../../../constants/ConstantsGeneral";
 
 const StatusInfo = ({ stat }) => {
   /***** Definition ******/
-  const cssObj = useCssStatus();
+  const c = useCssStatus();
 
   // メーターバー表示用の空のリスト
   const meter_bar_list = [...Array(STATS_INFO.GAUGE_BAR_HEIGHT)].map(
@@ -13,7 +13,6 @@ const StatusInfo = ({ stat }) => {
 
   /***** JS ******/
   /**
-   *
    * @param {Number} val - ステータス値
    * @return CSSでのtop位置計算結果
    */
@@ -36,18 +35,18 @@ const StatusInfo = ({ stat }) => {
 
   /***** JSX ******/
   return (
-    <div css={cssObj.statusInfo}>
+    <div css={c.statusInfo}>
       <h3>Stats</h3>
       <ul>
         {stat.map((_stat) => (
           <li key={_stat.name}>
-            <ul css={cssObj.gauge}>
-              <li css={cssObj.meter(meterBarCalc(_stat.val))}></li>
+            <ul css={c.gauge}>
+              <li css={c.meter(meterBarCalc(_stat.val))}></li>
               {meter_bar_list.map((meter) => (
                 <li key={meter + "_meter"}></li>
               ))}
             </ul>
-            <span css={cssObj.meter_title}>{_stat.name}</span>
+            <span css={c.meter_title}>{_stat.name}</span>
           </li>
         ))}
       </ul>
@@ -118,15 +117,27 @@ const useCssStatus = () => {
   `;
 
   // ステータスゲージのメーター部
-  // ステータスバーのCSS定義
+  // ステータスバーのCSS定義(初期状態)
+  const slideDown = (stats_val) => keyframes`
+    from {
+      top: 100%;
+    }
+    to {
+      top: ${stats_val === void 0 ? "100%" : stats_val + "%"}
+    }
+  `;
+
+  // ステータスバーのCSS定義(アニメーション後)
   const meter = (stats_val) => css`
-    top: ${stats_val === void 0 ? "100%" : stats_val + "%"};
+    top: 100%;
     background: #30a7d7;
     width: 100%;
     border: none;
     height: 120%;
     position: absolute;
     z-index: 1;
+    animation: ${slideDown(stats_val)} 0.5s forwards;
+    animation-delay: ${stats_val === void 0 ? "0s" : "0.5s"};
   `;
 
   // ステータスメーターの各タイトル

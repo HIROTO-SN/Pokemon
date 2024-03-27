@@ -16,10 +16,8 @@ const Pagination = ({ pokeId, pokeName, pokePrevNextData }) => {
           <Link
             key={link.pokemonName}
             to={`/pokedex/${link.pokemonName}`}
-            state={link.pokemonId}
             css={[c.pagination_a, c.page(i)]}
             className={i}
-            onClick="window.location.reload(true);"
           >
             <div>
               <span css={c.icon_arrow(i)}>
