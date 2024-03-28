@@ -6,16 +6,18 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.TypesDto;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class PokemonDetailsDto {
-	private int id;
-	private String name;
+public class EvolutionDetails {
+	private int stage;
+	private int formId;
+	private int pokemonId;
+	private String pokemonName;
 	private String src;
-	private List<DetailsStrVal> versions;
-	private List<DetailsIntVal> statList;
-	private AttributeDetails attribute;
+	private List<TypesDto> types;
+	private List<EvolutionDetails> next;
 }

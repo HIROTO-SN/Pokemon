@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import FooterSignup from "./Footer-signup";
 import ErrorModal from "./ErrorModal";
 import { useState } from "react";
+import { useLoadFlg } from "../../../../contexts/LoadContext";
 
 /**
  * ★Component★
@@ -11,18 +12,23 @@ import { useState } from "react";
 const Footer = () => {
   /***** Definition ******/
   const c = useCssFooter();
+  const loadFlg = useLoadFlg();
 	const [modalIsOpen, setModalIsOpen] = useState(false);
 
   /***** JSX ******/
   return (
-    <footer css={c.globalFooter}>
-      <div css={c.footerEmail}>
-        <p css={c.footerEmailTitle}>Sign up for Pokémon&nbsp;emails!</p>
-				<FooterSignup setModalIsOpen={setModalIsOpen}/>
-      </div>
-      <div></div>
-			<ErrorModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
-    </footer>
+    <>
+      {loadFlg && (
+        <footer css={c.globalFooter}>
+          <div css={c.footerEmail}>
+            <p css={c.footerEmailTitle}>Sign up for Pokémon&nbsp;emails!</p>
+            <FooterSignup setModalIsOpen={setModalIsOpen}/>
+          </div>
+          <div></div>
+          <ErrorModal modalIsOpen={modalIsOpen} setModalIsOpen={setModalIsOpen}/>
+        </footer>
+      )}
+    </>
   );
 };
 

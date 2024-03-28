@@ -9,5 +9,5 @@ public interface TypeChartRepository extends JpaRepository<TypeChart, Integer>, 
 	/*
 	 * type1とtype2で検索
 	 */
-	public TypeChart findByType1AndType2(int type1, int type2);
+	public TypeChart findByType1AndType2(Integer type1, Integer type2);
 }

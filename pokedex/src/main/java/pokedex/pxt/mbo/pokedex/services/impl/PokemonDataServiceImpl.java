@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -12,7 +14,10 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
+import lombok.Getter;
+import lombok.Setter;
 import pokedex.pxt.mbo.pokedex.common.Constants;
+import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.TypeChart;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
@@ -22,14 +27,20 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.Abilities;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttLeft;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttRight;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.WeakDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsDblVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsIntVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsStrVal;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.EvolutionDetails;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.Pagination;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetails;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsInfoDto;
+import pokedex.pxt.mbo.pokedex.repository.EvolutionRepository;
 import pokedex.pxt.mbo.pokedex.repository.PokemonRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypeChartRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypesRepository;
 import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
+import pokedex.pxt.mbo.pokedex.specification.EvolutionSpecification;
 import pokedex.pxt.mbo.pokedex.specification.PokemonSpecification;
 import pokedex.pxt.mbo.pokedex.specification.TypeChartSpecification;
 
@@ -45,12 +56,42 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	@Autowired
 	private TypesRepository typesRepository;
 
+	@Autowired
+	private EvolutionRepository evolutionRepository;
+
 	private PokemonSpecification<Pokemon> spec;
 	private TypeChartSpecification<TypeChart> spec_weak;
+	private EvolutionSpecification<Evolution> spec_evol;
 
 	public PokemonDataServiceImpl() {
 		this.spec = new PokemonSpecification<Pokemon>();
 		this.spec_weak = new TypeChartSpecification<TypeChart>();
+		this.spec_evol = new EvolutionSpecification<Evolution>();
+	}
+
+	@Setter
+	@Getter
+	private class IdWrapper {
+		private int pokemonId;
+		private int formId;
+		private List<Integer> nextPokemonIdList;
+		private List<Integer> nextFormIdList;
+
+		public IdWrapper(int pokemonId, int formId) {
+			this.pokemonId = pokemonId;
+			this.formId = formId;
+			this.nextPokemonIdList = new ArrayList<Integer>();
+			this.nextFormIdList = new ArrayList<Integer>();
+		}
+
+		public void addNextPokemonIds(int nextPokemonId) {
+			this.nextPokemonIdList.add(nextPokemonId);
+		}
+
+		public void addNextFormIds(int nextFormId) {
+			this.nextFormIdList.add(nextFormId);
+		}
+
 	}
 
 	/**
@@ -71,7 +112,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 						Constants.POKE.get("PAGE_SIZE"))
 						.ifPresent(poke -> {
 							poke.forEach(_poke -> {
-								pokemonDto.add(setPokemonDtoList(_poke));
+								pokemonDto.add(setPokemonDto(_poke));
 							});
 						});
 				break;
@@ -92,7 +133,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 								Constants.POKE.get("PAGE_SIZE"),
 								manageSort(searchDto.getSortBy())))
 						.forEach(poke -> {
-							pokemonDto.add(setPokemonDtoList(poke));
+							pokemonDto.add(setPokemonDto(poke));
 						});
 
 				break;
@@ -123,7 +164,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 								.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
 								.and(spec.idInclude(idList)))
 						.forEach(poke -> {
-							pokemonDto.add(setPokemonDtoList(poke));
+							pokemonDto.add(setPokemonDto(poke));
 						});
 				break;
 			}
@@ -132,13 +173,19 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	}
 
 	/**
-	 * Pokemon詳細を取得
+	 * Pokemon個々の詳細情報を取得
 	 * 
-	 * @param request <int> PokemonId
+	 * @param urlパラメータ String - pokemonName
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	public List<PokemonDetailsDto> getPokemonDetails(int pokemonId) {
-		List<PokemonDetailsDto> pokemonDetailsDto = new ArrayList<PokemonDetailsDto>();
+	public PokemonDetailsInfoDto getPokemonDetails(String pokemonName) {
+
+		// Pokemon名からIdを取得
+		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
+
+		// Pokemon詳細を取得
+		List<PokemonDetails> pokemonDetailsDto = new ArrayList<PokemonDetails>();
+		// Dtoオブジェクトに成形
 		pokemonRepository.findByPokemonId(pokemonId)
 				.ifPresent(poke -> {
 					poke.forEach(_poke -> {
@@ -146,19 +193,50 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 					});
 				});
 
-		return pokemonDetailsDto;
+		// Pokemon進化情報を取得
+		List<EvolutionDetails> evolutionDetails = new ArrayList<EvolutionDetails>();
+		// Pokemonが属する進化グループを取得
+		String groupId = evolutionRepository.findFirstByPokemonId(pokemonId).getGroupId();
+
+		// 進化系リストを取得し、Dtoオブジェクトに成形
+		Optional<List<Evolution>> evolutions = evolutionRepository
+				.findByGroupIdOrderByStageAscPokemonIdAscFormIdAsc(groupId);
+		IdWrapper idWrapper = new IdWrapper(0, 0);
+		if (evolutions.isPresent()) {
+			for (Evolution evol : evolutions.get()) {
+				if (evol.getStage().equals("1")
+						&& ((idWrapper.getPokemonId() != evol.getPokemonId() || idWrapper.getFormId() != evol.getFormId()))) {
+					evolutionDetails.add(loopEvolutionNexts(evol, evolutions));
+					idWrapper.setPokemonId(evol.getPokemonId());
+					idWrapper.setFormId(evol.getFormId());
+				}
+			}
+		}
+
+		// 画面へ渡すDtoオブジェクトへセット
+		PokemonDetailsInfoDto pokemonDetailsInfoDto = new PokemonDetailsInfoDto();
+		pokemonDetailsInfoDto.setPokemonId(pokemonId);
+		pokemonDetailsInfoDto.setPokemonDetails(pokemonDetailsDto);
+		pokemonDetailsInfoDto.setEvolutionDetails(evolutionDetails);
+
+		return pokemonDetailsInfoDto;
 	}
 
 	/**
 	 * 前後のPOKEMONデータ取得
 	 * 
-	 * @param request <int> PokemonId
+	 * @param urlパラメータ String - pokemonName
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	public List<PokemonDto> getPokemonPrevNextData(int pokemonId) {
-		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
+	public List<Pagination> getPokemonPrevNextData(String pokemonName) {
+
+		List<Pagination> pagination = new ArrayList<Pagination>();
+
+		// Pokemon名からIdを取得
+		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
+
 		Integer prevId = (pokemonId - 1) < 1 ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId - 1);
-		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("LAST_POKEMON_ID")
+		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("FIRST_POKEMON_ID")
 				: (pokemonId + 1);
 		List<Integer> pokeIds = new ArrayList<>(Arrays.asList(prevId, nextId));
 
@@ -167,10 +245,10 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 						.where(spec.formIdEquals(1))
 						.and(spec.pokeIdIn(pokeIds)))
 				.forEach(poke -> {
-					pokemonDto.add(setPokemonDtoList(poke));
+					pagination.add(poke.getPokemonId() == prevId ? setPagination(poke, "prev") : setPagination(poke, "next"));
 				});
 
-		return pokemonDto;
+		return pagination;
 	}
 
 	/**
@@ -179,70 +257,200 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
 	 * @return <PokemonDto> PokemonDtoオブジェクト
 	 */
-	private PokemonDto setPokemonDtoList(Pokemon pokemon) {
-		return new PokemonDto(
-				pokemon.getPokemonId(),
-				pokemon.getFormId(),
-				pokemon.getPokemonName(),
-				new ArrayList<TypesDto>(
-						pokemon.getType2() == null ? Arrays.asList(
-								new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()))
-								: Arrays.asList(
-										new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()),
-										new TypesDto(pokemon.getType2().getTypeId(), pokemon.getType2().getName()))));
+	private PokemonDto setPokemonDto(Pokemon poke) {
+
+		PokemonDto dto = new PokemonDto();
+		dto.setPokemonId(poke.getPokemonId());
+		dto.setFormId(poke.getFormId());
+		dto.setPokemonName(poke.getPokemonName());
+		// タイプを取得しセット
+		List<TypesDto> typeList = new ArrayList<>();
+		typeList.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
+		if (poke.getType2() != null) {
+			typeList.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
+		}
+		dto.setTypes(typeList);
+
+		return dto;
+	}
+
+	/**
+	 * PaginationリストをSET
+	 * 
+	 * @param poke   <Pokemon> Pokemonエンティティオブジェクト
+	 * @param idtype <String> prevまたはnext
+	 * @return <Pagination> Paginationオブジェクト
+	 */
+	private Pagination setPagination(Pokemon poke, String idtype) {
+
+		Pagination page = new Pagination();
+		page.setIdtype(idtype);
+		page.setPokemonId(poke.getPokemonId());
+		page.setPokemonName(poke.getPokemonName());
+
+		return page;
 	}
 
 	/**
 	 * Pokemon詳細をSET
 	 * 
-	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
+	 * @param poke <Pokemon> Pokemonエンティティオブジェクト
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	private PokemonDetailsDto setPokemonDetailsDto(Pokemon pokemon) {
+	private PokemonDetails setPokemonDetailsDto(Pokemon poke) {
 
-		String src = String.format("%04d", pokemon.getPokemonId());
-		src = "../pokemon/" + src + ".png";
+		String src = String.format("%04d", poke.getPokemonId());
+		// イメージソース先を定義
+		if (poke.getFormId() == 1) {
+			src = "../pokemon/" + src + ".png";
+		} else {
+			src = "../pokemon/" + src + "_f" + poke.getFormId() + ".png";
+		}
 
-		return new PokemonDetailsDto(
-				pokemon.getFormId(),
-				pokemon.getPokemonName(),
-				src,
-				new ArrayList<DetailsStrVal>(
-						Arrays.asList(
-								new DetailsStrVal("x", pokemon.getV1_description()),
-								new DetailsStrVal("y", pokemon.getV2_description()))),
-				new ArrayList<DetailsIntVal>(
-						Arrays.asList(
-								new DetailsIntVal("HP", pokemon.getHp()),
-								new DetailsIntVal("Attack", pokemon.getAttack()),
-								new DetailsIntVal("Defense", pokemon.getDefense()),
-								new DetailsIntVal("Special Attack", pokemon.getSpecialAttack()),
-								new DetailsIntVal("Special Defense", pokemon.getSpecialDefense()),
-								new DetailsIntVal("Speed", pokemon.getSpeed()))),
-				new AttributeDetails(
-						new AttLeft(
-								new DetailsDblVal("Height", pokemon.getHeight()),
-								new DetailsDblVal("Weight", pokemon.getWeight()),
-								new DetailsIntVal("Gender", pokemon.getGender())),
-						new AttRight(
-								new DetailsStrVal("Category", pokemon.getCategory()),
-								new Abilities(
-										"Abilities",
-										new ArrayList<DetailsStrVal>(
-												pokemon.getAbility2() == null ? Arrays.asList(
-														new DetailsStrVal(pokemon.getAbility1().getName(), pokemon.getAbility1().getDescription()))
-														: Arrays.asList(
-																new DetailsStrVal(pokemon.getAbility1().getName(),
-																		pokemon.getAbility1().getDescription()),
-																new DetailsStrVal(pokemon.getAbility2().getName(),
-																		pokemon.getAbility2().getDescription()))))),
-						new ArrayList<TypesDto>(
-								pokemon.getType2() == null ? Arrays.asList(
-										new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()))
-										: Arrays.asList(
-												new TypesDto(pokemon.getType1().getTypeId(), pokemon.getType1().getName()),
-												new TypesDto(pokemon.getType2().getTypeId(), pokemon.getType2().getName()))),
-						getWeakList(pokemon)));
+		PokemonDetails dto = new PokemonDetails();
+		// FormId
+		dto.setId(poke.getFormId());
+		// Pokemon名
+		dto.setName(poke.getPokemonName());
+		// イメージソース先
+		dto.setSrc(src);
+		// バージョン情報
+		dto.setVersions(new ArrayList<DetailsStrVal>(
+				Arrays.asList(
+						new DetailsStrVal("x", poke.getV1_description()),
+						new DetailsStrVal("y", poke.getV2_description()))));
+		// ステータス（HP・Attack・Defenseなど）
+		dto.setStatList(new ArrayList<DetailsIntVal>(
+				Arrays.asList(
+						new DetailsIntVal("HP", poke.getHp()),
+						new DetailsIntVal("Attack", poke.getAttack()),
+						new DetailsIntVal("Defense", poke.getDefense()),
+						new DetailsIntVal("Special Attack", poke.getSpecialAttack()),
+						new DetailsIntVal("Special Defense", poke.getSpecialDefense()),
+						new DetailsIntVal("Speed", poke.getSpeed()))));
+
+		// Attribute情報（性質・アビリティ・大きさなど）
+		AttributeDetails attributes = new AttributeDetails();
+
+		// Attribute 画面左側（Height, Weight, Gender）
+		AttLeft attLeft = new AttLeft(
+				new DetailsDblVal("Height", poke.getHeight()),
+				new DetailsDblVal("Weight", poke.getWeight()),
+				new DetailsIntVal("Gender", poke.getGender()));
+		// Abilitiesを取得
+		Abilities abilities = new Abilities();
+		abilities.setName("Abilities");
+		List<DetailsStrVal> abilityList = new ArrayList<>();
+		abilityList.add(new DetailsStrVal(poke.getAbility1().getName(), poke.getAbility1().getDescription()));
+		if (poke.getAbility2() != null) {
+			abilityList.add(new DetailsStrVal(poke.getAbility2().getName(), poke.getAbility2().getDescription()));
+		}
+		abilities.setVal(abilityList);
+		// Attribute 画面右側（Category, Abilities）
+		AttRight attRight = new AttRight();
+		attRight.setCategory(new DetailsStrVal("Category", poke.getCategory()));
+		attRight.setAbilities(abilities);
+		// タイプを取得
+		List<TypesDto> typesDto = new ArrayList<>();
+		typesDto.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
+		if (poke.getType2() != null) {
+			typesDto.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
+		}
+		attributes.setAtt_left(attLeft);
+		attributes.setAtt_right(attRight);
+		attributes.setTypes(typesDto);
+		attributes.setWeaks(getWeakList(poke));
+
+		dto.setAttribute(attributes);
+
+		return dto;
+	}
+
+	/**
+	 * 各Pokemonの進化ツリー情報をSET
+	 * 
+	 * @param evol        <Evolution> Evolutionエンティティオブジェクト（対象進化系）
+	 * @param evolListAll <Optional<List<Evolution>>> DBから取得した進化リスト全て
+	 * @return <EvolutionDetails> 成形した進化リスト（EvolutionDetailsオブジェクト）
+	 */
+	private EvolutionDetails loopEvolutionNexts(Evolution evol, Optional<List<Evolution>> evolListAll) {
+
+		// 進化系が存在しない場合
+		if (evol.getNextPokemonId() == null) {
+			return setEvolutionDetailsDto(evol, null);
+			// 次の進化系が存在する場合
+		} else {
+			IdWrapper idWrapper = new IdWrapper(evol.getPokemonId(), evol.getFormId());
+			Optional<List<Evolution>> next_evolutions = evolListAll.map(list -> list.stream()
+					.filter(e -> {
+						// 同じpokemonIdとformIdから別々の進化系がある場合には同じグループ
+						if (idWrapper.getPokemonId() == e.getPokemonId()
+								&& idWrapper.getFormId() == e.getFormId()) {
+							idWrapper.addNextPokemonIds(Integer.parseInt(e.getNextPokemonId()));
+							idWrapper.addNextFormIds((Integer.parseInt(e.getNextFormId())));
+						}
+
+						// 同じpokemonId, formIdから進化する進化系であれば、全てリストへ格納(true), 違えばスキップ(false)
+						return (idWrapper.getNextPokemonIdList().contains(e.getPokemonId())
+								&& idWrapper.getNextFormIdList().contains(e.getFormId()))
+										? true
+										: false;
+					})
+					.collect(Collectors.toList()));
+
+			IdWrapper idWrapperLoop = new IdWrapper(0, 0);
+			List<EvolutionDetails> next_evolutions_details = new ArrayList<EvolutionDetails>();
+			next_evolutions.ifPresent(next_evol_list -> {
+				next_evol_list.forEach(_evol -> {
+					if (idWrapperLoop.getPokemonId() != _evol.getPokemonId() || idWrapperLoop.getFormId() != _evol.getFormId()) {
+						next_evolutions_details.add(loopEvolutionNexts(_evol, evolListAll));
+						idWrapperLoop.setPokemonId(_evol.getPokemonId());
+						idWrapperLoop.setFormId(_evol.getFormId());
+					}
+				});
+			});
+
+			return setEvolutionDetailsDto(evol, next_evolutions_details);
+		}
+	}
+
+	/**
+	 * EvolutionDetailsをSET
+	 * 
+	 * @param Evolution      <Evolution> Evolutionエンティティオブジェクト
+	 * @param evol_next_list <List<EvolutionDetails>>
+	 *                       セットするPokemonの進化系詳細Evolutionリスト
+	 * @return <EvolutionDetails> EvolutionDetailsオブジェクト
+	 */
+	private EvolutionDetails setEvolutionDetailsDto(Evolution evol, List<EvolutionDetails> evol_next_list) {
+		EvolutionDetails evolutionDetails = new EvolutionDetails();
+		evolutionDetails.setStage(Integer.parseInt(evol.getStage()));
+		evolutionDetails.setFormId(evol.getFormId());
+		evolutionDetails.setPokemonId(evol.getPokemonId());
+		evolutionDetails.setPokemonName(evol.getPokemon().getPokemonName());
+
+		String src = String.format("%04d", evol.getPokemonId());
+		// イメージソース先を定義
+		if (evol.getFormId() == 1) {
+			src = "../pokemon/" + src + ".png";
+		} else {
+			src = "../pokemon/" + src + "_f" + evol.getFormId() + ".png";
+		}
+		evolutionDetails.setSrc(src);
+
+		// タイプを取得
+		List<TypesDto> typesDto = new ArrayList<>();
+		Pokemon poke = evol.getPokemon();
+		typesDto.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
+		if (poke.getType2() != null) {
+			typesDto.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
+		}
+		evolutionDetails.setTypes(typesDto);
+
+		// 進化系をセット
+		evolutionDetails.setNext(evol_next_list);
+
+		return evolutionDetails;
 	}
 
 	/**
@@ -250,67 +458,30 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * 
 	 * @return <TypesDto> TypesDtoオブジェクト(Weakenessesリスト)
 	 */
-	private List<TypesDto> getWeakList(Pokemon pokemon) {
+	private List<WeakDto> getWeakList(Pokemon pokemon) {
 
 		TypeChart tc;
-		tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), pokemon.getType2().getTypeId());
-
-		List<TypesDto> weakDtoList = new ArrayList<TypesDto>();
-		if (tc.effective1Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective1Id, typesRepository.findByTypeId(tc.effective1Id).getName()));
-		}
-		if (tc.effective2Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective2Id, typesRepository.findByTypeId(tc.effective2Id).getName()));
-		}
-		if (tc.effective3Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective3Id, typesRepository.findByTypeId(tc.effective3Id).getName()));
-		}
-		if (tc.effective4Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective4Id, typesRepository.findByTypeId(tc.effective4Id).getName()));
-		}
-		if (tc.effective5Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective5Id, typesRepository.findByTypeId(tc.effective5Id).getName()));
-		}
-		if (tc.effective6Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective6Id, typesRepository.findByTypeId(tc.effective6Id).getName()));
-		}
-		if (tc.effective7Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective7Id, typesRepository.findByTypeId(tc.effective7Id).getName()));
-		}
-		if (tc.effective8Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective8Id, typesRepository.findByTypeId(tc.effective8Id).getName()));
-		}
-		if (tc.effective9Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective9Id, typesRepository.findByTypeId(tc.effective9Id).getName()));
-		}
-		if (tc.effective10Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective10Id, typesRepository.findByTypeId(tc.effective10Id).getName()));
-		}
-		if (tc.effective11Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective11Id, typesRepository.findByTypeId(tc.effective11Id).getName()));
-		}
-		if (tc.effective12Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective12Id, typesRepository.findByTypeId(tc.effective12Id).getName()));
-		}
-		if (tc.effective13Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective13Id, typesRepository.findByTypeId(tc.effective13Id).getName()));
-		}
-		if (tc.effective14Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective14Id, typesRepository.findByTypeId(tc.effective14Id).getName()));
-		}
-		if (tc.effective15Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective15Id, typesRepository.findByTypeId(tc.effective15Id).getName()));
-		}
-		if (tc.effective16Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective16Id, typesRepository.findByTypeId(tc.effective16Id).getName()));
-		}
-		if (tc.effective17Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective17Id, typesRepository.findByTypeId(tc.effective17Id).getName()));
-		}
-		if (tc.effective18Point >= 2) {
-			weakDtoList.add(new TypesDto(tc.effective18Id, typesRepository.findByTypeId(tc.effective18Id).getName()));
+		if (pokemon.getType2() == null) {
+			tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), null);
+		} else {
+			tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), pokemon.getType2().getTypeId());
 		}
 
+		List<WeakDto> weakDtoList = new ArrayList<WeakDto>();
+		for (int i = 1; i <= Constants.POKE_TYPE.get("TYPE_COUNT"); i++) {
+			try {
+				double effectivePoint = (double) tc.getClass().getField("effective" + i + "Point").get(tc);
+				if (effectivePoint >= 2.0) {
+					int effectiveId = (int) tc.getClass().getField("effective" + i + "Id").get(tc);
+					String typeName = typesRepository.findByTypeId(effectiveId).getName();
+					weakDtoList.add(new WeakDto(effectiveId, typeName, effectivePoint));
+				}
+			} catch (NoSuchFieldException e) {
+				e.printStackTrace();
+			} catch (IllegalAccessException e) {
+				e.printStackTrace();
+			}
+		}
 		return weakDtoList;
 	}
 

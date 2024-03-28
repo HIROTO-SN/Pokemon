@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import { useEffect } from "react";
 import { clearTable, column12, push1 } from "../../../../components/CommonCss/Layout.js";
 import { getPokemonList } from "../../../../components/api/PokemoApi.js";
+import { useSetLoadFlg } from "../../../../contexts/LoadContext.js";
 import {
   useLoader,
   usePokemonData,
@@ -11,11 +12,11 @@ import {
   useSetLoader,
   useSetPokemonData,
 } from "../../contexts/SearchContext.js";
+import { getPokeIdList } from "../../utils/PokeCommmonFunc.js";
 import Alert from "./Alert.js";
 import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
-import { getPokeIdList } from "../../utils/PokeCommmonFunc.js";
 
 const Results = () => {
   /***** CSS ******/
@@ -52,6 +53,7 @@ const Results = () => {
   `;
 
   /***** Definition ******/
+  const setloadFlg = useSetLoadFlg();
   const loader = useLoader();
   const setLoader = useSetLoader();
   const pokemonData = usePokemonData();
@@ -65,13 +67,18 @@ const Results = () => {
    * Pokemonリスト1～12を取得
    */
   useEffect(() => {
+    setloadFlg(true);
     const fetchPokemonData = async () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonList(search);
       loadPokemon(res.data, "init");
       setLoader(false);
     };
-    fetchPokemonData();
+    const timer = setTimeout(() => {
+      fetchPokemonData();
+    }, 500);
+
+    return () => clearTimeout(timer);
   }, []);
 
   /**

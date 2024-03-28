@@ -4,35 +4,27 @@ import { li_pill } from "../../../../components/CommonCss/PokedexCss";
 import { Link } from "react-router-dom";
 import { capitalizeFirstLetter } from "../../utils/ConvToolUtils";
 
-const EvolutionList = ({ evolutionPoint: p = 1, list, arrowFlg }) => {
+const EvolutionList = ({ evolutionPoint: p = 1, list }) => {
   /***** Definition ******/
   const c = useCssEvolutionList();
 
-  // console.log("*********************");
-  // console.log(list.types);
-
   /***** JSX ******/
   return (
-    <li css={c.evolution_li(p, list.stage, arrowFlg)}>
-      <Link to={list.link} onClick={() => window.location.reload(true)}>
-        <img css={c.li_img(p)} src={list.src} alt={list.pokemonName} />
-        <h3 css={c.li_h3(p)}>
-          {" "}
-          {list.pokemonName}{" "}
-          <span>#{Number(list.pokemonId).toString().padStart(4, "0")}</span>
-        </h3>
-        <ul css={c.evolution_types}>
-          {list.types.map((type) => (
-            <li
-              key={list.pokemonName + "-" + type.name}
-              css={li_pill(type.name)}
-            >
-              {capitalizeFirstLetter(type.name)}
-            </li>
-          ))}
-        </ul>
-      </Link>
-    </li>
+    <Link to={`/pokedex/${list.pokemonName}`} state={list.pokemonId}>
+      <img css={c.li_img(list,p)} src={list.src} alt={list.pokemonName} />
+      <h3 css={c.li_h3(p)}>
+        {" "}
+        {list.pokemonName}{" "}
+        <span>#{Number(list.pokemonId).toString().padStart(4, "0")}</span>
+      </h3>
+      <ul css={c.evolution_types(list.types.length)}>
+        {list.types.map((type) => (
+          <li key={list.pokemonName + "-" + type.name} css={li_pill(type.name)}>
+            {capitalizeFirstLetter(type.name)}
+          </li>
+        ))}
+      </ul>
+    </Link>
   );
 };
 
@@ -66,127 +58,36 @@ const useCssEvolutionList = () => {
   `;
 
   /**
-   * 進化リスト位置、それぞれのImgファイルの幅調整
-   * @param {Number} p - Evolutionポイント
-   * @param {Number} s - 進化stage（何番目の進化系か）
-   * @param {Boolean} flg - 方向矢印（＞）を付与するか判定
-   */
-  const evolution_li = (p, s, flg) => css`
-    position: relative;
-    float: left;
-    margin-top: ${calcMarginTop(p, s)};
-    margin-right: ${calcMarginRight(p, s)};
-    margin-bottom: ${calcMarginBottom(p, s)};
-    margin-left: ${calcMarginLeft(p, s)};
-    width: ${calcWidth(p, s)};
-    ${flg && arrowStage};
-  `;
-
-  const arrowStage = css`
-    :after {
-      right: -40%;
-      top: 11%;
-      content: ">";
-      font-size: 450%;
-      position: absolute;
-      transform: scale(0.6, 1.2);
-    }
-  `;
-
-  /**
-   * TOPマージン計算
-   * @param {Number} p - Evolutionポイント
-   * @return {String} マージン比率（もしくはpx, em）
-   * @param {Number} s - 進化stage（何番目の進化系か）
-   */
-  const calcMarginTop = (p) => {
-    switch (p) {
-      case 1:
-      default:
-        return "1em";
-    }
-  };
-
-  /**
-   * RIGHTマージン計算
-   * @param {Number} p - Evolutionポイント
-   * @param {Number} s - 進化stage（何番目の進化系か）
-   * @return {String} マージン比率（もしくはpx, em）
-   */
-  const calcMarginRight = (p) => {
-    switch (p) {
-      case 1:
-      default:
-        return "-100%";
-    }
-  };
-
-  /**
-   * BOTTOMマージン計算
-   * @param {Number} p - Evolutionポイント
-   * @param {Number} s - 進化stage（何番目の進化系か）
-   * @return {String} マージン比率（もしくはpx, em）
-   */
-  const calcMarginBottom = (p) => {
-    switch (p) {
-      case 1:
-      default:
-        return "2em";
-    }
-  };
-
-  /**
-   * LEFTマージン計算
-   * @param {Number} p - Evolutionポイント
-   * @param {Number} s - 進化stage（何番目の進化系か）
-   * @return {String} マージン比率（もしくはpx, em）
-   */
-  const calcMarginLeft = (p, s) => {
-    switch (p) {
-      case 1:
-        return "29.0225%";
-      case 3:
-        if (s === 1) {
-          return "7.2525%";
-        } else if (s === 2) {
-          return "39.9025%";
-        } else if (s === 3) {
-          return "72.5425%";
-        }
-      default:
-        return "1em";
-    }
-  };
-
-  /**
-   * 横幅計算
-   * @param {Number} p - Evolutionポイント
-   * @param {Number} s - 進化stage（何番目の進化系か）
-   * @return {String} マージン比率（もしくはpx, em）
-   */
-  const calcWidth = (p) => {
-    switch (p) {
-      case 1:
-        return "41.96%";
-      default:
-        return "20.2%";
-    }
-  };
-
-  /**
    * 各imgタグスタイル
+   * @param {List} list - pokemon情報リスト
    * @param {Number} p - Evolutionポイント
    */
-  const li_img = (p) => css`
+  const li_img = (list, p) => css`
     box-shadow: 0 4px 4px 0px #212121;
     background-color: #616161;
     border: 5px solid #fff;
     border-radius: 50%;
     display: block;
     margin: 0 auto;
-    max-width: 150px;
+    max-width: ${cal_maxWidth(list.stage, p)};
     width: 100%;
   `;
+
+  /**
+   * imgの最大幅を計算
+   * @param {Number} s - 対象ぽpokemonの進化ステージ
+   * @param {Number} p - Evolutionポイント
+   */
+  const cal_maxWidth = (s, p) => {
+    switch (p) {
+      case 31:
+        return s === 1 ? "150px" : "100px";
+      case 81:
+        return s === 1 ? "150px" : "80px";
+      default: 
+        return "150px";
+    }
+  }
 
   /**
    * 各ポケモン名、Idへ充てるスタイル
@@ -209,10 +110,13 @@ const useCssEvolutionList = () => {
     }
   `;
 
-  // タイプ部
-  const evolution_types = css`
+  /**
+   * タイプ部分
+   * @param {Number} len - タイプの数
+   */
+  const evolution_types = (len) => css`
     display: block;
-    float: left;
+    float: ${len === 1 ? "none" : "left"};
     text-align: center;
     width: 100%;
 
@@ -229,16 +133,15 @@ const useCssEvolutionList = () => {
       word-break: break-all;
     }
     > li:first-of-type {
-      float: left;
+      ${len === 2 && "float: left"};
     }
     > li:last-of-type {
-      float: right;
+      ${len === 2 && "float: right"};
     }
   `;
 
   return {
     evolutionWrapper,
-    evolution_li,
     li_img,
     li_h3,
     evolution_types,

@@ -1,6 +1,7 @@
 package pokedex.pxt.mbo.pokedex.specification;
 
 import java.util.List;
+
 import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.persistence.criteria.CriteriaBuilder;

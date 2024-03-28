@@ -9,7 +9,6 @@ import {
   setBackGroundForTypes,
   setFontColorForTypes,
 } from "../../utils/ConvToolUtils";
-import { animeFadeIn } from "../../../../components/CommonCss/PokedexCss";
 
 const PokemonList = ({ pokemon }) => {
   /***** CSS ******/
