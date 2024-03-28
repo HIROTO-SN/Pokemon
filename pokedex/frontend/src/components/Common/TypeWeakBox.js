@@ -1,16 +1,16 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import {
-  capitalizeFirstLetter,
-} from "../../features/Pokedex/utils/ConvToolUtils";
+import { capitalizeFirstLetter } from "../../features/Pokedex/utils/ConvToolUtils";
 import { clearTable } from "../CommonCss/Layout";
 import { Link } from "react-router-dom";
-import { li_pill } from "../CommonCss/PokedexCss";  
+import { li_pill } from "../CommonCss/PokedexCss";
 import { generateUUID } from "../CommonFunc/Common";
 
 const TypeWeaksBox = ({ id, list }) => {
   /***** Definition ******/
   const c = useCssPokemonDetails();
+
+  console.log(list);
 
   return (
     <div id={id}>
@@ -18,7 +18,12 @@ const TypeWeaksBox = ({ id, list }) => {
       <ul css={[c.ul_style, clearTable]}>
         {list.map((_list, i) => (
           <li key={generateUUID()} css={[c.li_style(i), li_pill(_list.name)]}>
-            <Link to="/pokedex">{capitalizeFirstLetter(_list.name)}</Link>
+            <Link to="/pokedex">
+              <span>
+                {capitalizeFirstLetter(_list.name)}
+                {_list.effectivePoint > 2.0 && <i css={c.extraDamage}></i>}
+              </span>
+            </Link>
           </li>
         ))}
       </ul>
@@ -47,12 +52,12 @@ const useCssPokemonDetails = () => {
     width: 100%;
   `;
 
-	/**
-	 * li部分スタイル
-	 * @param {Number} i - listのi番目
-	 */
+  /**
+   * li部分スタイル
+   * @param {Number} i - listのi番目
+   */
   const li_style = (i) => css`
-		margin: ${(i === (1 || 3 || 5)) ? "0.5em 1.5625% 0 1.5625%" : "0.5em 0 0 0"};
+    margin: ${i === (1 || 3 || 5) ? "0.5em 1.5625% 0 1.5625%" : "0.5em 0 0 0"};
     float: left;
     width: 32.29%;
     border-radius: 5px;
@@ -67,12 +72,42 @@ const useCssPokemonDetails = () => {
       line-height: 100%;
       padding: 0.5em 0;
       width: 100%;
+
+      > span {
+        display: inline-block;
+        position: relative;
+      }
     }
-  `
+  `;
+
+  const extraDamage = css`
+    border-radius: 20px;
+    background-color: #616161;
+    position: absolute;
+    top: -2px;
+    right: -24px;
+    height: 20px;
+    vertical-align: middle;
+    width: 20px;
+
+    :before {
+      content: "*";
+      color: #fff;
+      font-family: sans-serif;
+      font-size: 30px;
+      font-style: normal;
+      font-weight: normal;
+      left: 4px;
+      position: absolute;
+      top: 9px;
+    }
+  `;
+
   return {
     h3_style,
     ul_style,
-		li_style,
+    li_style,
+    extraDamage,
   };
 };
 
