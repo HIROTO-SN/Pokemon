@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.Pagination;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsInfoDto;
 import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
 
@@ -66,9 +67,9 @@ public class PokemonController {
 	 * @return response <PokemonDto>
 	 */
 	@GetMapping("/pokePrevNext")
-	public ResponseEntity<List<PokemonDto>> getPokemonPrevNextData(@RequestParam("pokemonName") String pokemonName) {
-		List<PokemonDto> response = pokemonDataService.getPokemonPrevNextData(pokemonName);
-		return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.OK);
+	public ResponseEntity<List<Pagination>> getPokemonPrevNextData(@RequestParam("pokemonName") String pokemonName) {
+		List<Pagination> response = pokemonDataService.getPokemonPrevNextData(pokemonName);
+		return new ResponseEntity<List<Pagination>>(response, HttpStatus.OK);
 	}
 
 }

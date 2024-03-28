@@ -16,7 +16,7 @@ public class AttributeDetails {
 	private AttLeft att_left;
 	private AttRight att_right;
 	private List<TypesDto> types;
-	private List<TypesDto> weaks;
+	private List<WeakDto> weaks;
 
 	@Getter
 	@Setter
@@ -45,4 +45,15 @@ public class AttributeDetails {
 		private String name;
 		private List<DetailsStrVal> val;
 	}
+
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class WeakDto {
+		private int type_id;
+		private String name;
+		private double effectivePoint;
+	}
+
 }

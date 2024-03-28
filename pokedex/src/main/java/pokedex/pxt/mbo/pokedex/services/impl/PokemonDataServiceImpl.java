@@ -14,10 +14,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
@@ -29,10 +27,12 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.Abilities;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttLeft;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttRight;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.WeakDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsDblVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsIntVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsStrVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.EvolutionDetails;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.details.Pagination;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetails;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsInfoDto;
 import pokedex.pxt.mbo.pokedex.repository.EvolutionRepository;
@@ -213,11 +213,13 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			}
 		}
 
-		return new PokemonDetailsInfoDto(
-				pokemonId,
-				pokemonDetailsDto,
-				evolutionDetails
-		);
+		// 画面へ渡すDtoオブジェクトへセット
+		PokemonDetailsInfoDto pokemonDetailsInfoDto = new PokemonDetailsInfoDto();
+		pokemonDetailsInfoDto.setPokemonId(pokemonId);
+		pokemonDetailsInfoDto.setPokemonDetails(pokemonDetailsDto);
+		pokemonDetailsInfoDto.setEvolutionDetails(evolutionDetails);
+
+		return pokemonDetailsInfoDto;
 	}
 
 	/**
@@ -226,13 +228,15 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param urlパラメータ String - pokemonName
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
-	public List<PokemonDto> getPokemonPrevNextData(String pokemonName) {
+	public List<Pagination> getPokemonPrevNextData(String pokemonName) {
+
+		List<Pagination> pagination = new ArrayList<Pagination>();
+
 		// Pokemon名からIdを取得
 		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
 
-		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
 		Integer prevId = (pokemonId - 1) < 1 ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId - 1);
-		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("LAST_POKEMON_ID")
+		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("FIRST_POKEMON_ID")
 				: (pokemonId + 1);
 		List<Integer> pokeIds = new ArrayList<>(Arrays.asList(prevId, nextId));
 
@@ -241,10 +245,10 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 						.where(spec.formIdEquals(1))
 						.and(spec.pokeIdIn(pokeIds)))
 				.forEach(poke -> {
-					pokemonDto.add(setPokemonDto(poke));
+					pagination.add(poke.getPokemonId() == prevId ? setPagination(poke, "prev") : setPagination(poke, "next"));
 				});
 
-		return pokemonDto;
+		return pagination;
 	}
 
 	/**
@@ -268,6 +272,23 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		dto.setTypes(typeList);
 
 		return dto;
+	}
+
+	/**
+	 * PaginationリストをSET
+	 * 
+	 * @param poke   <Pokemon> Pokemonエンティティオブジェクト
+	 * @param idtype <String> prevまたはnext
+	 * @return <Pagination> Paginationオブジェクト
+	 */
+	private Pagination setPagination(Pokemon poke, String idtype) {
+
+		Pagination page = new Pagination();
+		page.setIdtype(idtype);
+		page.setPokemonId(poke.getPokemonId());
+		page.setPokemonName(poke.getPokemonName());
+
+		return page;
 	}
 
 	/**
@@ -437,7 +458,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * 
 	 * @return <TypesDto> TypesDtoオブジェクト(Weakenessesリスト)
 	 */
-	private List<TypesDto> getWeakList(Pokemon pokemon) {
+	private List<WeakDto> getWeakList(Pokemon pokemon) {
 
 		TypeChart tc;
 		if (pokemon.getType2() == null) {
@@ -446,17 +467,17 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			tc = typeChartRepository.findByType1AndType2(pokemon.getType1().getTypeId(), pokemon.getType2().getTypeId());
 		}
 
-		List<TypesDto> weakDtoList = new ArrayList<TypesDto>();
+		List<WeakDto> weakDtoList = new ArrayList<WeakDto>();
 		for (int i = 1; i <= Constants.POKE_TYPE.get("TYPE_COUNT"); i++) {
 			try {
 				double effectivePoint = (double) tc.getClass().getField("effective" + i + "Point").get(tc);
 				if (effectivePoint >= 2.0) {
 					int effectiveId = (int) tc.getClass().getField("effective" + i + "Id").get(tc);
 					String typeName = typesRepository.findByTypeId(effectiveId).getName();
-					weakDtoList.add(new TypesDto(effectiveId, typeName));
+					weakDtoList.add(new WeakDto(effectiveId, typeName, effectivePoint));
 				}
 			} catch (NoSuchFieldException e) {
-				e.printStackTrace(); 
+				e.printStackTrace();
 			} catch (IllegalAccessException e) {
 				e.printStackTrace();
 			}

@@ -222,12 +222,12 @@ const PokemonDetails = () => {
       // 初期表示用ポケモンリストを取得
       const res = await getPokemonDetails(params.pokemonName);
       const res_paging = await getPokemonPrevNext(params.pokemonName);
-      console.log(res.data);
-      console.log(res_paging.data);
       setPokemonId(res.data.pokemonId);
       setPokemonDetails(res.data.pokemonDetails);
       setEvolutionDetails(res.data.evolutionDetails);
       setPokePrevNextData(res_paging.data);
+      formSelectAction(1);
+      // console.log("res.data :");
       setEvolutionPoints(getEvolutionPoints(res.data.evolutionDetails));
       setloadFlg(true);
     };
