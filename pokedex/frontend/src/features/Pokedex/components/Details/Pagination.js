@@ -3,6 +3,7 @@ import { css } from "@emotion/react";
 import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 import { hiddenMobile } from "../../../../components/CommonCss/Layout";
+import { NUMBER_RANGE } from "../../../../constants/ConstantsGeneral";
 
 const Pagination = ({ pokeId, pokeName, pokePrevNextData }) => {
   /***** Definition ******/
@@ -12,25 +13,30 @@ const Pagination = ({ pokeId, pokeName, pokePrevNextData }) => {
   return (
     <>
       <div css={c.pagination}>
-        {pokePrevNextData.map((link, i) => (
+        {pokePrevNextData.map((link) => (
           <Link
             key={link.pokemonName}
             to={`/pokedex/${link.pokemonName}`}
-            css={[c.pagination_a, c.page(i)]}
-            className={i}
+            css={[
+              c.pagination_a(
+                pokeId === NUMBER_RANGE.MAX ||
+                pokeId === NUMBER_RANGE.MIN
+              ),
+              c.page(link.idtype),
+            ]}
           >
             <div>
-              <span css={c.icon_arrow(i)}>
-                {i === 0 ? (
+              <span css={c.icon_arrow(link.idtype)}>
+                {link.idtype === "prev" ? (
                   <IoIosArrowBack />
                 ) : (
                   <IoIosArrowForward />
                 )}
               </span>
-              <span css={c.pokeNumber(i)}>
+              <span css={c.pokeNumber(link.idtype)}>
                 #{Number(link.pokemonId).toString().padStart(4, "0")}
               </span>
-              <span css={[c.pokeName(i), hiddenMobile]}>
+              <span css={[c.pokeName(link.idtype), hiddenMobile]}>
                 {link.pokemonName}
               </span>
             </div>
@@ -58,11 +64,14 @@ const useCssPagination = () => {
     background-color: #fff;
     width: 100%;
   `;
-  // pagignation a タグ
-  const pagination_a = css`
+  /**
+   * pagignation a タグ
+   * @param {Boolean} flg - pokeIdが1または1025かどうか判定
+   */
+  const pagination_a = (flg) => css`
     transition: background-color 0.3s;
     display: block;
-    float: left;
+    float: ${flg ? "right" : "left"};
     width: 50%;
     box-sizing: border-box;
     background-color: #a4a4a4;
@@ -75,15 +84,15 @@ const useCssPagination = () => {
 
   /**
    * 戻る、進む、独自スタイル
-   * @param {String} flg - 戻る、進む判定用
+   * @param {String} type - 戻る、進む判定用
    */
-  const page = (flg) => css`
+  const page = (type) => css`
     // 戻る方のスタイル
     margin: 0;
-    border-right: ${flg === 0 && "4px solid #fff"};
+    border-right: ${type === "prev" && "4px solid #fff"};
     > div {
-      float: ${flg === 0 ? "right" : "left"};
-      ${flg === 0 ? "margin-right: 0" : "margin-left: 0"};
+      float: ${type === "prev" ? "right" : "left"};
+      ${type === "prev" ? "margin-right: 0" : "margin-left: 0"};
       padding: 1em 0 4em;
       width: 100%;
       max-width: 448px;
@@ -91,11 +100,11 @@ const useCssPagination = () => {
   `;
 
   // 戻る、進むのアイコンスタイル
-  const icon_arrow = (flg) => css`
+  const icon_arrow = (type) => css`
     background-color: #fff;
     border-radius: 20px;
     color: #616161;
-    float: ${flg === 0 ? "left" : "right"};
+    float: ${type === "prev" ? "left" : "right"};
     font-size: 65%;
     font-weight: bold;
     height: 26px;
@@ -109,8 +118,8 @@ const useCssPagination = () => {
     }
   `;
 
-  const pokeNumber = (flg) => css`
-    float: ${flg === 0 ? "left" : "right"};
+  const pokeNumber = (type) => css`
+    float: ${type === "prev" ? "left" : "right"};
     font-family: "Flexo-Bold", arial, sans-serif;
     color: #fff;
     font-size: 150%;
@@ -118,8 +127,8 @@ const useCssPagination = () => {
     text-transform: none;
   `;
 
-  const pokeName = (flg) => css`
-    float: ${flg === 0 ? "left" : "right"};
+  const pokeName = (type) => css`
+    float: ${type === "prev" ? "left" : "right"};
     color: #616161;
     margin: 0 0.5em;
     font-family: "Flexo-Bold", arial, sans-serif;
