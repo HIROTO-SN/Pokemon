@@ -5,6 +5,7 @@ import { clearTable } from "../CommonCss/Layout";
 import { Link } from "react-router-dom";
 import { li_pill } from "../CommonCss/PokedexCss";
 import { generateUUID } from "../CommonFunc/Common";
+import ToolTip from "./ToolTip";
 
 const TypeWeaksBox = ({ id, list }) => {
   /***** Definition ******/
@@ -21,7 +22,13 @@ const TypeWeaksBox = ({ id, list }) => {
             <Link to="/pokedex">
               <span>
                 {capitalizeFirstLetter(_list.name)}
-                {_list.effectivePoint > 2.0 && <i css={c.extraDamage}></i>}
+                {_list.effectivePoint > 2.0 && (
+                  <>
+                    <ToolTip text="Deals 4x damage">
+                      <i css={c.extraDamage} />
+                    </ToolTip>
+                  </>
+                )}
               </span>
             </Link>
           </li>
@@ -72,6 +79,7 @@ const useCssPokemonDetails = () => {
       line-height: 100%;
       padding: 0.5em 0;
       width: 100%;
+      z-index: 3;
 
       > span {
         display: inline-block;
@@ -85,10 +93,11 @@ const useCssPokemonDetails = () => {
     background-color: #616161;
     position: absolute;
     top: -2px;
-    right: -24px;
+    right: 15px;
     height: 20px;
     vertical-align: middle;
     width: 20px;
+    z-index: 5;
 
     :before {
       content: "*";
