@@ -50,18 +50,19 @@ const ToolTip = ({ text, children }) => {
   const [showTooltip, setShowTooltip] = useState(false);
 
   /***** EVENT ******/
-  const handleMouseOver = () => {
+  const handleMouseEnter = () => {
     setShowTooltip(true);
   };
 
   const handleMouseOut = () => {
     setShowTooltip(false);
   };
+
   /***** JSX *****/
   return (
     <div
       css={tooltipContainer}
-      onMouseOver={handleMouseOver}
+      onMouseEnter ={handleMouseEnter}
       onMouseOut={handleMouseOut}
     >
 			{children}
