@@ -17,7 +17,7 @@ const TypeWeaksBox = ({ id, list }) => {
       <ul css={[c.ul_style, clearTable]}>
         {list.map((_list, i) => (
           <li key={generateUUID()} css={[c.li_style(i), li_pill(_list.name)]}>
-            <Link to="/pokedex" state={_list.type_id}>
+            <Link to="/pokedex" state={{action: id, type_id:_list.type_id}}>
               <span>
                 {capitalizeFirstLetter(_list.name)}
                 {_list.effectivePoint > 2.0 && (

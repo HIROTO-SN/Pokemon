@@ -313,7 +313,7 @@ const PokemonDetails = () => {
                       <div css={animeFadeIn}>
                         <TypeWeaksBox id="type" list={poke.attribute.types} />
                         <TypeWeaksBox
-                          id="weaknesses"
+                          id="weak"
                           list={poke.attribute.weaks}
                         />
                       </div>

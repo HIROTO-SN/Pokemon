@@ -19,7 +19,7 @@ import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
 import { isStrEmptyOrNull } from "../../../../components/CommonFunc/Common.js";
 
-const Results = ( { passedTypeId } ) => {
+const Results = ( { passedState } ) => {
   /***** CSS ******/
   const results = css`
     overflow: visible;
@@ -70,9 +70,15 @@ const Results = ( { passedTypeId } ) => {
   useEffect(() => {
     setloadFlg(true);
     const fetchPokemonData = async () => {
-      if (!isStrEmptyOrNull(passedTypeId)) {
-        const newSearch = {...search, types: [passedTypeId], actionType: "search"};
-        searchDipatch({ type: "checkType", val: [passedTypeId] });
+      if (!isStrEmptyOrNull(passedState)) {
+        let newSearch;
+        if (passedState.action === "type") {
+          newSearch = {...search, types: [passedState.type_id], actionType: "search"};
+          searchDipatch({ type: "checkType", val: [passedState.type_id] });
+        } else if (passedState.action === "weak") {
+          newSearch = {...search, weaks: [passedState.type_id], actionType: "search"};
+          searchDipatch({ type: "checkWeak", val: [passedState.type_id] });
+        }
         const res = await getPokemonList(newSearch);
         loadPokemon(res.data, "init");
       } else {

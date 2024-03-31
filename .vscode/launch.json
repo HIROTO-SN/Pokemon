@@ -6,6 +6,20 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "ImageDownload",
+			"request": "launch",
+			"mainClass": "utils.ImageDownload",
+			"projectName": "pokedex"
+		},
+		{
+			"type": "java",
+			"name": "ImageScraper",
+			"request": "launch",
+			"mainClass": "utils.ImageScraper",
+			"projectName": "pokedex"
+		},
+		{
+			"type": "java",
 			"name": "ConvTools",
 			"request": "launch",
 			"mainClass": "utils.ConvTools",

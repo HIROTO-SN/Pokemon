@@ -12,6 +12,7 @@ import { useLocation } from "react-router-dom";
 const Pokedex = () => {
   /***** Defintion ******/
   const location = useLocation();
+  console.log(location.state);
 
   /***** JSX ******/
   return (
@@ -20,9 +21,9 @@ const Pokedex = () => {
       <div css={container}>
         <SearchProvider>
           <Header/>
-          <Filter passedTypeId={location.state}/>
+          <Filter passedState={location.state}/>
           <Sort/>
-          <Results passedTypeId={location.state}/>
+          <Results passedState={location.state}/>
         </SearchProvider>
       </div>
     </>
