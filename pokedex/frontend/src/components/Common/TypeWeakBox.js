@@ -11,15 +11,13 @@ const TypeWeaksBox = ({ id, list }) => {
   /***** Definition ******/
   const c = useCssPokemonDetails();
 
-  console.log(list);
-
   return (
     <div id={id}>
       <h3 css={c.h3_style}>{capitalizeFirstLetter(id)}</h3>
       <ul css={[c.ul_style, clearTable]}>
         {list.map((_list, i) => (
           <li key={generateUUID()} css={[c.li_style(i), li_pill(_list.name)]}>
-            <Link to="/pokedex">
+            <Link to="/pokedex" state={_list.type_id}>
               <span>
                 {capitalizeFirstLetter(_list.name)}
                 {_list.effectivePoint > 2.0 && (
@@ -64,7 +62,7 @@ const useCssPokemonDetails = () => {
    * @param {Number} i - listのi番目
    */
   const li_style = (i) => css`
-    margin: ${i === (1 || 3 || 5) ? "0.5em 1.5625% 0 1.5625%" : "0.5em 0 0 0"};
+    margin: ${i === 1 || i === 4 || i === 7 ? "0.5em 1.5625% 0 1.5625%" : "0.5em 0 0 0"};
     float: left;
     width: 32.29%;
     border-radius: 5px;

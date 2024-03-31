@@ -17,8 +17,9 @@ import Alert from "./Alert.js";
 import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
+import { isStrEmptyOrNull } from "../../../../components/CommonFunc/Common.js";
 
-const Results = () => {
+const Results = ( { passedTypeId } ) => {
   /***** CSS ******/
   const results = css`
     overflow: visible;
@@ -69,9 +70,16 @@ const Results = () => {
   useEffect(() => {
     setloadFlg(true);
     const fetchPokemonData = async () => {
-      // 初期表示用ポケモンリストを取得
-      const res = await getPokemonList(search);
-      loadPokemon(res.data, "init");
+      if (!isStrEmptyOrNull(passedTypeId)) {
+        const newSearch = {...search, types: [passedTypeId], actionType: "search"};
+        searchDipatch({ type: "checkType", val: [passedTypeId] });
+        const res = await getPokemonList(newSearch);
+        loadPokemon(res.data, "init");
+      } else {
+        // 初期表示用ポケモンリストを取得
+        const res = await getPokemonList(search);
+        loadPokemon(res.data, "init");
+      }
       setLoader(false);
     };
     const timer = setTimeout(() => {

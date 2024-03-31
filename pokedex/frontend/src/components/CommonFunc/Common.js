@@ -33,3 +33,12 @@ export const generateUUID = () => {
     return v.toString(16);
   });
 }
+
+/**
+ * 文字列が空、NULL判定
+ * @param {String} str: 対象文字列
+ * @return {Boolean} : 空、NULL判定（false or true）
+ */
+export const isStrEmptyOrNull = (str) => {
+	return str === "" || str === null;
+}
