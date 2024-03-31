@@ -7,7 +7,7 @@ import FilterContent from "./FilterContent";
 import FilterHeader from "./FilterHeader";
 import FilterMobile from "./FilterMobile";
 
-const Filter = ({ passedTypeId }) => {
+const Filter = ({ passedState }) => {
   const [toggleActive, setToggleActive] = useState(false);
 
   const filter = css`
@@ -131,9 +131,12 @@ const Filter = ({ passedTypeId }) => {
 
   /***** JS ******/
   useEffect(() => {
-    if (!isStrEmptyOrNull(passedTypeId)) {
-      const idList = [passedTypeId];
-      searchDipatch({ type: "checkType", val: [...idList] });
+    if (!isStrEmptyOrNull(passedState)) {
+      if (passedState.action === "type") {
+        searchDipatch({ type: "checkType", val: [passedState.type_id] });
+      } else if (passedState.action === "weak") {
+        searchDipatch({ type: "checkWeak", val: [passedState.type_id] });
+      }
     }
   })
   
