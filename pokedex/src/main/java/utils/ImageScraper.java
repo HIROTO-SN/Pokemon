@@ -8,18 +8,23 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.ArrayList;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import io.github.bonigarcia.wdm.WebDriverManager;
+import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
+import pokedex.pxt.mbo.pokedex.repository.PokemonRepository;
 
 /**
  * Webサイトから画像を抽出
  */
 public class ImageScraper {
+
 	public static void main(String[] args) {
 
 		// Initialize ChromeDriver
@@ -27,22 +32,37 @@ public class ImageScraper {
 		WebDriver driver = new ChromeDriver();
 
 		// website指定
-		driver.get("https://www.pokemon.com/us/pokedex/wartortle");
-
-		// 全てのimageを抽出
-		List<WebElement> images = driver.findElements(By.tagName("img"));
-
-		// imageのソース部を抜き出す
-		for (WebElement image : images) {
-			String src = image.getAttribute("src");
-			if (src != null && src.contains("assets.pokemon.com/assets/cms2/img/pokedex/full")) {
-				System.out.println("Image Source: " + src);
-				try {
-					// imageダウンロード
-					downloadImage(src);
-					System.out.println("Image downloaded: " + src);
-				} catch (Exception e) {
-					System.err.println("Error downloading image: " + e.getMessage());
+		List<String> list = new ArrayList<>();
+		list.add("https://www.pokemon.com/us/pokedex/Caterpie");
+		list.add("https://www.pokemon.com/us/pokedex/Metapod");
+		list.add("https://www.pokemon.com/us/pokedex/Butterfree");
+		// list.add("https://www.pokemon.com/us/pokedex/Weedle");
+		// list.add("https://www.pokemon.com/us/pokedex/Kakuna");
+		// list.add("https://www.pokemon.com/us/pokedex/Beedrill");
+		// list.add("https://www.pokemon.com/us/pokedex/Pidgey");
+		// list.add("https://www.pokemon.com/us/pokedex/Pidgeotto");
+		// list.add("https://www.pokemon.com/us/pokedex/Pidgeot");
+		// list.add("https://www.pokemon.com/us/pokedex/Rattata");
+		// list.add("https://www.pokemon.com/us/pokedex/Raticate");
+		
+		for (String url: list) {
+			driver.get(url);
+	
+			// 全てのimageを抽出
+			List<WebElement> images = driver.findElements(By.tagName("img"));
+	
+			// imageのソース部を抜き出す
+			for (WebElement image : images) {
+				String src = image.getAttribute("src");
+				if (src != null && src.contains("assets.pokemon.com/assets/cms2/img/pokedex/full")) {
+					System.out.println("Image Source: " + src);
+					try {
+						// imageダウンロード
+						downloadImage(src);
+						System.out.println("Image downloaded: " + src);
+					} catch (Exception e) {
+						System.err.println("Error downloading image: " + e.getMessage());
+					}
 				}
 			}
 		}
@@ -53,17 +73,17 @@ public class ImageScraper {
 
 	public static void downloadImage(String imageUrl) throws Exception {
 		// URLからファイル名を取得
-		String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-		// String fileName = "";
-		// try {
-		// 	int parsedFileName = Integer.parseInt(fileNameString);
-		// 	fileName = String.format("%04d", parsedFileName);
-		// } catch (NumberFormatException e) {
-		// 	e.printStackTrace();
-		// }
+		String fileNameString = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
+		String fileName = "";
+		try {
+			int parsedFileName = Integer.parseInt(fileNameString);
+			fileName = String.format("%04d", parsedFileName);
+		} catch (NumberFormatException e) {
+			e.printStackTrace();
+		}
 
 		// ダウンロードフォルダーディレクトリー作成
-		Path downloadDir = Paths.get(System.getProperty("user.home"), "Downloads");
+		Path downloadDir = Paths.get(System.getProperty("user.home"), "Downloads", "pokemonImages");
 		Files.createDirectories(downloadDir);
 
 		// URLを作成し接続

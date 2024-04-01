@@ -18,21 +18,12 @@ public class ImageDownload {
 		// URLを作成し接続
 		String urlbase = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
 		int i;
-		for (i = 8; i <= 10; i++) {
+		for (i = 10001; i <= 10032; i++) {
 			String imageUrl = urlbase + i + ".png";
 			URL url = new URL(imageUrl);
 			URLConnection connection = url.openConnection();
 			connection.setRequestProperty("User-Agent", "Mozilla/5.0");
 
-			// URLからファイル名を取得
-			// String fileNameString = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
-			// String fileName = "";
-			// try {
-			// 	int parsedFileName = Integer.parseInt(fileNameString);
-			// 	fileName = String.format("%04d", parsedFileName);
-			// } catch (NumberFormatException e) {
-			// 	e.printStackTrace();
-			// }
 			String fileName = String.format("%04d", i);
 			fileName = fileName + ".png";
 

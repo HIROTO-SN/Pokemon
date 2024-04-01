@@ -105,7 +105,8 @@ const PokemonList = ({ pokemon }) => {
     // <Li_pokemon css={animeFadeIn}>
     <Li_pokemon>
       <Link to={`/pokedex/${pokemon.pokemonName}`} state={pokemon.pokemonId}>
-        <img src={EXTERNAL_POKEAPI.IMAGE.replace("{0}", pokemon.pokemonId)} />
+        {/* <img src={EXTERNAL_POKEAPI.IMAGE.replace("{0}", pokemon.pokemonId)} /> */}
+        <img src={"../pokemon/" + Number(pokemon.pokemonId).toString().padStart(4, "0") + ".png"} />
       </Link>
       <div css={pokemonInfo}>
         <p css={id}>
