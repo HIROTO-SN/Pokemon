@@ -10,10 +10,5 @@ spring:
   init:
    mode: always
    encoding: UTF-8
-
-# logging:
-#  level:
-#   root: info
-#  file:
-#   name: logs/app.log
-
+logging:
+  config: classpath:logback-spring.xml

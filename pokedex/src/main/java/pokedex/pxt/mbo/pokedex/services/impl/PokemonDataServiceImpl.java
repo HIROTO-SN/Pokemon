@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import lombok.Getter;
 import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
@@ -45,6 +46,7 @@ import pokedex.pxt.mbo.pokedex.specification.PokemonSpecification;
 import pokedex.pxt.mbo.pokedex.specification.TypeChartSpecification;
 
 @Service
+@Slf4j
 public class PokemonDataServiceImpl implements PokemonDataService {
 
 	@Autowired
@@ -101,6 +103,13 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @return PokemonDtoオブジェクト
 	 */
 	public List<PokemonDto> getPokemonList(SearchDto searchDto) {
+		// log.info("searchDto: {}", searchDto);
+		log.trace("traceログを出力しました");
+    log.debug("debugログを出力しました");
+    log.info("infoログを出力しました");
+    log.warn("warnログを出力しました");
+    log.error("errorログを出力しました");
+
 		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
 		// 初回表示時
 		switch (searchDto.getActionType()) {
