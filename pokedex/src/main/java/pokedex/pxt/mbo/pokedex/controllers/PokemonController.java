@@ -1,9 +1,11 @@
 package pokedex.pxt.mbo.pokedex.controllers;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -14,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.Pagination;
@@ -23,6 +26,7 @@ import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
 @RestController
 @RequestMapping("/pokedex")
 @CrossOrigin(origins = "http://localhost:3000")
+@Slf4j
 public class PokemonController {
 
 	@Autowired
@@ -36,11 +40,19 @@ public class PokemonController {
 	 */
 	@PostMapping("/pokeList")
 	public ResponseEntity<List<PokemonDto>> getPokemonList(@RequestBody SearchDto searchDto) {
-		List<PokemonDto> response = pokemonDataService.getPokemonList(searchDto);
-		if (response.size() == 0) {
-			return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.OK);
+		try {
+			List<PokemonDto> response = pokemonDataService.getPokemonList(searchDto);
+			if (response.size() == 0) {
+				return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.OK);
+			}
+		} catch (RuntimeException ex) {
+			log.error("Unexpected runtime exception occurred: {}", ex.getMessage(), ex);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception ex) {
+			log.error("An unexpected error occurred", ex);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 

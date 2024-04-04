@@ -8,10 +8,15 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import lombok.Getter;
@@ -62,13 +67,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	private EvolutionRepository evolutionRepository;
 
 	private PokemonSpecification<Pokemon> spec;
-	private TypeChartSpecification<TypeChart> spec_weak;
-	private EvolutionSpecification<Evolution> spec_evol;
 
 	public PokemonDataServiceImpl() {
 		this.spec = new PokemonSpecification<Pokemon>();
-		this.spec_weak = new TypeChartSpecification<TypeChart>();
-		this.spec_evol = new EvolutionSpecification<Evolution>();
 	}
 
 	@Setter
@@ -103,81 +104,84 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @return PokemonDtoオブジェクト
 	 */
 	public List<PokemonDto> getPokemonList(SearchDto searchDto) {
-		// log.info("searchDto: {}", searchDto);
-		log.trace("traceログを出力しました");
-    log.debug("debugログを出力しました");
-    log.info("infoログを出力しました");
-    log.warn("warnログを出力しました");
-    log.error("errorログを出力しました");
-
 		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
-		// 初回表示時
-		switch (searchDto.getActionType()) {
-			case "init": {
-				// Pokemonリストを検索する（一覧は常にformId=1のものを取得）
-				pokemonRepository.findByFormIdAndPokemonIdBetweenOrderByPokemonId(
-						Constants.POKE.get("FORM_ID_FOR_LIST"),
-						Constants.POKE.get("OFFSET_FOR_INIT"),
-						Constants.POKE.get("PAGE_SIZE"))
-						.ifPresent(poke -> {
-							poke.forEach(_poke -> {
-								pokemonDto.add(setPokemonDto(_poke));
+		try {
+			// 初回表示時
+			switch (searchDto.getActionType()) {
+				case "init": {
+					// Pokemonリストを検索する（一覧は常にformId=1のものを取得）
+					pokemonRepository.findByFormIdAndPokemonIdBetweenOrderByPokemonId(
+							Constants.POKE.get("FORM_ID_FOR_LIST"),
+							Constants.POKE.get("OFFSET_FOR_INIT"),
+							Constants.POKE.get("PAGE_SIZE"))
+							.ifPresent(poke -> {
+								poke.forEach(_poke -> {
+									pokemonDto.add(setPokemonDto(_poke));
+								});
 							});
-						});
-				break;
-			}
-			case "search": {
-				// 初回以外の検索または'Surprise Me!'ではない時の「Load more」押下時
-
-				pokemonRepository.findAll(
-						Specification
-								.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
-								.and(spec.idBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
-								.and(spec.nameContains(searchDto.getSearchInput()))
-								.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
-								.and(spec.abilitySearch(searchDto.getAbility(), "1", "2"))
-								.and(spec.heightWeightSearch(searchDto.getHeightPoint(), "height"))
-								.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight")),
-						PageRequest.of(searchDto.getPageNumber(),
-								Constants.POKE.get("PAGE_SIZE"),
-								manageSort(searchDto.getSortBy())))
-						.forEach(poke -> {
-							pokemonDto.add(setPokemonDto(poke));
-						});
-
-				break;
-			}
-			case "surprise": {
-				List<Integer> idList = new ArrayList<Integer>();
-				List<Integer> randomList = new ArrayList<Integer>();
-				// 'Surprise Me!'押下時処理
-				if (searchDto.getPageNumber() == 0) {
-					// 1～1025までの整数値を持つリストを用意し、シャッフル
-					for (int i = 1; i <= Constants.POKE.get("LAST_POKEMON_ID"); i++) {
-						randomList.add(i);
-					}
+					break;
 				}
-				// 'Surprise Me!'押下 → Load More押下
-				else {
-					// 既に表示されているものを除く1～1025までの整数値を持つリストを用意し、シャッフル
-					for (int i = 1; i <= Constants.POKE.get("LAST_POKEMON_ID"); i++) {
-						if (!searchDto.getPokeIdList().contains(i)) {
+				case "search": {
+					// 初回以外の検索または'Surprise Me!'ではない時の「Load more」押下時
+					pokemonRepository.findAll(
+							Specification
+									.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
+									.and(spec.idBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
+									.and(spec.nameContains(searchDto.getSearchInput()))
+									.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
+									.and(spec.abilitySearch(searchDto.getAbility(), "1", "2"))
+									.and(spec.heightWeightSearch(searchDto.getHeightPoint(), "height"))
+									.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight")),
+							PageRequest.of(searchDto.getPageNumber(),
+									Constants.POKE.get("PAGE_SIZE"),
+									manageSort(searchDto.getSortBy())))
+							.forEach(poke -> {
+								pokemonDto.add(setPokemonDto(poke));
+							});
+	
+					break;
+				}
+				case "surprise": {
+					List<Integer> idList = new ArrayList<Integer>();
+					List<Integer> randomList = new ArrayList<Integer>();
+					// 'Surprise Me!'押下時処理
+					if (searchDto.getPageNumber() == 0) {
+						// 1～1025までの整数値を持つリストを用意し、シャッフル
+						for (int i = 1; i <= Constants.POKE.get("LAST_POKEMON_ID"); i++) {
 							randomList.add(i);
 						}
 					}
+					// 'Surprise Me!'押下 → Load More押下
+					else {
+						// 既に表示されているものを除く1～1025までの整数値を持つリストを用意し、シャッフル
+						for (int i = 1; i <= Constants.POKE.get("LAST_POKEMON_ID"); i++) {
+							if (!searchDto.getPokeIdList().contains(i)) {
+								randomList.add(i);
+							}
+						}
+					}
+					Collections.shuffle(randomList);
+					idList = randomList.subList(0, Constants.POKE.get("PAGE_SIZE"));
+					pokemonRepository.findAll(
+							Specification
+									.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
+									.and(spec.idInclude(idList)))
+							.forEach(poke -> {
+								pokemonDto.add(setPokemonDto(poke));
+							});
+					break;
 				}
-				Collections.shuffle(randomList);
-				idList = randomList.subList(0, Constants.POKE.get("PAGE_SIZE"));
-				pokemonRepository.findAll(
-						Specification
-								.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
-								.and(spec.idInclude(idList)))
-						.forEach(poke -> {
-							pokemonDto.add(setPokemonDto(poke));
-						});
-				break;
+				default: 
+					throw new IllegalArgumentException("Invalid action type: " + searchDto.getActionType());
 			}
+		} catch (DataAccessException ex) {
+			log.error("Data access exception occurred: {}", ex.getMessage(), ex);
+		} catch (IllegalArgumentException ex) {
+			log.error("Invalid action type: searchDto.getActionType() = {}", searchDto.getActionType(), ex);
+		} catch (Exception ex) {
+			log.error("An unexpected error occurred", ex);
 		}
+
 		return pokemonDto;
 	}
 
