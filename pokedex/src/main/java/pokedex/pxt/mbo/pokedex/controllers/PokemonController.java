@@ -64,11 +64,16 @@ public class PokemonController {
 	 */
 	@GetMapping("/pokedetails")
 	public ResponseEntity<PokemonDetailsInfoDto> getPokemonDetails(@RequestParam("pokemonName") String pokemonName) {
-		PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonName);
-		if (response == null) {
-			return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.OK);
+		try {
+			PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonName);
+			if (response == null) {
+				return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.OK);
+			}
+		} catch (Exception ex) {
+			log.error("An unexpected error occurred", ex);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
