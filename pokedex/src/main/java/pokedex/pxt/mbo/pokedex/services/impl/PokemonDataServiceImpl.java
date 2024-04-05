@@ -8,17 +8,14 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -46,9 +43,7 @@ import pokedex.pxt.mbo.pokedex.repository.PokemonRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypeChartRepository;
 import pokedex.pxt.mbo.pokedex.repository.TypesRepository;
 import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
-import pokedex.pxt.mbo.pokedex.specification.EvolutionSpecification;
 import pokedex.pxt.mbo.pokedex.specification.PokemonSpecification;
-import pokedex.pxt.mbo.pokedex.specification.TypeChartSpecification;
 
 @Service
 @Slf4j
@@ -62,6 +57,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 
 	@Autowired
 	private TypesRepository typesRepository;
+
+	@Autowired
+	private HttpServletRequest request;
 
 	@Autowired
 	private EvolutionRepository evolutionRepository;
@@ -138,7 +136,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 							.forEach(poke -> {
 								pokemonDto.add(setPokemonDto(poke));
 							});
-	
+
 					break;
 				}
 				case "surprise": {
@@ -171,17 +169,15 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 							});
 					break;
 				}
-				default: 
+				default:
 					throw new IllegalArgumentException("Invalid action type: " + searchDto.getActionType());
 			}
-		} catch (DataAccessException ex) {
-			log.error("Data access exception occurred: {}", ex.getMessage(), ex);
+		} catch (DataAccessResourceFailureException ex) {
+			log.error("Data access exception occurred at {} : {}", request.getRequestURL().toString(), ex.getMessage());
 		} catch (IllegalArgumentException ex) {
-			log.error("Invalid action type: searchDto.getActionType() = {}", searchDto.getActionType(), ex);
-		} catch (Exception ex) {
-			log.error("An unexpected error occurred", ex);
+			log.error("Invalid action type at {} : [searchDto.getActionType() = {}]", request.getRequestURL().toString(),
+					searchDto.getActionType());
 		}
-
 		return pokemonDto;
 	}
 
@@ -192,46 +188,47 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
 	public PokemonDetailsInfoDto getPokemonDetails(String pokemonName) {
-
-		// Pokemon名からIdを取得
-		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
-
-		// Pokemon詳細を取得
-		List<PokemonDetails> pokemonDetailsDto = new ArrayList<PokemonDetails>();
-		// Dtoオブジェクトに成形
-		pokemonRepository.findByPokemonId(pokemonId)
-				.ifPresent(poke -> {
-					poke.forEach(_poke -> {
-						pokemonDetailsDto.add(setPokemonDetailsDto(_poke));
-					});
-				});
-
-		// Pokemon進化情報を取得
-		List<EvolutionDetails> evolutionDetails = new ArrayList<EvolutionDetails>();
-		// Pokemonが属する進化グループを取得
-		String groupId = evolutionRepository.findFirstByPokemonId(pokemonId).getGroupId();
-
-		// 進化系リストを取得し、Dtoオブジェクトに成形
-		Optional<List<Evolution>> evolutions = evolutionRepository
-				.findByGroupIdOrderByStageAscPokemonIdAscFormIdAsc(groupId);
-		IdWrapper idWrapper = new IdWrapper(0, 0);
-		if (evolutions.isPresent()) {
-			for (Evolution evol : evolutions.get()) {
-				if (evol.getStage().equals("1")
-						&& ((idWrapper.getPokemonId() != evol.getPokemonId() || idWrapper.getFormId() != evol.getFormId()))) {
-					evolutionDetails.add(loopEvolutionNexts(evol, evolutions));
-					idWrapper.setPokemonId(evol.getPokemonId());
-					idWrapper.setFormId(evol.getFormId());
-				}
-			}
-		}
-
 		// 画面へ渡すDtoオブジェクトへセット
 		PokemonDetailsInfoDto pokemonDetailsInfoDto = new PokemonDetailsInfoDto();
-		pokemonDetailsInfoDto.setPokemonId(pokemonId);
-		pokemonDetailsInfoDto.setPokemonDetails(pokemonDetailsDto);
-		pokemonDetailsInfoDto.setEvolutionDetails(evolutionDetails);
+		try {
+			// Pokemon名からIdを取得
+			int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
 
+			// Pokemon詳細を取得
+			List<PokemonDetails> pokemonDetailsDto = new ArrayList<PokemonDetails>();
+			// Dtoオブジェクトに成形
+			pokemonRepository.findByPokemonId(pokemonId)
+					.ifPresent(poke -> {
+						poke.forEach(_poke -> {
+							pokemonDetailsDto.add(setPokemonDetailsDto(_poke));
+						});
+					});
+
+			// Pokemon進化情報を取得
+			List<EvolutionDetails> evolutionDetails = new ArrayList<EvolutionDetails>();
+			// Pokemonが属する進化グループを取得
+			String groupId = evolutionRepository.findFirstByPokemonId(pokemonId).getGroupId();
+
+			// 進化系リストを取得し、Dtoオブジェクトに成形
+			Optional<List<Evolution>> evolutions = evolutionRepository
+					.findByGroupIdOrderByStageAscPokemonIdAscFormIdAsc(groupId);
+			IdWrapper idWrapper = new IdWrapper(0, 0);
+			if (evolutions.isPresent()) {
+				for (Evolution evol : evolutions.get()) {
+					if (evol.getStage().equals("1")
+							&& ((idWrapper.getPokemonId() != evol.getPokemonId() || idWrapper.getFormId() != evol.getFormId()))) {
+						evolutionDetails.add(loopEvolutionNexts(evol, evolutions));
+						idWrapper.setPokemonId(evol.getPokemonId());
+						idWrapper.setFormId(evol.getFormId());
+					}
+				}
+			}
+			pokemonDetailsInfoDto.setPokemonId(pokemonId);
+			pokemonDetailsInfoDto.setPokemonDetails(pokemonDetailsDto);
+			pokemonDetailsInfoDto.setEvolutionDetails(evolutionDetails);
+		} catch (DataAccessResourceFailureException ex) {
+			log.error("Data access exception occurred at {} : {}", request.getRequestURL().toString(), ex.getMessage());
+		}
 		return pokemonDetailsInfoDto;
 	}
 
@@ -242,24 +239,26 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @return PokemonDetailsDtoオブジェクト
 	 */
 	public List<Pagination> getPokemonPrevNextData(String pokemonName) {
-
 		List<Pagination> pagination = new ArrayList<Pagination>();
+		try {
+			// Pokemon名からIdを取得
+			int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
 
-		// Pokemon名からIdを取得
-		int pokemonId = pokemonRepository.findByPokemonName(pokemonName);
+			Integer prevId = (pokemonId - 1) < 1 ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId - 1);
+			Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("FIRST_POKEMON_ID")
+					: (pokemonId + 1);
+			List<Integer> pokeIds = new ArrayList<>(Arrays.asList(prevId, nextId));
 
-		Integer prevId = (pokemonId - 1) < 1 ? Constants.POKE.get("LAST_POKEMON_ID") : (pokemonId - 1);
-		Integer nextId = (pokemonId + 1) > Constants.POKE.get("LAST_POKEMON_ID") ? Constants.POKE.get("FIRST_POKEMON_ID")
-				: (pokemonId + 1);
-		List<Integer> pokeIds = new ArrayList<>(Arrays.asList(prevId, nextId));
-
-		pokemonRepository.findAll(
-				Specification
-						.where(spec.formIdEquals(1))
-						.and(spec.pokeIdIn(pokeIds)))
-				.forEach(poke -> {
-					pagination.add(poke.getPokemonId() == prevId ? setPagination(poke, "prev") : setPagination(poke, "next"));
-				});
+			pokemonRepository.findAll(
+					Specification
+							.where(spec.formIdEquals(1))
+							.and(spec.pokeIdIn(pokeIds)))
+					.forEach(poke -> {
+						pagination.add(poke.getPokemonId() == prevId ? setPagination(poke, "prev") : setPagination(poke, "next"));
+					});
+		} catch (DataAccessResourceFailureException ex) {
+			log.error("Data access exception occurred at {} : {}", request.getRequestURL().toString(), ex.getMessage());
+		}
 
 		return pagination;
 	}
