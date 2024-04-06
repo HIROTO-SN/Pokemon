@@ -134,20 +134,19 @@ const LoginForm = () => {
     }
   `;
 
-  // const pblock = css``;
+  /***** Definition ******/
+  const navigate = useNavigate();
 
   /***** context ******/
-  const userState = useLoginInfo();
   const userStateAction = useLoginAction();
 
   /***** State ******/
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const setError = useLoginErrorSet();
 
   /***** JS ******/
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
   
     // ログイン認証処理
@@ -160,11 +159,13 @@ const LoginForm = () => {
     } else {
       setError("");
     }
-    loginAuth(username, password, setError);
+    const res = await loginAuth(username, password, setError);
 
     // ログイン成功時処理
-    userStateAction({username: username, isLogin: true});
-    // navigate("/profile");
+    if (res.status === 200) {
+      userStateAction({username: username, isLogin: true});
+      navigate("/profile");
+    }
   };
   
   /***** JSX ******/

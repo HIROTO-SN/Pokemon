@@ -12,17 +12,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.bind.annotation.CrossOrigin;
 
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
+@CrossOrigin(origins = "http://localhost:3000")
 public class SecurityConfig {
-
-	// private UserDetailsService userDetailsService;
-	
-	// SecurityConfig(UserDetailsService userDetailsService) {
-	// 	this.userDetailsService = userDetailsService;
-	// }
 
 	@Bean
 	public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
@@ -32,11 +28,13 @@ public class SecurityConfig {
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 		
-		http.csrf((csrf -> csrf.disable()))
+		http
+			.csrf((csrf -> csrf.disable()))
 						.authorizeHttpRequests(authorize -> authorize
 							.requestMatchers(HttpMethod.GET, "/pokedex/**").permitAll()
 							.requestMatchers(HttpMethod.POST, "/pokedex/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
+							.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
 							.requestMatchers("/session/**").permitAll()
 							.requestMatchers("/api/auth/**").permitAll()
 							.anyRequest().authenticated()
