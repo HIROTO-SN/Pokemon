@@ -15,8 +15,8 @@
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
             <!--日付けが変わったら年月フォルダ内にzipファイル作成 -->
             <fileNamePattern>${logpath}/${logname}-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
-            <!--180日後に破棄 -->
-            <maxHistory>180</maxHistory>
+            <!--7日後に破棄 -->
+            <maxHistory>7</maxHistory>
         </rollingPolicy>
         <encoder>   
             <charset>UTF-8</charset>
