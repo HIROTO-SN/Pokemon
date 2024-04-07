@@ -5,7 +5,6 @@ import java.util.Locale;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
-import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.AccessDeniedException;
@@ -16,17 +15,22 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import jakarta.servlet.http.HttpServletRequest;
+import lombok.extern.slf4j.Slf4j;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.payload.ErrorDetails;
 import pokedex.pxt.mbo.pokedex.services.SessionService;
 
 @ControllerAdvice
+@Slf4j
 public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 
 	@Autowired
 	private MessageSource messageSource;
 	@Autowired
 	private SessionService sessionService;
+	@Autowired
+	private HttpServletRequest request;
 
 	/*** Specific Exceptions ***/
 	// リソース関連
@@ -36,7 +40,8 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ErrorDetails errorDetails = new ErrorDetails(
 				new Date(), exception.getMessage(), webRequest.getDescription(false));
-
+		log.error("ResourceNotFoundException occurred at {} : {}", request.getRequestURL().toString(),
+				exception.getMessage());
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 
@@ -46,6 +51,7 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 			WebRequest webRequest) {
 		ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
 				webRequest.getDescription(false));
+		log.error("PokedexException occurred at {} : {}", request.getRequestURL().toString(), exception.getMessage());
 		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
 	}
 
@@ -56,6 +62,7 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ErrorDetails errorDetails = new ErrorDetails(
 				new Date(), exception.getMessage(), webRequest.getDescription(false));
+		log.error("AccessDeniedException occurred at {} : {}", request.getRequestURL().toString(), exception.getMessage());
 		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
 	}
 
@@ -81,7 +88,8 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 						null,
 						Locale.ENGLISH),
 				webRequest.getDescription(false));
-
+		log.error("BadCredentialsException occurred at {} : {}", request.getRequestURL().toString(),
+				exception.getMessage());
 		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
 	}
 
@@ -100,6 +108,8 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 						null,
 						Locale.ENGLISH),
 				webRequest.getDescription(false));
+		log.error("LockedException occurred at {} : {}", request.getRequestURL().toString(),
+				exception.getMessage());
 		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
 	}
 
@@ -109,7 +119,8 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 
 		ErrorDetails errorDetails = new ErrorDetails(
 				new Date(), exception.getMessage(), webRequest.getDescription(false));
-
+		log.error("Unexpected exception occurred at {} : {}", request.getRequestURL().toString(),
+				exception.getMessage());
 		return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

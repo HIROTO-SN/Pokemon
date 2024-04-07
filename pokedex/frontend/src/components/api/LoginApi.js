@@ -10,6 +10,7 @@ export async function loginAuth (username, password, setError) {
       password: password 
     });
   } catch (e) {
-    setError(e.response.data.message)
+    setError(e.response.data.message);
+    return e;
   }
 };
