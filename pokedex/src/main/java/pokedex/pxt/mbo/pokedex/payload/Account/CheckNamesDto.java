@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.payload;
+package pokedex.pxt.mbo.pokedex.payload.Account;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

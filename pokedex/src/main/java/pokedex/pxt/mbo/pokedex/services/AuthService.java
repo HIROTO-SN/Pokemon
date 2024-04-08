@@ -2,9 +2,9 @@ package pokedex.pxt.mbo.pokedex.services;
 
 import java.util.List;
 
-import pokedex.pxt.mbo.pokedex.payload.CheckNamesDto;
-import pokedex.pxt.mbo.pokedex.payload.LoginDto;
-import pokedex.pxt.mbo.pokedex.payload.RegisterDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.CheckNamesDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.LoginDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.RegisterDto;
 
 public interface AuthService {
 	String login(LoginDto LoginDto);

@@ -33,8 +33,8 @@ public class SecurityConfig {
 						.authorizeHttpRequests(authorize -> authorize
 							.requestMatchers(HttpMethod.GET, "/pokedex/**").permitAll()
 							.requestMatchers(HttpMethod.POST, "/pokedex/**").permitAll()
-							.requestMatchers(HttpMethod.GET, "/api/auth/**").permitAll()
-							.requestMatchers(HttpMethod.POST, "/api/auth/**").permitAll()
+							.requestMatchers(HttpMethod.GET, "/api/**").permitAll()
+							.requestMatchers(HttpMethod.POST, "/api/**").permitAll()
 							.requestMatchers("/session/**").permitAll()
 							.requestMatchers("/api/auth/**").permitAll()
 							.anyRequest().authenticated()

@@ -10,5 +10,17 @@ spring:
   init:
    mode: always
    encoding: UTF-8
+ mail:
+  host: smtp.gmail.com    # SMTP server host
+  port: 587               # SMTP server port
+  username: daniel.wang5656@gmail.com # SMTP username (if authentication is required)
+  password: kjvp vkpj yqko xvmm # SMTP password (if authentication is required)
+  protocol: smtp          # Protocol (smtp, smtps, or smtps)
+  properties:
+   mail:
+      smtp:
+        auth: true         # Enable SMTP authentication
+        starttls:
+          enable: true     # Enable STARTTLS encryption
 logging:
   config: classpath:logback-spring.xml
