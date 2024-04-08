@@ -9,9 +9,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pokedex.pxt.mbo.pokedex.payload.CheckNamesDto;
-import pokedex.pxt.mbo.pokedex.payload.LoginDto;
-import pokedex.pxt.mbo.pokedex.payload.RegisterDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.CheckNamesDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.LoginDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.RegisterDto;
 import pokedex.pxt.mbo.pokedex.services.AuthService;
 
 

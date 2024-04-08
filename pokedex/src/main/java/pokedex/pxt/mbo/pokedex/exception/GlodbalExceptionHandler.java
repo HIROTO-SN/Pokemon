@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import pokedex.pxt.mbo.pokedex.common.Constants;
@@ -33,6 +34,16 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 	private HttpServletRequest request;
 
 	/*** Specific Exceptions ***/
+	// カスタム例外処理
+	@ExceptionHandler(PokedexException.class)
+	public ResponseEntity<ErrorDetails> handlePokedexAPIException(PokedexException exception,
+			WebRequest webRequest) {
+		ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
+				webRequest.getDescription(false));
+		log.error("PokedexException occurred at {} : {}", request.getRequestURL().toString(), exception.getMessage());
+		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
+	}
+
 	// リソース関連
 	@ExceptionHandler(ResourceNotFoundException.class)
 	public ResponseEntity<ErrorDetails> handleResourceNotFoundException(ResourceNotFoundException exception,
@@ -45,15 +56,6 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
 	}
 
-	// 入力チェック関連
-	@ExceptionHandler(PokedexException.class)
-	public ResponseEntity<ErrorDetails> handlePokedexAPIException(PokedexException exception,
-			WebRequest webRequest) {
-		ErrorDetails errorDetails = new ErrorDetails(new Date(), exception.getMessage(),
-				webRequest.getDescription(false));
-		log.error("PokedexException occurred at {} : {}", request.getRequestURL().toString(), exception.getMessage());
-		return new ResponseEntity<>(errorDetails, HttpStatus.BAD_REQUEST);
-	}
 
 	// 権限関連
 	@ExceptionHandler(AccessDeniedException.class)
@@ -113,6 +115,18 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 		return new ResponseEntity<>(errorDetails, HttpStatus.UNAUTHORIZED);
 	}
 
+	// メール送信
+	@ExceptionHandler(MessagingException.class)
+	public ResponseEntity<ErrorDetails> handleResourceNotFoundException(MessagingException exception,
+			WebRequest webRequest) {
+
+		ErrorDetails errorDetails = new ErrorDetails(
+				new Date(), exception.getMessage(), webRequest.getDescription(false));
+		log.error("MessagingException occurred at {} : {}", request.getRequestURL().toString(),
+				exception.getMessage());
+		return new ResponseEntity<>(errorDetails, HttpStatus.NOT_FOUND);
+	}
+
 	// Global Exceptions
 	@ExceptionHandler(Exception.class)
 	public ResponseEntity<ErrorDetails> handleGlobalException(Exception exception, WebRequest webRequest) {
@@ -120,7 +134,7 @@ public class GlodbalExceptionHandler extends ResponseEntityExceptionHandler {
 		ErrorDetails errorDetails = new ErrorDetails(
 				new Date(), exception.getMessage(), webRequest.getDescription(false));
 		log.error("Unexpected exception occurred at {} : {}", request.getRequestURL().toString(),
-				exception.getMessage());
+				exception.getMessage(), exception);
 		return new ResponseEntity<>(errorDetails, HttpStatus.INTERNAL_SERVER_ERROR);
 	}
 }

@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { accountButton, notchBottomCenter } from "./Login";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { hiddenMobile } from "../CommonCss/Layout";
+import { sendEmail } from "../api/SignUpApi";
+import { accountButton, notchBottomCenter } from "./Login";
 
 const LoginCreate = () => {
   /***** CSS ******/
@@ -51,6 +52,11 @@ const LoginCreate = () => {
 
   /***** Definition ******/
   const navigate = useNavigate();
+
+  const test = async () => {
+    const res_mail = await sendEmail("hiroto4455656@gmail.com", "test", "testメール送信です。");
+    console.log(res_mail);
+  }
   
   return (
     <>
@@ -74,6 +80,13 @@ const LoginCreate = () => {
         onClick={() => navigate("/verifyage")}
       >
         Create an Account!
+      </button>
+      <button 
+        id="test-mail"
+        css={[accountButton, buttonLightblue]}
+        onClick={() => test()}
+      >
+        Send Email!
       </button>
       <span css={[notchBottomCenter, hiddenMobile]}></span>
     </>

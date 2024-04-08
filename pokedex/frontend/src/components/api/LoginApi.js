@@ -2,7 +2,12 @@
 import { signinUrl } from "../../constants/ApiUrls";
 import axios from "axios";
 
-// axiosでリクエストを送信
+/**
+ * サインアップ
+ * @param {String} username - ユーザ名
+ * @param {String} password - パスワード
+ * @param {Object} setError - エラーセットステート関数
+ */
 export async function loginAuth (username, password, setError) {
   try {
     return await axios.post(signinUrl, { 

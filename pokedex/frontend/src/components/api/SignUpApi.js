@@ -1,6 +1,6 @@
 // import axios from "axios";
 import axios from "axios";
-import { nameAvailabilityCheckUrl, singupUrl } from "../../constants/ApiUrls";
+import { nameAvailabilityCheckUrl, sendEmailUrl, singupUrl } from "../../constants/ApiUrls";
 
 /**
  * ユーザー名とスクリーン名のAvailabilityをチェック
@@ -33,4 +33,23 @@ export async function singUp (accountInfo) {
       console.log("error:" + e);
     });
 };
+
+/**
+ * メール送信
+ * @param {String} to - 送信先
+ * @param {String} subject - 件名
+ * @param {String} text - メール内容
+ */
+export async function sendEmail (to, subject, text) {
+  try {
+    return await axios.post(sendEmailUrl, { 
+      to: to, 
+      subject: subject,
+      text: text
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
+
 
