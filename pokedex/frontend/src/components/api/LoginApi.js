@@ -2,13 +2,20 @@
 import { signinUrl } from "../../constants/ApiUrls";
 import axios from "axios";
 
-// axiosでリクエストを送信
-export function loginAuth (username, password, setError) {
-  axios
-    .get(signinUrl, { username, password })
-    .then(res => console.log(res))
-    .catch((e) => {
-      // サーバー側からのエラーメッセージをセット
-      setError(e.response.data.message);
+/**
+ * サインアップ
+ * @param {String} username - ユーザ名
+ * @param {String} password - パスワード
+ * @param {Object} setError - エラーセットステート関数
+ */
+export async function loginAuth (username, password, setError) {
+  try {
+    return await axios.post(signinUrl, { 
+      username: username, 
+      password: password 
     });
+  } catch (e) {
+    setError(e.response.data.message);
+    return e;
+  }
 };

@@ -1,12 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { accountButton, notchBottomCenter } from "./Login";
-import { clearTable, hiddenMobile, push1 } from "../CommonCss/Layout";
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
-import { useLoginInfo, useLoginAction, useLoginErrorSet } from "../../contexts/LoginContext";
-import { loginAuth } from "../api/LoginApi";
 import { valid_message_passwordEmpty, valid_message_usernameEmpty } from "../../constants/ValidationMessage";
+import { useLoginAction, useLoginErrorSet } from "../../contexts/LoginContext";
+import { clearTable, hiddenMobile, push1 } from "../CommonCss/Layout";
+import { loginAuth } from "../api/LoginApi";
+import { accountButton, notchBottomCenter } from "./Login";
 
 const LoginForm = () => {
   /***** CSS ******/
@@ -134,20 +134,19 @@ const LoginForm = () => {
     }
   `;
 
-  // const pblock = css``;
+  /***** Definition ******/
+  const navigate = useNavigate();
 
   /***** context ******/
-  const userState = useLoginInfo();
   const userStateAction = useLoginAction();
 
   /***** State ******/
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-
   const setError = useLoginErrorSet();
 
   /***** JS ******/
-  const handleLoginSubmit = (e) => {
+  const handleLoginSubmit = async (e) => {
     e.preventDefault();
   
     // ログイン認証処理
@@ -160,11 +159,13 @@ const LoginForm = () => {
     } else {
       setError("");
     }
-    loginAuth(username, password, setError);
+    const res = await loginAuth(username, password, setError);
 
     // ログイン成功時処理
-    userStateAction({username: username, isLogin: true});
-    // navigate("/profile");
+    if (res.status === 200) {
+      userStateAction({username: username, isLogin: true});
+      navigate("/profile");
+    }
   };
   
   /***** JSX ******/

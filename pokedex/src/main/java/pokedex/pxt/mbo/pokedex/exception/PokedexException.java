@@ -11,6 +11,11 @@ public class PokedexException extends RuntimeException {
 			this.message = message;
 	}
 
+	public PokedexException(String message, String message1) {
+			super(message);
+			this.message = message1;
+	}
+
 	public PokedexException(String message, HttpStatus status, String message1) {
 			super(message);
 			this.status = status;

@@ -1,10 +1,10 @@
 package pokedex.pxt.mbo.pokedex.services.impl;
 
-import java.util.HashSet;
-import java.util.Set;
-import java.util.Random;
-import java.util.List;
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Random;
+import java.util.Set;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,18 +14,20 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import lombok.extern.slf4j.Slf4j;
+import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.Role;
 import pokedex.pxt.mbo.pokedex.entity.User;
 import pokedex.pxt.mbo.pokedex.exception.PokedexException;
-import pokedex.pxt.mbo.pokedex.payload.CheckNamesDto;
-import pokedex.pxt.mbo.pokedex.payload.LoginDto;
-import pokedex.pxt.mbo.pokedex.payload.RegisterDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.CheckNamesDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.LoginDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.RegisterDto;
 import pokedex.pxt.mbo.pokedex.repository.RoleRepository;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
 import pokedex.pxt.mbo.pokedex.services.AuthService;
-import pokedex.pxt.mbo.pokedex.common.Constants;
 
 @Service
+@Slf4j
 public class AuthServiceImpl implements AuthService {
 
 	private AuthenticationManager authenticationManager;
@@ -34,9 +36,9 @@ public class AuthServiceImpl implements AuthService {
 	private PasswordEncoder passwordEncoder;
 
 	public AuthServiceImpl(AuthenticationManager authenticationManager,
-												UserRepository userRepository,
-												RoleRepository roleRepository,
-												PasswordEncoder passwordEncoder) {
+			UserRepository userRepository,
+			RoleRepository roleRepository,
+			PasswordEncoder passwordEncoder) {
 		this.authenticationManager = authenticationManager;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
@@ -45,12 +47,10 @@ public class AuthServiceImpl implements AuthService {
 
 	@Override
 	public String login(LoginDto LoginDto) {
-		
-		Authentication authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
-			LoginDto.getUsername(), LoginDto.getPassword()));
-
+		Authentication authentication;
+		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
+				LoginDto.getUsername(), LoginDto.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-
 		return "User Logged-in successfully";
 	}
 
@@ -68,7 +68,7 @@ public class AuthServiceImpl implements AuthService {
 		User user = new User();
 		user.setUsername(registerDto.getUsername());
 		user.setEmail(registerDto.getEmail());
-		user.setPassword(passwordEncoder.encode(registerDto.getPassword()));		
+		user.setPassword(passwordEncoder.encode(registerDto.getPassword()));
 		user.setBirthday(registerDto.getBirthday());
 		user.setCountry(registerDto.getCountry());
 		user.setAccountExpiration(Constants.TODAY.plusMonths(6));
@@ -95,7 +95,7 @@ public class AuthServiceImpl implements AuthService {
 			case "username":
 				if (userRepository.existsByUsername(val)) {
 					Random random = new Random();
-					for (int i = 1; i <= 3; i ++) {
+					for (int i = 1; i <= 3; i++) {
 						suggestNames.add(val + String.valueOf(random.nextInt(1000000)));
 					}
 				}
@@ -103,7 +103,7 @@ public class AuthServiceImpl implements AuthService {
 			case "screenName":
 				if (userRepository.existsByScreenName(val)) {
 					Random random = new Random();
-					for (int i = 1; i <= 3; i ++) {
+					for (int i = 1; i <= 3; i++) {
 						suggestNames.add(val + String.valueOf(random.nextInt(1000000)));
 					}
 				}
@@ -112,7 +112,7 @@ public class AuthServiceImpl implements AuthService {
 				suggestNames = null;
 				break;
 		}
-		
+
 		return suggestNames;
 	}
 }
