@@ -21,6 +21,7 @@ public class EmailServiceImpl implements EmailService {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 			helper.setTo(to);
+			helper.setFrom("Pokémon Customer Service Hiro <noreply.hiro@pokemon.com>");
 			helper.setSubject(subject);
 			helper.setText(htmlBody, true);
 
