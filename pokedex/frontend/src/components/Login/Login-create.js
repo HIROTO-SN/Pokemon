@@ -4,8 +4,6 @@ import { useNavigate } from "react-router-dom";
 import { hiddenMobile } from "../CommonCss/Layout";
 import { sendEmail } from "../api/SignUpApi";
 import { accountButton, notchBottomCenter } from "./Login";
-import AccountEmailTemp from "../Email/AccountEmailTemp";
-import ReactDOMServer from 'react-dom/server';
 
 const LoginCreate = () => {
   /***** CSS ******/
@@ -56,16 +54,8 @@ const LoginCreate = () => {
   const navigate = useNavigate();
 
   const test = async () => {
-    const email_body = sendHTMLEmail();
-    const res_mail = await sendEmail("hiroto4455656@gmail.com", "Pokémon Trainer Club Activation", email_body);
+    const res_mail = await sendEmail("hiroto4455656@gmail.com");
     console.log(res_mail);
-  }
-
-  function sendHTMLEmail() {
-    const emailHtml = ReactDOMServer.renderToString(
-      <AccountEmailTemp />
-    );
-    return emailHtml;
   }
   
   return (
