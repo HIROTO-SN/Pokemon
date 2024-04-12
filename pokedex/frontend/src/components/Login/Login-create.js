@@ -54,7 +54,7 @@ const LoginCreate = () => {
   const navigate = useNavigate();
 
   const test = async () => {
-    const res_mail = await sendEmail("hiroto4455656@gmail.com", "test", "testメール送信です。");
+    const res_mail = await sendEmail("hiroto4455656@gmail.com");
     console.log(res_mail);
   }
   

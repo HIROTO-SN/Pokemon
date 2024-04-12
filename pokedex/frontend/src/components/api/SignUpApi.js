@@ -37,15 +37,11 @@ export async function singUp (accountInfo) {
 /**
  * メール送信
  * @param {String} to - 送信先
- * @param {String} subject - 件名
- * @param {String} text - メール内容
  */
-export async function sendEmail (to, subject, text) {
+export async function sendEmail (to) {
   try {
     return await axios.post(sendEmailUrl, { 
-      to: to, 
-      subject: subject,
-      text: text
+      to: to
     });
   } catch (e) {
     console.log(e);
