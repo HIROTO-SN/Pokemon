@@ -57,5 +57,13 @@ public class Constants {
 			put("TYPE_COUNT", 18); // タイプの数
 		}
 	};
-	
+
+	// Pokemon弱点（タイプ）基準
+	public static final Map<String, String> MAIL = new HashMap<>() {
+		{
+			put("FROM", "Pokémon Customer Service Hiro <noreply.hiro@pokemon.com>"); // メール送信元
+			put("SUBJECT", "Pokémon Trainer Club Activation"); // メール送信元
+		}
+	};
+
 }

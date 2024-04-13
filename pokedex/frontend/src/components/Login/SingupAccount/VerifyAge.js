@@ -189,7 +189,7 @@ const VerifyAge = ({ Banner }) => {
       if (val != "") {
         return;
       } else {
-        navigate("/verifyaccount");
+        navigate("/verifyaccount/2");
       }
     })
   };

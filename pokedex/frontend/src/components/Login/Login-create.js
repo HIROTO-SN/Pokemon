@@ -77,7 +77,7 @@ const LoginCreate = () => {
       <button 
         id="user-account-signup"
         css={[accountButton, buttonLightblue]}
-        onClick={() => navigate("/verifyage")}
+        onClick={() => navigate("/verifyaccount/1")}
       >
         Create an Account!
       </button>

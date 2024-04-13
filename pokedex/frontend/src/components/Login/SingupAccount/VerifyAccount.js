@@ -364,7 +364,7 @@ const VerifyAccount = ({ Banner }) => {
     if (!errFlg) {
       await singUp(accountInfo);
       sessionStorage.clear();
-      navigate("/verifyemail");
+      navigate("/verifyaccount/3");
     }
   };
 
