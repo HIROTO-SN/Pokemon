@@ -14,8 +14,9 @@ import { InputAccountInfoProvider } from "../../../contexts/SignupContext.js";
 import VerifyAge from "./VerifyAge.js";
 import CreateAccount from "./VerifyAccount.js";
 import VerifyEmail from "./VerifyEmail";
+import { useParams } from "react-router";
 
-const Signup = ({ pageNo }) => {
+const Signup = () => {
   /***** CSS ******/
   const useraccount = css`
     position: relative;
@@ -87,6 +88,12 @@ const Signup = ({ pageNo }) => {
     }
   `;
 
+  /***** Definition ******/
+  const params = useParams();
+  const { pageNo } = useParams();
+  console.log("pageNo: " + pageNo);
+  console.log("params: " + params);
+
   /***** JSX ******/
   return (
     <div css={[container]}>
@@ -95,12 +102,12 @@ const Signup = ({ pageNo }) => {
         <span css={[notchBottomRightSmall, visibleMobile]}></span>
         <h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
         <div css={[column10, push2, hiddenMobile]}>
-          <StepsMenu pageNo={pageNo} />
+          <StepsMenu pageNo={Number(pageNo)} />
         </div>
       </section>
       <div css={colorBlack}>
         <InputAccountInfoProvider>
-          <PageController pageNo={pageNo} />
+          <PageController pageNo={Number(pageNo)} />
         </InputAccountInfoProvider>
       </div>
     </div>
@@ -114,6 +121,9 @@ const Signup = ({ pageNo }) => {
  * pageNo = 3: Verify Email
  */
 const PageController = ({ pageNo }) => {
+  console.log("PageController-pageNo: " + pageNo);
+  console.log("pageNo === pageNo: " + pageNo === 1);
+  console.log("typeof : " + typeof pageNo);
   /***** JSX ******/
   return (
     <>

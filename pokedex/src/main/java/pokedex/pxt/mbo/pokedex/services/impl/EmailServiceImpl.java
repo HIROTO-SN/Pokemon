@@ -8,6 +8,7 @@ import org.thymeleaf.context.Context;
 import org.thymeleaf.spring6.SpringTemplateEngine;
 
 import jakarta.mail.internet.MimeMessage;
+import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.exception.PokedexException;
 import pokedex.pxt.mbo.pokedex.services.EmailService;
 
@@ -20,7 +21,12 @@ public class EmailServiceImpl implements EmailService {
 	private SpringTemplateEngine templateEngine;
 	private String EMAIL_TEMPLATE = "emailTemplateSignup";
 
-	public void sendHtmlEmail(String to, String subject, String htmlBody) {
+	/**
+	 * サインアップ時の認証メールを送信
+	 * 
+	 * @param to <String> 送信先
+	 */
+	public void sendHtmlEmail(String to) {
 		try {
 			Context context = new Context();
 			String text = templateEngine.process(EMAIL_TEMPLATE, context);
@@ -28,8 +34,8 @@ public class EmailServiceImpl implements EmailService {
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
 
 			helper.setTo(to);
-			helper.setFrom("Pokémon Customer Service Hiro <noreply.hiro@pokemon.com>");
-			helper.setSubject("Pokémon Trainer Club Activation");
+			helper.setFrom(Constants.MAIL.get("FROM"));
+			helper.setSubject(Constants.MAIL.get("SUBJECT"));
 			helper.setText(text, true);
 
 			javaMailSender.send(message);
