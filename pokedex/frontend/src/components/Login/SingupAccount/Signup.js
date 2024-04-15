@@ -90,9 +90,8 @@ const Signup = () => {
 
   /***** Definition ******/
   const params = useParams();
+  console.log(params);
   const { pageNo } = useParams();
-  console.log("pageNo: " + pageNo);
-  console.log("params: " + params);
 
   /***** JSX ******/
   return (
@@ -121,9 +120,6 @@ const Signup = () => {
  * pageNo = 3: Verify Email
  */
 const PageController = ({ pageNo }) => {
-  console.log("PageController-pageNo: " + pageNo);
-  console.log("pageNo === pageNo: " + pageNo === 1);
-  console.log("typeof : " + typeof pageNo);
   /***** JSX ******/
   return (
     <>
