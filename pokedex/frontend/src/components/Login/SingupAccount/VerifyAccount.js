@@ -63,7 +63,7 @@ import {
   p_password,
   p_username,
 } from "../../../constants/ConstantsGeneral";
-import { nameAvailabilityCheck, singUp } from "../../api/SignUpApi";
+import { nameAvailabilityCheck, sendEmail, singUp } from "../../api/SignUpApi";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -194,9 +194,7 @@ const VerifyAccount = ({ Banner }) => {
   /***** JS ******/
   // 初期表示時処理
   useEffect(() => {
-    const newBirth = sessionStorage.getItem('birth');
-    // const newCountry = JSON.parse(sessionStorage.getItem('country'));
-    // setAccountInfo({ ...accountInfo, birth: newBirth, country: newCountry});
+    window.scroll({ top: 0, behavior: "smooth" });
   }, []);
 
   const checkAvailHandler = async (target) => {
@@ -362,23 +360,16 @@ const VerifyAccount = ({ Banner }) => {
       }
     });
     if (!errFlg) {
-      await singUp(accountInfo);
-      sessionStorage.clear();
-      navigate("/verifyaccount/3");
+      const res_sign = await singUp(accountInfo);
+      const res_mail = await sendEmail(accountInfo.email);
+      if (res_sign === 200 && res_mail === 200) {
+        sessionStorage.clear();
+        navigate("/verifyaccount/3");
+      } else {
+        window.location.reload();
+      }
     }
   };
-
-  // Continueボタン押下時の重複チェックとメッセージ作成
-  // const checkDuplicateForContinue = (target, currentErr) => {
-  //   const _available = available.find((el) => el.name === target);
-  //   const _response = response.find((el) => el.name === target);
-  //   // 重複があるとき
-  //   if (_response.status === 226) {
-  //     return "That " + _available.message + "\n" + _response.data.join("\n");
-  //   } else {
-  //     return currentErr;
-  //   }
-  // };
 
   /***** JSX ******/
   return (
@@ -638,16 +629,16 @@ const VerifyAccount = ({ Banner }) => {
               <div></div>
             </div>
           </div>
+          <p style={{ paddingTop: "20px", marginTop: "1.5em" }}>
+            {p_continue_warning}
+            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>.
+          </p>
           <AcceptInfo
             id="terms"
             lal={lal_term_check}
             handler={checkClickHandler}
             termAlert={termAlert}
           />
-          <p style={{ paddingTop: "20px" }}>
-            {p_continue_warning}
-            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>.
-          </p>
           <div></div>
           <input
             type="button"

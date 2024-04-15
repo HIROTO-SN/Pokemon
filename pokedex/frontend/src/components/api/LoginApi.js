@@ -16,6 +16,7 @@ export async function loginAuth (username, password, setError) {
     });
   } catch (e) {
     setError(e.response.data.message);
+    console.log(e);
     return e;
   }
 };

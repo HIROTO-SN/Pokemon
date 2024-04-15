@@ -123,18 +123,6 @@ const VerifyAge = ({ Banner }) => {
   const navigate = useNavigate();
 
   /***** JS ******/
-  // カスタムセレクトボックス外クリックで閉じる処理
-  // useEffect(() => {
-  //   documentClickHandler.current = (e) => {
-  //     const tagJudgeSVG = e.target.tagName === "svg";
-  //     const tagJudgePath = e.target.tagName === "path";
-
-  //     if (insideRef.current.contains(e.target) || tagJudgeSVG || tagJudgePath)
-  //       return;
-  //     arrowOutsideClickHandler();
-  //   };
-  // }, []);
-
   // Countryリスト外押下イベント
   const arrowOutsideClickHandler = () => {
     setIsListOpened(false);

@@ -25,13 +25,13 @@ export async function nameAvailabilityCheck (target, value) {
 export async function singUp (accountInfo) {
   const newCountry = accountInfo.country.name;
   accountInfo.country = newCountry;
-  
-  await axios
-    .post(singupUrl, accountInfo )
-    .then(res => console.log(res))
-    .catch((e) => {
-      console.log("error:" + e);
-    });
+  try {
+    const res = await axios.post(singupUrl, accountInfo);
+    return res.status;
+  } catch (e) {
+    console.log("error:" + e);
+    return e.response.status;
+  }
 };
 
 /**
@@ -40,11 +40,13 @@ export async function singUp (accountInfo) {
  */
 export async function sendEmail (to) {
   try {
-    return await axios.post(sendEmailUrl, { 
+    const res = await axios.post(sendEmailUrl, { 
       to: to
     });
+    return res.status;
   } catch (e) {
-    console.log(e);
+    console.log("error:" + e);
+    return e.response.status;
   }
 };
 
