@@ -21,7 +21,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pokedex.pxt.mbo.pokedex.common.Constants;
 
 @Getter
 @Setter
@@ -75,6 +74,9 @@ public class User {
 	@Column(name = "account_locked_date")
 	private LocalDateTime accountLockedDate;
 
+	@Column(name = "verified_flg")
+	private boolean verifiedFlg = false;
+
 	@Column(name = "created_date", updatable = false)
 	private LocalDateTime createdDate;
 	
@@ -87,19 +89,5 @@ public class User {
 					joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
 					inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	private Set<Role> roles;
-
-	/*
-	 * ログイン成功時にログイン失敗回数をインクリメントする
-	 */
-	public User resetLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, screenName, newsInfoReceiveFlg, updateCenterReceiveFlg, displayPokeClubProfile, accountEnabled, accountExpiration, accountPasswordExpiration, 0, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
-	}
-
-	/*
-	 * ログイン失敗時にログイン失敗回数をインクリメントする
-	 */
-	public User incrementLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, screenName, newsInfoReceiveFlg, updateCenterReceiveFlg, displayPokeClubProfile, accountEnabled, accountExpiration, accountPasswordExpiration, accountLoginFailureCount + 1, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
-	}
 
 }
