@@ -15,7 +15,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
 	@Query("SELECT u.user_id FROM User u WHERE u.username = :username")
 	public Long findByUsernameForId(String username);
-	
+
 	public Boolean existsByUsername(String username);
 
 	public Boolean existsByScreenName(String screenName);

@@ -6,7 +6,11 @@ import org.springframework.data.annotation.LastModifiedDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -18,12 +22,17 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Table(name = "users")
+@Table(name = "token")
 public class Token {
 
 	@Id
-	@Column(name = "user_id", updatable = false)
-	private Long userId;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "token_id")
+	private Long tokenId;
+
+	@OneToOne
+	@JoinColumn(name = "user_id", referencedColumnName = "user_id")
+	private User user;
 
 	@Column(name = "token")
 	private String token;
@@ -34,4 +43,5 @@ public class Token {
 	@Column(name = "update_date")
 	@LastModifiedDate
 	private LocalDateTime updateDate;
+
 }
