@@ -92,7 +92,7 @@ public class AuthServiceImpl implements AuthService {
 		// Token更新
 		Token token = new Token();
 		String newToken = generateVerificationToken();
-		token.setUserId(userRepository.findByUsernameForId(registerDto.getUsername()));
+		token.setUser(userRepository.findByUsername(registerDto.getUsername()).get());
 		token.setToken(newToken);
 		token.setCreatedDate(Constants.CURRENT_DATE_TIME);
 		tokenRepository.save(token);
