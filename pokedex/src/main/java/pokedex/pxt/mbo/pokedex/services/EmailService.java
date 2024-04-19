@@ -5,4 +5,5 @@ import org.springframework.stereotype.Service;
 @Service
 public interface EmailService {
 	public void sendHtmlEmail(String to);
+	public String chkEmailToken(String token);
 }

@@ -8,6 +8,9 @@ export const signinUrl = "http://localhost:8080/api/auth/signin";
 export const singupUrl = "http://localhost:8080/api/auth/signup";
 // メール送信
 export const sendEmailUrl = "http://localhost:8080/api/mail/send-email";
+// メール送信
+export const chkTokenlUrl = "http://localhost:8080/api/mail/checkToken";
+
 // username, screenNameが使用可能かチェック
 export const nameAvailabilityCheckUrl = "http://localhost:8080/api/auth/checknames";
 
