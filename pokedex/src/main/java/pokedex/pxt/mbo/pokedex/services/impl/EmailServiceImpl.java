@@ -1,6 +1,7 @@
 package pokedex.pxt.mbo.pokedex.services.impl;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
@@ -12,6 +13,7 @@ import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.exception.PokedexException;
+import pokedex.pxt.mbo.pokedex.repository.TokenRepository;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
 import pokedex.pxt.mbo.pokedex.services.EmailService;
 
@@ -27,6 +29,8 @@ public class EmailServiceImpl implements EmailService {
 
 	@Autowired
 	private UserRepository userRepository;
+	@Autowired
+	private TokenRepository tokenRepository;
 
 	/**
 	 * サインアップ時の認証メールを送信
@@ -37,13 +41,14 @@ public class EmailServiceImpl implements EmailService {
 		try {
 			Context context = new Context();
 			userRepository.findByEmail(to)
-				.ifPresentOrElse(
-					user -> {
-						String token = user.getToken().getToken();
-						context.setVariable("url", URL + token);
-					}, 
-					() -> { throw new PokedexException("メールアドレスが見つかりませんでした。(email: " + to + ")"); }
-				);
+					.ifPresentOrElse(
+							user -> {
+								String token = user.getToken().getToken();
+								context.setVariable("url", URL + token);
+							},
+							() -> {
+								throw new PokedexException("メールアドレスが見つかりませんでした。(email: " + to + ")");
+							});
 			String text = templateEngine.process(EMAIL_TEMPLATE, context);
 			MimeMessage message = javaMailSender.createMimeMessage();
 			MimeMessageHelper helper = new MimeMessageHelper(message, true);
@@ -56,9 +61,24 @@ public class EmailServiceImpl implements EmailService {
 			javaMailSender.send(message);
 		} catch (MessagingException ex) {
 			throw new PokedexException("メール作成に失敗しました", ex.getCause().getMessage());
-		} catch (MailException  ex) {
+		} catch (MailException ex) {
 			throw new PokedexException("メール送信に失敗しました", ex.getCause().getMessage());
 		}
 	}
 
+	/**
+	 * メール認証時のトークン確認
+	 * 
+	 * @param token <String> トークン
+	 */
+	public String chkEmailToken(String token) {
+		try {
+			return (tokenRepository.findByToken(token)
+					.map(_token -> _token.getCreatedDate().plusHours(48).isBefore(Constants.CURRENT_DATE_TIME))
+					.orElseThrow(() -> new PokedexException("トークンが見つかりませんでした。(token: " + token + ")")))
+					? "success" : "fail";
+		} catch (DataAccessResourceFailureException ex) {
+			throw new PokedexException("トークン認証に失敗しました。", ex.getCause().getMessage());
+		}
+	}
 }

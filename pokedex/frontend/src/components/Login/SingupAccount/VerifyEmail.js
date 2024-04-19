@@ -15,6 +15,7 @@ import {
 } from "../../CommonCss/AccountCss";
 import { column10, push2, section } from "../../CommonCss/Layout";
 import { Link } from "react-router-dom";
+import { chkToken } from "../../api/SignUpApi";
 
 const VerifyEmail = ({ Banner }) => {
   /***** CSS ******/
@@ -55,9 +56,12 @@ const VerifyEmail = ({ Banner }) => {
 
   /***** JS ******/
   useEffect(() => {
-    if (token) {
-      setPageType("activate");
+    // トークン認証
+    const chkTokenAvailablility = async () => {
+      const itTokenAvailable = await chkToken(token);
+      itTokenAvailable ? setPageType("activated") : setPageType("re-activate");
     }
+    token && chkTokenAvailablility(token);
   }, []);
 
   /***** JSX ******/
@@ -67,16 +71,16 @@ const VerifyEmail = ({ Banner }) => {
         <div css={[contentBlock, contentBlockFull]}>
           <div css={[formWrapper, dogEarTl]} style={{ minHeight: "290px" }}>
             <h3 css={customH3}>
-              {pageType === "activate"
+              {pageType === "activated"
                 ? ACTIVATED_ACCOUNT.TITLE
                 : CREATE_ACCOUNT.TITLE}
             </h3>
             <p css={customP}>
-              {pageType === "activate"
+              {pageType === "activated"
                 ? ACTIVATED_ACCOUNT.CONTENT
                 : CREATE_ACCOUNT.CONTENT}
             </p>
-            {pageType === "activate" && (
+            {pageType === "activated" && (
               <Link
                 to="../Login"
                 type="button"
