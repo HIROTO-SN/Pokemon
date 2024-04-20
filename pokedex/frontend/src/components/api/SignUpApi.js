@@ -1,6 +1,7 @@
 // import axios from "axios";
 import axios from "axios";
 import {
+  chkTokenlUrl,
   nameAvailabilityCheckUrl,
   sendEmailUrl,
   singupUrl,
@@ -59,7 +60,7 @@ export async function sendEmail(to) {
  */
 export async function chkToken(token) {
   try {
-    const res = await axios.get(sendEmailUrl, {
+    const res = await axios.get(chkTokenlUrl, {
       params: { token: token },
     });
     return res.status === 200 ? true : false;

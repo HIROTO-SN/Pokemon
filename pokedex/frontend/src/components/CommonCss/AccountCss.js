@@ -236,7 +236,7 @@ export const customFormElements = css`
 
 // ボタンレイアウト
 export const buttonRight = css`
-  float: right!important;
+  float: right !important;
 `;
 
 // ボタン薄い青色
@@ -250,8 +250,8 @@ export const buttonLightblue = css`
 `;
 
 /*
-*カスタムチェックボックス
-*/
+ *カスタムチェックボックス
+ */
 
 // チェックボックスとそのラベルを囲うDIV用CSS
 export const acceptInfo = css`
@@ -316,4 +316,12 @@ export const clear = css`
 export const inRowSelect = css`
   float: left;
   margin-left: 2em;
+`;
+
+//　必須サイン（ポケモンボールSVG）
+export const requiredSVG = css`
+  height: 0.5em;
+  width: 0.5em;
+  margin-right: 0.2em;
+  margin-bottom: 0.3em;
 `;
