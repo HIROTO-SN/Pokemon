@@ -21,6 +21,7 @@ import {
   inRowSelect,
   submitButton,
   customScrollbar,
+  requiredSVG,
 } from "../../CommonCss/AccountCss";
 import {
   alertBox,
@@ -117,14 +118,6 @@ const VerifyAccount = ({ Banner }) => {
     font-weight: 500;
     line-height: 125%;
     margin: 0.5em 0;
-  `;
-
-  //　必須サイン（ポケモンボールSVG）
-  const requiredSVG = css`
-    height: 0.5em;
-    width: 0.5em;
-    margin-right: 0.2em;
-    margin-bottom: 0.3em;
   `;
 
   // Terms&Condition囲い
