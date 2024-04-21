@@ -74,7 +74,7 @@ public class EmailServiceImpl implements EmailService {
 	public String chkEmailToken(String token) {
 		try {
 			return (tokenRepository.findByToken(token)
-					.map(_token -> _token.getCreatedDate().plusHours(48).isBefore(Constants.CURRENT_DATE_TIME))
+					.map(_token -> Constants.CURRENT_DATE_TIME.isBefore(_token.getCreatedDate().plusHours(48)))
 					.orElseThrow(() -> new PokedexException("トークンが見つかりませんでした。(token: " + token + ")")))
 					? "success" : "fail";
 		} catch (DataAccessResourceFailureException ex) {

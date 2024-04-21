@@ -21,6 +21,12 @@ import { column10, push2, section } from "../../CommonCss/Layout";
 import { Link } from "react-router-dom";
 import { chkToken } from "../../api/SignUpApi";
 import { MdOutlineCatchingPokemon } from "react-icons/md";
+import {
+  useInputAccountInfo,
+  useSetInputAccountInfo,
+} from "../../../contexts/SignupContext";
+import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolUtils";
+import AlertSignUp from "./AlertSignUp";
 
 const VerifyEmail = ({ Banner }) => {
   /***** CSS ******/
@@ -64,9 +70,7 @@ const VerifyEmail = ({ Banner }) => {
     // トークン認証
     const chkTokenAvailablility = async () => {
       const itTokenAvailable = await chkToken(token);
-      itTokenAvailable
-        ? setPageType("re-activate")
-        : setPageType("re-activate");
+      itTokenAvailable ? setPageType("activated") : setPageType("re-activate");
     };
     token && chkTokenAvailablility(token);
   }, []);
@@ -127,6 +131,25 @@ const ReActivate = () => {
     line-height: 125%;
     margin: 0.5em 0;
   `;
+
+  /***** Definition ******/
+  const accountInfo = useInputAccountInfo();
+  const errorContentInit = {
+    username: "",
+    password: "",
+    email: "",
+  };
+  const [error, setError] = useState(errorContentInit);
+
+  /***** JS ******/
+  /**
+   * Continueボタン押下処理
+   */
+  const continueClickHanlder = () => {
+    console.log("continue");
+  };
+
+  /***** JSX ******/
   return (
     <>
       <H2>Resend your activation email</H2>
@@ -134,19 +157,19 @@ const ReActivate = () => {
         We cannot find an account matching the confirmation email. Please verify
         that the URL from the parental consent email has been entered correctly.
       </Remarks>
-      <fieldset css={section}>
+      <fieldset css={section} style={{ marginBottom: "60px" }}>
         <div css={[column10, push2]}>
           <H2>Activation Code Request</H2>
-          <LabelInputSet type="Email Address"/>
-          <LabelInputSet type="Username"/>
-          <LabelInputSet type="Password"/>
+          <LabelInputSet type="email" />
+          <LabelInputSet type="username" />
+          <LabelInputSet type="password" />
           <input
-              type="button"
-              css={submitButton}
-              value="Continue"
-              style={{margin: "0"}}
-              // onClick={() => continueClickHanlder()}
-            ></input>
+            type="button"
+            css={submitButton}
+            value="Continue"
+            style={{ margin: "0" }}
+            onClick={() => continueClickHanlder()}
+          ></input>
         </div>
       </fieldset>
     </>
@@ -157,6 +180,7 @@ const ReActivate = () => {
  * ラベルとインプット要素セット
  */
 const LabelInputSet = ({ type }) => {
+  /***** CSS ******/
   const Lal = styled.label`
     clear: both;
     color: #212121;
@@ -166,14 +190,47 @@ const LabelInputSet = ({ type }) => {
     margin: 0.875em 0 0.5em 0;
     width: 38.4375%;
   `;
+
+  /***** Definition ******/
+  const accountInfo = useInputAccountInfo();
+  const setAccountInfo = useSetInputAccountInfo();
+
+  /***** JS ******/
+  /**
+   * 入力値変更処理
+   * @param {Object} e
+   */
+  const onChangeHandler = (e) => {
+    switch (type) {
+      case "email": {
+        setAccountInfo({ ...accountInfo, email: e.target.value });
+        break;
+      }
+      case "username": {
+        setAccountInfo({ ...accountInfo, username: e.target.value });
+        break;
+      }
+      case "password": {
+        setAccountInfo({ ...accountInfo, password: e.target.value });
+        break;
+      }
+    }
+  };
+
+  /***** JSX ******/
   return (
     <>
-      <Lal htmlFor="email">
+      <Lal>
         <MdOutlineCatchingPokemon css={requiredSVG} />
-        {type}
+        {capitalizeFirstLetter(type)}
       </Lal>
       <div css={formField}>
-        <input css={customFormElements}></input>
+        <input
+          css={customFormElements}
+          onChange={(e) => onChangeHandler(e)}
+        ></input>
+        <AlertSignUp error="ttt" />
+        {/* {error.email != "" && <AlertSignUp error={error.email} />} */}
       </div>
     </>
   );

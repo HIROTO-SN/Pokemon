@@ -33,7 +33,7 @@ public class EmailController {
 		if (response == "success") {
 			return new ResponseEntity<String>(response, HttpStatus.OK);
 		} else {
-			return new ResponseEntity<String>(response, HttpStatus.NOT_ACCEPTABLE);
+			return new ResponseEntity<String>(response, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
 		}
 	}
 }
