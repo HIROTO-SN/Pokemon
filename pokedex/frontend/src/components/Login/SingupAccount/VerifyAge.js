@@ -216,7 +216,7 @@ const VerifyAge = ({ Banner }) => {
                     </div>
                   </div>
                 </div>
-                {error.birthday != "" && <AlertSignUp error={error.birthday} />}
+                {error.birthday != "" && <AlertSignUp error={error.birthday} position="relative"/>}
               </div>
               <label htmlFor="country">Country/Region</label>
               <div css={formField}>
