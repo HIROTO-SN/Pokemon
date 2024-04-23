@@ -409,7 +409,7 @@ const VerifyAccount = ({ Banner }) => {
                   />
                   <p css={nameFieldDesc}>{p_username}</p>
                   {error.username != "" && (
-                    <AlertSignUp error={error.username} />
+                    <AlertSignUp error={error.username} position="relative" />
                   )}
                 </div>
                 <label htmlFor="password">
@@ -437,7 +437,7 @@ const VerifyAccount = ({ Banner }) => {
                   />
                   <p css={nameFieldDesc}>{p_password}</p>
                   {error.password != "" && (
-                    <AlertSignUp error={error.password} />
+                    <AlertSignUp error={error.password} position="relative"/>
                   )}
                 </div>
                 <label htmlFor="confirm_password">
@@ -464,7 +464,7 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={50}
                   />
                   {error.confirmPassword != "" && (
-                    <AlertSignUp error={error.confirmPassword} />
+                    <AlertSignUp error={error.confirmPassword} position="relative"/>
                   )}
                 </div>
                 <label htmlFor="email">
@@ -489,7 +489,7 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={75}
                   />
                   <p css={nameFieldDesc}>{p_email}</p>
-                  {error.email != "" && <AlertSignUp error={error.email} />}
+                  {error.email != "" && <AlertSignUp error={error.email} position="relative"/>}
                 </div>
                 <label htmlFor="confirm_email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -513,7 +513,7 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={75}
                   />
                   {error.confirmEmail != "" && (
-                    <AlertSignUp error={error.confirmEmail} />
+                    <AlertSignUp error={error.confirmEmail} position="relative"/>
                   )}
                 </div>
                 <div></div>
@@ -594,7 +594,7 @@ const VerifyAccount = ({ Banner }) => {
                     onClick={() => checkAvailHandler("screenName")}
                   />
                   {error.screenName != "" && (
-                    <AlertSignUp error={error.screenName} />
+                    <AlertSignUp error={error.screenName} position="relative"/>
                   )}
                 </div>
               </div>
