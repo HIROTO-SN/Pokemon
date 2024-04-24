@@ -29,7 +29,7 @@ import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolU
 import AlertSignUp from "./AlertSignUp";
 import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
 import { isStrEmptyOrNull } from "../../CommonFunc/Common";
-import { regexEmailValid, valid_message_emailNoValid } from "../../../constants/ValidationMessage";
+import { REGEX_ACTIVATION, regexEmailValid, valid_message_emailNoValid } from "../../../constants/ValidationMessage";
 
 const VerifyEmail = ({ Banner }) => {
   /***** CSS ******/
@@ -149,15 +149,16 @@ const ReActivate = () => {
    * Continueボタン押下処理
    */
   const continueClickHanlder = () => {
+    // 入力チェック（Inputが空かどうか）
     let newError = fieldInputEmptyCheck(accountInfo, errorContentInit);
 
     // 本画面ではエラーは1つずつ表示する
     if (isStrEmptyOrNull(newError.email) && chkInput()) {
-      setError({ email: chkInput()});
+      setError({ email: chkInput(accountInfo.email)});
       return;
-    } 
+    }
     if (!isStrEmptyOrNull(newError.email)) {
-      setError({ email: chkInput(newError.email)});
+      setError({ email: newError.email});
       return;
     } else if (!isStrEmptyOrNull(newError.username)) {
       setError({ username: newError.username});
@@ -173,8 +174,20 @@ const ReActivate = () => {
   /**
    * 入力チェック
    */
-  const chkInput = () => {
-    return !regexEmailValid.test(accountInfo.email) && valid_message_emailNoValid;
+  const chkInput = (val) => {
+    for (const r of REGEX_ACTIVATION) {
+      if (!r.REGEX.test(val)) {
+        return r.MSG;
+      }
+    }
+  }
+
+  /**
+   * emailインプットフォーカスアウト処理
+   * @param {Object} e 入力値
+   */
+  const onBlurEmail = (e) => {
+    setError({ email: chkInput(e.target.value)});
   }
 
   /***** JSX ******/
@@ -188,9 +201,9 @@ const ReActivate = () => {
       <fieldset css={section} style={{ marginBottom: "60px" }}>
         <div css={[column10, push2]}>
           <H2>Activation Code Request</H2>
-          <LabelInputSet type="email" error={error.email}/>
-          <LabelInputSet type="username" error={error.username}/>
-          <LabelInputSet type="password" error={error.password}/>
+          <LabelInputSet type="email" error={error.email} setError={onBlurEmail}/>
+          <LabelInputSet type="username" error={error.username} setError={setError}/>
+          <LabelInputSet type="password" error={error.password} setError={setError}/>
           <input
             type="button"
             css={submitButton}
@@ -207,7 +220,7 @@ const ReActivate = () => {
 /**
  * ラベルとインプット要素セット
  */
-const LabelInputSet = ({ type, error }) => {
+const LabelInputSet = ({ type, error, setError }) => {
   /***** CSS ******/
   const Lal = styled.label`
     clear: both;
@@ -256,6 +269,7 @@ const LabelInputSet = ({ type, error }) => {
         <input
           css={customFormElements}
           onChange={(e) => onChangeHandler(e)}
+          onBlur={type === "email" ? (e) => setError(e) : () => setError("")}
         ></input>
         {typeof error != "undefined" && <AlertSignUp error={error} position="absolute"/>}
       </div>

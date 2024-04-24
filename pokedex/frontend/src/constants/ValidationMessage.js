@@ -43,3 +43,24 @@ export const available_message = [
     exists: "This screen name already exists. Please try the following:",
   },
 ];
+
+// メールアクティベーションページ
+export const REGEX_ACTIVATION = [
+  {
+    REGEX: /@/,
+    MSG: "'@' symbol requreid"
+  },
+  {
+    REGEX: /^[!-?A-~]{1,}@/,
+    MSG: "Characters required beofre '@' symbol"
+  },
+  {
+    REGEX: /@[!-?A-~]{1,}/,
+    MSG: "Characters required after '@' symbol"
+  },
+  {
+    REGEX: /^(?!(.*@){3}).*$/,
+    MSG: "More than two '@' symbol found"
+  },
+];
+  

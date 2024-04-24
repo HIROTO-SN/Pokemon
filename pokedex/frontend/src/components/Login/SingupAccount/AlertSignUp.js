@@ -1,5 +1,6 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { animeFadeIn } from "../../CommonCss/PokedexCss";
 
 const AlertSignUp = ({ error, position }) => {
   /***** CSS ******/
@@ -52,7 +53,7 @@ const AlertSignUp = ({ error, position }) => {
       font-size: 87.5%;
       line-height: 150%;
       margin: 0.75em 1.5em;
-      ${p === "absolute" && "width: 100%"}
+      ${p === "absolute" && "width: 86.9%"}
     }
   `;
 
@@ -68,7 +69,13 @@ const AlertSignUp = ({ error, position }) => {
   `;
 
   return (
-    <div css={inlineFormError(position)}>
+    <div
+      css={
+        position === "relative"
+          ? inlineFormError(position)
+          : [inlineFormError(position), animeFadeIn(0.4)]
+      }
+    >
       <span>
         <ul css={errorList(position)}>
           <li>{error}</li>
