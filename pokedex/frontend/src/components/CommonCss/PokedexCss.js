@@ -10,9 +10,12 @@ import {
  */
 
 /*** アニメーション ***/
-// 0.5秒でフェードインし表示
-export const animeFadeIn = css`
-  animation: fadeIn 0.5s ease;
+/**
+ * フェードイン
+ * @param {Number} sec フェード時間
+ */
+export const animeFadeIn = (sec) => css`
+  animation: fadeIn ${sec} ease;
   @keyframes fadeIn {
     0% {
       opacity: 0;
