@@ -12,7 +12,10 @@ import org.thymeleaf.spring6.SpringTemplateEngine;
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;
 import pokedex.pxt.mbo.pokedex.common.Constants;
+import pokedex.pxt.mbo.pokedex.entity.Token;
+import pokedex.pxt.mbo.pokedex.entity.User;
 import pokedex.pxt.mbo.pokedex.exception.PokedexException;
+import pokedex.pxt.mbo.pokedex.payload.Account.VerifyEmail;
 import pokedex.pxt.mbo.pokedex.repository.TokenRepository;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
 import pokedex.pxt.mbo.pokedex.services.EmailService;
@@ -76,9 +79,50 @@ public class EmailServiceImpl implements EmailService {
 			return (tokenRepository.findByToken(token)
 					.map(_token -> Constants.CURRENT_DATE_TIME.isBefore(_token.getCreatedDate().plusHours(48)))
 					.orElseThrow(() -> new PokedexException("トークンが見つかりませんでした。(token: " + token + ")")))
-					? "success" : "fail";
+							? "success"
+							: "fail";
 		} catch (DataAccessResourceFailureException ex) {
 			throw new PokedexException("トークン認証に失敗しました。", ex.getCause().getMessage());
 		}
+	}
+
+	/**
+	 * メール再認証とアカウント本登録
+	 * 
+	 * @param VerifyEmail <VerifyEmail> 認証内容オブジェクト
+	 */
+	public void verifyEmailAccount(VerifyEmail verifyEmail) {
+		String t = verifyEmail.getToken();
+		try {
+			tokenRepository.findByToken(verifyEmail.getToken())
+					.ifPresentOrElse(
+							token -> {
+								User user = token.getUser();
+								if (user != null) {
+									if (user.getAccountEnabled()) {
+										return;
+									} else {
+										updTokenAndUser(token);	
+									}
+								} else {
+									throw new PokedexException("トークンに紐づくユーザーが見つかりませんでした。(token: " + t + ")");
+								}
+							},
+							() -> {
+								throw new PokedexException("トークンが見つかりませんでした。(token: " + t + ")");
+							});
+
+		} catch (DataAccessResourceFailureException ex) {
+			throw new PokedexException("メール再認証に失敗しました。", ex.getCause().getMessage());
+		}
+	}
+
+	/**
+	 * トークンTBLとユーザーTBLを更新
+	 * 
+	 * @param Token <Token> トークン認証
+	 */
+	private void updTokenAndUser(Token token) {
+
 	}
 }

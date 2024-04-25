@@ -73,7 +73,7 @@ const AlertSignUp = ({ error, position }) => {
       css={
         position === "relative"
           ? inlineFormError(position)
-          : [inlineFormError(position), animeFadeIn(0.4)]
+          : [inlineFormError(position), animeFadeIn(0.6)]
       }
     >
       <span>
