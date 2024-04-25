@@ -5,6 +5,7 @@ import {
   nameAvailabilityCheckUrl,
   sendEmailUrl,
   singupUrl,
+  verifyEmailUrl,
 } from "../../constants/ApiUrls";
 
 /**
@@ -67,5 +68,24 @@ export async function chkToken(token) {
   } catch (e) {
     console.log("error:" + e);
     return false;
+  }
+}
+
+/**
+ * メール再認証
+ * @param {Object} accountInfo - 画面入力アカウント内容
+ * @param {String} token - トークン
+ */
+export function verifyEmail(accountInfo, token) {
+  try {
+    const reqBody = {
+      email: accountInfo.email,
+      username: accountInfo.username,
+      password: accountInfo.password,
+      token: token,
+    }
+    axios.post(verifyEmailUrl, reqBody);
+  } catch (e) {
+    console.log("error:" + e);
   }
 }

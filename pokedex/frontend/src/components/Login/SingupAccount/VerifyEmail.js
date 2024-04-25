@@ -1,12 +1,20 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useEffect, useState } from "react";
+import { useEffect, useLayoutEffect, useState } from "react";
+import { MdOutlineCatchingPokemon } from "react-icons/md";
 import { useLocation } from "react-router";
+import { Link } from "react-router-dom";
 import {
   ACTIVATED_ACCOUNT,
   CREATE_ACCOUNT,
 } from "../../../constants/ConstantsGeneral";
+import { REGEX_ACTIVATION } from "../../../constants/ValidationMessage";
+import {
+  useInputAccountInfo,
+  useSetInputAccountInfo,
+} from "../../../contexts/SignupContext";
+import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolUtils";
 import {
   contentBlock,
   contentBlockFull,
@@ -18,20 +26,65 @@ import {
   submitButton,
 } from "../../CommonCss/AccountCss";
 import { column10, push2, section } from "../../CommonCss/Layout";
-import { Link } from "react-router-dom";
-import { chkToken } from "../../api/SignUpApi";
-import { MdOutlineCatchingPokemon } from "react-icons/md";
-import {
-  useInputAccountInfo,
-  useSetInputAccountInfo,
-} from "../../../contexts/SignupContext";
-import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolUtils";
-import AlertSignUp from "./AlertSignUp";
-import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
 import { isStrEmptyOrNull } from "../../CommonFunc/Common";
-import { REGEX_ACTIVATION, regexEmailValid, valid_message_emailNoValid } from "../../../constants/ValidationMessage";
+import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
+import { chkToken, verifyEmail } from "../../api/SignUpApi";
+import AlertSignUp from "./AlertSignUp";
+import { useLoadFlg, useSetLoadFlg } from "../../../contexts/LoadContext";
+import Load from "../../../features/Pokedex/components/Results/Load";
 
 const VerifyEmail = ({ Banner }) => {
+  /***** CSS ******/
+
+  /***** Definition ******/
+  const loadFlg = useLoadFlg();
+  console.log(loadFlg);
+  const setloadFlg = useSetLoadFlg();
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const token = searchParams.get("token");
+  const [pageType, setPageType] = useState("");
+
+  /***** JS ******/
+  useLayoutEffect(() => {
+    // トークン認証
+    const chkTokenAvailablility = async () => {
+      const isTokenAvailable = await chkToken(token);
+      isTokenAvailable ? setPageType("activated") : setPageType("re-activate");
+    };
+    if (token) {
+      chkTokenAvailablility(token);
+    } else {
+      setPageType("verify");
+    }
+    setloadFlg(true);
+  }, []);
+
+  if (!loadFlg) {
+    return <Load />;
+  }
+
+  /***** JSX ******/
+  return (
+    loadFlg && (
+      <div css={section}>
+        <div css={[column10, push2]}>
+          {pageType === "re-activate" ? (
+            <ReActivate />
+          ) : (
+          pageType === "activated" || pageType === "verify" && (
+            <Activate pageType={pageType} Banner={Banner} />
+          ))}
+        </div>
+      </div>
+    )
+  );
+};
+
+/**
+ * メール再認証用JSX
+ */
+const Activate = ({ pageType, Banner }) => {
   /***** CSS ******/
   const customH3 = css`
     padding-bottom: 0.5em;
@@ -61,56 +114,31 @@ const VerifyEmail = ({ Banner }) => {
       background-color: #e4520f;
     }
   `;
-
   /***** Definition ******/
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const token = searchParams.get("token");
-  const [pageType, setPageType] = useState("verify");
 
   /***** JS ******/
-  useEffect(() => {
-    // トークン認証
-    const chkTokenAvailablility = async () => {
-      const itTokenAvailable = await chkToken(token);
-      itTokenAvailable ? setPageType("activated") : setPageType("re-activate");
-    };
-    token && chkTokenAvailablility(token);
-  }, []);
 
   /***** JSX ******/
   return (
-    <div css={section}>
-      <div css={[column10, push2]}>
-        {pageType === "re-activate" ? (
-          <ReActivate />
-        ) : (
-          <div css={[contentBlock, contentBlockFull]}>
-            <div css={[formWrapper, dogEarTl]} style={{ minHeight: "290px" }}>
-              <h3 css={customH3}>
-                {pageType === "activated"
-                  ? ACTIVATED_ACCOUNT.TITLE
-                  : CREATE_ACCOUNT.TITLE}
-              </h3>
-              <p css={customP}>
-                {pageType === "activated"
-                  ? ACTIVATED_ACCOUNT.CONTENT
-                  : CREATE_ACCOUNT.CONTENT}
-              </p>
-              {pageType === "activated" && (
-                <Link
-                  to="../Login"
-                  type="button"
-                  css={[submitButton, customButton]}
-                >
-                  Login
-                </Link>
-              )}
-            </div>
-            <Banner icon={2} />
-          </div>
+    <div css={[contentBlock, contentBlockFull]}>
+      <div css={[formWrapper, dogEarTl]} style={{ minHeight: "290px" }}>
+        <h3 css={customH3}>
+          {pageType === "activated"
+            ? ACTIVATED_ACCOUNT.TITLE
+            : CREATE_ACCOUNT.TITLE}
+        </h3>
+        <p css={customP}>
+          {pageType === "activated"
+            ? ACTIVATED_ACCOUNT.CONTENT
+            : CREATE_ACCOUNT.CONTENT}
+        </p>
+        {pageType === "activated" && (
+          <Link to="../Login" type="button" css={[submitButton, customButton]}>
+            Login
+          </Link>
         )}
       </div>
+      <Banner icon={2} />
     </div>
   );
 };
@@ -137,6 +165,7 @@ const ReActivate = () => {
 
   /***** Definition ******/
   const accountInfo = useInputAccountInfo();
+  const urlParams = new URLSearchParams(window.location.search);
   const errorContentInit = {
     username: "",
     password: "",
@@ -153,22 +182,23 @@ const ReActivate = () => {
     let newError = fieldInputEmptyCheck(accountInfo, errorContentInit);
 
     // 本画面ではエラーは1つずつ表示する
-    if (isStrEmptyOrNull(newError.email) && chkInput()) {
-      setError({ email: chkInput(accountInfo.email)});
+    if (isStrEmptyOrNull(newError.email) && chkInput(accountInfo.email)) {
+      setError({ email: chkInput(accountInfo.email) });
       return;
     }
     if (!isStrEmptyOrNull(newError.email)) {
-      setError({ email: newError.email});
+      setError({ email: newError.email });
       return;
     } else if (!isStrEmptyOrNull(newError.username)) {
-      setError({ username: newError.username});
+      setError({ username: newError.username });
       return;
     } else if (!isStrEmptyOrNull(newError.password)) {
-      setError({ password: newError.password});
+      setError({ password: newError.password });
       return;
     } else {
       setError("");
     }
+    verifyEmail(accountInfo, urlParams.get("token"));
   };
 
   /**
@@ -180,15 +210,17 @@ const ReActivate = () => {
         return r.MSG;
       }
     }
-  }
+    return null;
+  };
 
   /**
    * emailインプットフォーカスアウト処理
    * @param {Object} e 入力値
    */
   const onBlurEmail = (e) => {
-    setError({ email: chkInput(e.target.value)});
-  }
+    setError("");
+    e && setError({ email: chkInput(e.target.value) });
+  };
 
   /***** JSX ******/
   return (
@@ -201,9 +233,21 @@ const ReActivate = () => {
       <fieldset css={section} style={{ marginBottom: "60px" }}>
         <div css={[column10, push2]}>
           <H2>Activation Code Request</H2>
-          <LabelInputSet type="email" error={error.email} setError={onBlurEmail}/>
-          <LabelInputSet type="username" error={error.username} setError={setError}/>
-          <LabelInputSet type="password" error={error.password} setError={setError}/>
+          <LabelInputSet
+            type="email"
+            error={error.email}
+            setError={onBlurEmail}
+          />
+          <LabelInputSet
+            type="username"
+            error={error.username}
+            setError={setError}
+          />
+          <LabelInputSet
+            type="password"
+            error={error.password}
+            setError={setError}
+          />
           <input
             type="button"
             css={submitButton}
@@ -269,9 +313,10 @@ const LabelInputSet = ({ type, error, setError }) => {
         <input
           css={customFormElements}
           onChange={(e) => onChangeHandler(e)}
+          onInput={() => setError("")}
           onBlur={type === "email" ? (e) => setError(e) : () => setError("")}
         ></input>
-        {typeof error != "undefined" && <AlertSignUp error={error} position="absolute"/>}
+        {error && <AlertSignUp error={error} position="absolute" />}
       </div>
     </>
   );

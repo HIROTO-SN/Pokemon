@@ -89,8 +89,6 @@ const Signup = () => {
   `;
 
   /***** Definition ******/
-  const params = useParams();
-  console.log(params);
   const { pageNo } = useParams();
 
   /***** JSX ******/
