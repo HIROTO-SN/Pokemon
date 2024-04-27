@@ -14,8 +14,9 @@ import { InputAccountInfoProvider } from "../../../contexts/SignupContext.js";
 import VerifyAge from "./VerifyAge.js";
 import CreateAccount from "./VerifyAccount.js";
 import VerifyEmail from "./VerifyEmail";
+import { useParams } from "react-router";
 
-const Signup = ({ pageNo }) => {
+const Signup = () => {
   /***** CSS ******/
   const useraccount = css`
     position: relative;
@@ -87,6 +88,9 @@ const Signup = ({ pageNo }) => {
     }
   `;
 
+  /***** Definition ******/
+  const { pageNo } = useParams();
+
   /***** JSX ******/
   return (
     <div css={[container]}>
@@ -95,12 +99,12 @@ const Signup = ({ pageNo }) => {
         <span css={[notchBottomRightSmall, visibleMobile]}></span>
         <h2 css={[pageSubTitle, visibleMobile]}>Verify Age</h2>
         <div css={[column10, push2, hiddenMobile]}>
-          <StepsMenu pageNo={pageNo} />
+          <StepsMenu pageNo={Number(pageNo)} />
         </div>
       </section>
       <div css={colorBlack}>
         <InputAccountInfoProvider>
-          <PageController pageNo={pageNo} />
+          <PageController pageNo={Number(pageNo)} />
         </InputAccountInfoProvider>
       </div>
     </div>

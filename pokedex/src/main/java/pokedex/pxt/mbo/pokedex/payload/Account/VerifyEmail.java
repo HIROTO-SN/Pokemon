@@ -9,8 +9,9 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class EmailRequest {
-	private String to;
-	// private String subject;
-	// private String text;
+public class VerifyEmail {
+	private String email;
+	private String username;
+	private String password;
+	private String token;
 }

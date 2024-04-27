@@ -21,6 +21,10 @@ public class Constants {
 
 	// ログイン失敗許容回数
 	public static final int LOGIN_MAX_FAIL_COUNT = 5;
+	
+	// サーバー処理成功/失敗
+	public static final String SUCCESS = "success";
+	public static final String FAIL = "fail";
 
 	// PokeList作成時用定数
 	public static final Map<String, Integer> POKE = new HashMap<>() {
@@ -57,5 +61,13 @@ public class Constants {
 			put("TYPE_COUNT", 18); // タイプの数
 		}
 	};
-	
+
+	// Pokemon弱点（タイプ）基準
+	public static final Map<String, String> MAIL = new HashMap<>() {
+		{
+			put("FROM", "Pokémon Customer Service Hiro <noreply.hiro@pokemon.com>"); // メール送信元
+			put("SUBJECT", "Pokémon Trainer Club Activation"); // メール送信元
+		}
+	};
+
 }

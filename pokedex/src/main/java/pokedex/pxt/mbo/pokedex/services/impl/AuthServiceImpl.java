@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
 import java.util.Set;
+import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -17,12 +18,14 @@ import org.springframework.stereotype.Service;
 import lombok.extern.slf4j.Slf4j;
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.Role;
+import pokedex.pxt.mbo.pokedex.entity.Token;
 import pokedex.pxt.mbo.pokedex.entity.User;
 import pokedex.pxt.mbo.pokedex.exception.PokedexException;
 import pokedex.pxt.mbo.pokedex.payload.Account.CheckNamesDto;
 import pokedex.pxt.mbo.pokedex.payload.Account.LoginDto;
 import pokedex.pxt.mbo.pokedex.payload.Account.RegisterDto;
 import pokedex.pxt.mbo.pokedex.repository.RoleRepository;
+import pokedex.pxt.mbo.pokedex.repository.TokenRepository;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
 import pokedex.pxt.mbo.pokedex.services.AuthService;
 
@@ -34,15 +37,18 @@ public class AuthServiceImpl implements AuthService {
 	private UserRepository userRepository;
 	private RoleRepository roleRepository;
 	private PasswordEncoder passwordEncoder;
+	private TokenRepository tokenRepository;
 
 	public AuthServiceImpl(AuthenticationManager authenticationManager,
 			UserRepository userRepository,
 			RoleRepository roleRepository,
-			PasswordEncoder passwordEncoder) {
+			PasswordEncoder passwordEncoder,
+			TokenRepository tokenRepository) {
 		this.authenticationManager = authenticationManager;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
+		this.tokenRepository = tokenRepository;
 	}
 
 	@Override
@@ -51,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				LoginDto.getUsername(), LoginDto.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return "User Logged-in successfully";
+		return Constants.SUCCESS;
 	}
 
 	@Override
@@ -65,6 +71,7 @@ public class AuthServiceImpl implements AuthService {
 			throw new PokedexException(HttpStatus.BAD_REQUEST, "Email already exists");
 		}
 
+		// User更新
 		User user = new User();
 		user.setUsername(registerDto.getUsername());
 		user.setEmail(registerDto.getEmail());
@@ -82,7 +89,15 @@ public class AuthServiceImpl implements AuthService {
 
 		userRepository.save(user);
 
-		return "User registered successfully!";
+		// Token更新
+		Token token = new Token();
+		String newToken = generateVerificationToken();
+		token.setUser(userRepository.findByUsername(registerDto.getUsername()).get());
+		token.setToken(newToken);
+		token.setCreatedDate(Constants.CURRENT_DATE_TIME);
+		tokenRepository.save(token);
+
+		return Constants.SUCCESS;
 	}
 
 	@Override
@@ -114,5 +129,15 @@ public class AuthServiceImpl implements AuthService {
 		}
 
 		return suggestNames;
+	}
+
+	/**
+	 * 一意のランダムなUUIDを作成
+	 * 
+	 * @return 一意のランダムなUUID
+	 */
+	private String generateVerificationToken() {
+		// Generate a random token (e.g., using UUID)
+		return UUID.randomUUID().toString();
 	}
 }

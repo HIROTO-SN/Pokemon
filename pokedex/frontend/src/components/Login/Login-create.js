@@ -52,11 +52,6 @@ const LoginCreate = () => {
 
   /***** Definition ******/
   const navigate = useNavigate();
-
-  const test = async () => {
-    const res_mail = await sendEmail("hiroto4455656@gmail.com");
-    console.log(res_mail);
-  }
   
   return (
     <>
@@ -77,16 +72,9 @@ const LoginCreate = () => {
       <button 
         id="user-account-signup"
         css={[accountButton, buttonLightblue]}
-        onClick={() => navigate("/verifyage")}
+        onClick={() => navigate("/verifyaccount/1")}
       >
         Create an Account!
-      </button>
-      <button 
-        id="test-mail"
-        css={[accountButton, buttonLightblue]}
-        onClick={() => test()}
-      >
-        Send Email!
       </button>
       <span css={[notchBottomCenter, hiddenMobile]}></span>
     </>

@@ -86,7 +86,7 @@ const LoginForm = () => {
       width: 65%;
     }
 
-    > input[type="text"] {
+    > input {
       -ms-box-sizing: border-box;
       -moz-box-sizing: border-box;
       -o-box-sizing: border-box;
@@ -192,7 +192,7 @@ const LoginForm = () => {
         <div css={formField}>
           <input
             id="password"
-            type="text"
+            type="password"
             tabIndex={2}
             autoComplete="false"
             value={password}
