@@ -61,7 +61,7 @@ public class User {
 	private boolean displayPokeClubProfile = true;
 	
 	@Column(name = "account_enabled")
-	private boolean accountEnabled = true;
+	private boolean accountEnabled = false;
 
 	@Column(name = "account_expiration")
 	private LocalDate accountExpiration;
@@ -74,9 +74,6 @@ public class User {
 	
 	@Column(name = "account_locked_date")
 	private LocalDateTime accountLockedDate;
-
-	@Column(name = "verified_flg")
-	private boolean verifiedFlg = false;
 
 	@Column(name = "created_date", updatable = false)
 	private LocalDateTime createdDate;
@@ -94,4 +91,7 @@ public class User {
 	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
 	private Token token;
 
+	public Boolean getAccountEnabled() {
+		return this.accountEnabled;
+	}
 }

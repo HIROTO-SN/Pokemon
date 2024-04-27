@@ -77,52 +77,61 @@ public class EmailServiceImpl implements EmailService {
 	public String chkEmailToken(String token) {
 		try {
 			return (tokenRepository.findByToken(token)
-					.map(_token -> Constants.CURRENT_DATE_TIME.isBefore(_token.getCreatedDate().plusHours(48)))
-					.orElseThrow(() -> new PokedexException("トークンが見つかりませんでした。(token: " + token + ")")))
-							? "success"
-							: "fail";
+					.map(_token -> {
+						if (Constants.CURRENT_DATE_TIME.isBefore(_token.getCreatedDate().plusHours(48))
+								|| (_token.getUpdateDate() != null
+										&& Constants.CURRENT_DATE_TIME.isBefore(_token.getUpdateDate().plusHours(48)))) {
+							updTokenAndUser(_token);
+							return Constants.SUCCESS;
+						} else {
+							return Constants.FAIL;
+						}
+					})
+					.orElseThrow(() -> new PokedexException("トークンが見つかりませんでした。(token: " + token + ")")));
 		} catch (DataAccessResourceFailureException ex) {
 			throw new PokedexException("トークン認証に失敗しました。", ex.getCause().getMessage());
 		}
 	}
 
 	/**
-	 * メール再認証とアカウント本登録
+	 * メール再認証
 	 * 
 	 * @param VerifyEmail <VerifyEmail> 認証内容オブジェクト
 	 */
 	public void verifyEmailAccount(VerifyEmail verifyEmail) {
-		String t = verifyEmail.getToken();
+		String token = verifyEmail.getToken();
 		try {
-			tokenRepository.findByToken(verifyEmail.getToken())
-					.ifPresentOrElse(
-							token -> {
-								User user = token.getUser();
-								if (user != null) {
-									if (user.getAccountEnabled()) {
-										return;
-									} else {
-										updTokenAndUser(token);	
-									}
-								} else {
-									throw new PokedexException("トークンに紐づくユーザーが見つかりませんでした。(token: " + t + ")");
-								}
-							},
-							() -> {
-								throw new PokedexException("トークンが見つかりませんでした。(token: " + t + ")");
-							});
-
+			Token tokenEntity = tokenRepository.findByToken(token)
+					.orElseThrow(() -> new PokedexException("トークンが見つかりませんでした。(token: " + token + ")"));
+			User user = tokenEntity.getUser();
+			if (user != null) {
+				if (user.getAccountEnabled()) {
+					return;
+				} else {
+					tokenEntity.setUpdateDate(Constants.CURRENT_DATE_TIME);
+					tokenRepository.save(tokenEntity);
+					sendHtmlEmail(verifyEmail.getEmail());
+				}
+			} else {
+				throw new PokedexException("トークンに紐づくユーザーが見つかりませんでした。(token: " + token + ")");
+			}
 		} catch (DataAccessResourceFailureException ex) {
 			throw new PokedexException("メール再認証に失敗しました。", ex.getCause().getMessage());
 		}
 	}
 
 	/**
-	 * トークンTBLとユーザーTBLを更新
+	 * アカウント本登録
 	 * 
-	 * @param Token <Token> トークン認証
+	 * @param tokenEntity <Token> トークン認証
 	 */
-	private void updTokenAndUser(Token token) {
+	public void updTokenAndUser(Token tokenEntity) {
+		User user = tokenEntity.getUser();
+		user.setAccountEnabled(true);
+		user.setUpdateDate(Constants.CURRENT_DATE_TIME);
+		userRepository.save(user);
 
+		tokenEntity.setUpdateDate(Constants.CURRENT_DATE_TIME);
+		tokenRepository.save(tokenEntity);
 	}
 }
