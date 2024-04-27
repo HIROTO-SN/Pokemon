@@ -57,7 +57,7 @@ public class AuthServiceImpl implements AuthService {
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				LoginDto.getUsername(), LoginDto.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return "User Logged-in successfully";
+		return Constants.SUCCESS;
 	}
 
 	@Override
@@ -97,7 +97,7 @@ public class AuthServiceImpl implements AuthService {
 		token.setCreatedDate(Constants.CURRENT_DATE_TIME);
 		tokenRepository.save(token);
 
-		return "User registered successfully!";
+		return Constants.SUCCESS;
 	}
 
 	@Override

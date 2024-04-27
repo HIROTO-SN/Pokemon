@@ -3,7 +3,7 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useLayoutEffect, useState } from "react";
 import { MdOutlineCatchingPokemon } from "react-icons/md";
-import { useLocation } from "react-router";
+import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
 import {
   ACTIVATED_ACCOUNT,
@@ -38,12 +38,12 @@ const VerifyEmail = ({ Banner }) => {
 
   /***** Definition ******/
   const loadFlg = useLoadFlg();
-  console.log(loadFlg);
   const setloadFlg = useSetLoadFlg();
   const location = useLocation();
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
   const [pageType, setPageType] = useState("");
+  console.log(pageType);
 
   /***** JS ******/
   useLayoutEffect(() => {
@@ -51,13 +51,14 @@ const VerifyEmail = ({ Banner }) => {
     const chkTokenAvailablility = async () => {
       const isTokenAvailable = await chkToken(token);
       isTokenAvailable ? setPageType("activated") : setPageType("re-activate");
+      setloadFlg(true);
     };
     if (token) {
       chkTokenAvailablility(token);
     } else {
       setPageType("verify");
+      setloadFlg(true);
     }
-    setloadFlg(true);
   }, []);
 
   if (!loadFlg) {
@@ -72,9 +73,8 @@ const VerifyEmail = ({ Banner }) => {
           {pageType === "re-activate" ? (
             <ReActivate />
           ) : (
-          pageType === "activated" || pageType === "verify" && (
             <Activate pageType={pageType} Banner={Banner} />
-          ))}
+          )}
         </div>
       </div>
     )
@@ -172,6 +172,7 @@ const ReActivate = () => {
     email: "",
   };
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   /***** JS ******/
   /**
@@ -199,6 +200,8 @@ const ReActivate = () => {
       setError("");
     }
     verifyEmail(accountInfo, urlParams.get("token"));
+    navigate("/verifyaccount/3");
+    window.location.reload();
   };
 
   /**
@@ -311,6 +314,7 @@ const LabelInputSet = ({ type, error, setError }) => {
       </Lal>
       <div css={formField}>
         <input
+          type={type === "password" ? "password" : "text"}
           css={customFormElements}
           onChange={(e) => onChangeHandler(e)}
           onInput={() => setError("")}
