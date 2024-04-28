@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import pokedex.pxt.mbo.pokedex.payload.Account.CheckNamesDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.JwtAuthResponse;
 import pokedex.pxt.mbo.pokedex.payload.Account.LoginDto;
 import pokedex.pxt.mbo.pokedex.payload.Account.RegisterDto;
 import pokedex.pxt.mbo.pokedex.services.AuthService;
@@ -28,9 +29,11 @@ public class AuthController {
 
 	// ログインREST API作成
 	@PostMapping(value = {"/login", "/signin"})
-	public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-		String response = authService.login(loginDto);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+		String token = authService.login(loginDto);
+		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+		jwtAuthResponse.setAccessToken(token);
+		return ResponseEntity.ok(jwtAuthResponse);
 	}
 
 	// ログインアカウントの追加
