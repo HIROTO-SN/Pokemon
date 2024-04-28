@@ -27,6 +27,7 @@ import pokedex.pxt.mbo.pokedex.payload.Account.RegisterDto;
 import pokedex.pxt.mbo.pokedex.repository.RoleRepository;
 import pokedex.pxt.mbo.pokedex.repository.TokenRepository;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
+import pokedex.pxt.mbo.pokedex.security.JwtTokenProvider;
 import pokedex.pxt.mbo.pokedex.services.AuthService;
 
 @Service
@@ -38,17 +39,17 @@ public class AuthServiceImpl implements AuthService {
 	private RoleRepository roleRepository;
 	private PasswordEncoder passwordEncoder;
 	private TokenRepository tokenRepository;
+	private JwtTokenProvider jwtTokenProvider;
 
-	public AuthServiceImpl(AuthenticationManager authenticationManager,
-			UserRepository userRepository,
-			RoleRepository roleRepository,
-			PasswordEncoder passwordEncoder,
-			TokenRepository tokenRepository) {
+	public AuthServiceImpl(AuthenticationManager authenticationManager, UserRepository userRepository,
+			RoleRepository roleRepository, PasswordEncoder passwordEncoder, TokenRepository tokenRepository,
+			JwtTokenProvider jwtTokenProvider) {
 		this.authenticationManager = authenticationManager;
 		this.userRepository = userRepository;
 		this.roleRepository = roleRepository;
 		this.passwordEncoder = passwordEncoder;
 		this.tokenRepository = tokenRepository;
+		this.jwtTokenProvider = jwtTokenProvider;
 	}
 
 	@Override
@@ -57,7 +58,8 @@ public class AuthServiceImpl implements AuthService {
 		authentication = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(
 				LoginDto.getUsername(), LoginDto.getPassword()));
 		SecurityContextHolder.getContext().setAuthentication(authentication);
-		return Constants.SUCCESS;
+		String token = jwtTokenProvider.generateToken(authentication);
+		return token;
 	}
 
 	@Override
