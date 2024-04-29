@@ -28,7 +28,7 @@ public class AuthController {
 	}
 
 	// ログインREST API作成
-	@PostMapping(value = {"/login", "/signin"})
+	@PostMapping(value = {"/login", "/signin"}, headers="AUTH-API-VERSION=1")
 	public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
 		String token = authService.login(loginDto);
 		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
@@ -37,14 +37,14 @@ public class AuthController {
 	}
 
 	// ログインアカウントの追加
-	@PostMapping(value = {"/register", "/signup"})
+	@PostMapping(value = {"/register", "/signup"}, headers="AUTH-API-VERSION=1")
 	public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
 		String response = authService.register(registerDto);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
 	// アカウント追加時のユーザー名、スクリーン名チェック
-	@PostMapping("/checknames")
+	@PostMapping(value="/checknames", headers="AUTH-API-VERSION=1")
 	public ResponseEntity<List<String>> checkNames(@RequestBody CheckNamesDto CheckNamesDto) {
 		List<String> response = authService.checkNames(CheckNamesDto);
 		if (response.size() > 0) {

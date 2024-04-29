@@ -22,13 +22,13 @@ public class EmailController {
 	@Autowired
 	private EmailService emailService;
 
-	@PostMapping("/send-email")
+	@PostMapping(value="/send-email", produces="application/vnd.mail.v1+json")
 	public void sendEmail(@RequestBody EmailRequest emailRequest) {
 		emailService.sendHtmlEmail(emailRequest.getTo());
 	}
 		
 	// メール認証時のトークンチェック
-	@GetMapping("/checkToken")
+	@GetMapping(value="/checkToken", produces="application/vnd.mail.v1+json")
 	public ResponseEntity<String> checkToken(@RequestParam String token) {
 		String response = emailService.chkEmailToken(token);
 		if (response == "success") {
@@ -39,7 +39,7 @@ public class EmailController {
 	}
 		
 	// メール再認証時
-	@PostMapping("/verifyEmail")
+	@PostMapping(value="/verifyEmail", produces="application/vnd.mail.v1+json")
 	public void verifyEmail(@RequestBody VerifyEmail verifyEmail) {
 		emailService.verifyEmailAccount(verifyEmail);
 	}

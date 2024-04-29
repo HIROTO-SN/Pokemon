@@ -1,11 +1,8 @@
 package pokedex.pxt.mbo.pokedex.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataAccessException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -38,7 +35,7 @@ public class PokemonController {
 	 * @param request <SearchDto> リクエスト
 	 * @return response <PokemonDto>
 	 */
-	@PostMapping("/pokeList")
+	@PostMapping(value="/pokeList", produces="application/vnd.poke.v1+json")
 	public ResponseEntity<List<PokemonDto>> getPokemonList(@RequestBody SearchDto searchDto) {
 		try {
 			List<PokemonDto> response = pokemonDataService.getPokemonList(searchDto);
@@ -62,7 +59,7 @@ public class PokemonController {
 	 * @param request <int> ポケモンId
 	 * @return response <PokemonDetailsDto>
 	 */
-	@GetMapping("/pokedetails")
+	@GetMapping(value="/pokedetails", produces="application/vnd.poke.v1+json")
 	public ResponseEntity<PokemonDetailsInfoDto> getPokemonDetails(@RequestParam("pokemonName") String pokemonName) {
 		try {
 			PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonName);
@@ -83,7 +80,7 @@ public class PokemonController {
 	 * @param request <int> ポケモンId
 	 * @return response <PokemonDto>
 	 */
-	@GetMapping("/pokePrevNext")
+	@GetMapping(value="/pokePrevNext", produces="application/vnd.poke.v1+json")
 	public ResponseEntity<List<Pagination>> getPokemonPrevNextData(@RequestParam("pokemonName") String pokemonName) {
 		List<Pagination> response = pokemonDataService.getPokemonPrevNextData(pokemonName);
 		return new ResponseEntity<List<Pagination>>(response, HttpStatus.OK);
