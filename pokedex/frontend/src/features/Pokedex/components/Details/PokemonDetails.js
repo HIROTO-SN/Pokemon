@@ -288,7 +288,7 @@ const PokemonDetails = () => {
               )}
             </section>
             <section css={[section, c.backgroundMod]}>
-              <div css={[column6, push1, animeFadeIn]}>
+              <div css={[column6, push1, animeFadeIn(0.5)]}>
                 {pokemonDetails.map((poke) => (
                   <div
                     css={c.isShow(poke.id === selectedForm)}
@@ -310,10 +310,10 @@ const PokemonDetails = () => {
                       key={poke.name + "_form_attribute_right"}
                     >
                       <MatchHeightTablet attribute={poke.attribute} />
-                      <div css={animeFadeIn}>
+                      <div css={animeFadeIn(0.5)}>
                         <TypeWeaksBox id="type" list={poke.attribute.types} />
                         <TypeWeaksBox
-                          id="weaknesses"
+                          id="weak"
                           list={poke.attribute.weaks}
                         />
                       </div>

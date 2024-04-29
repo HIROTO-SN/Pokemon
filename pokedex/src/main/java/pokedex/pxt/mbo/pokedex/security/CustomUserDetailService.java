@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.event.AuthenticationFailureBadCredentialsEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureCredentialsExpiredEvent;
 import org.springframework.security.authentication.event.AuthenticationFailureDisabledEvent;
@@ -22,6 +23,7 @@ import org.springframework.stereotype.Service;
 
 import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.User;
+import pokedex.pxt.mbo.pokedex.exception.PokedexException;
 import pokedex.pxt.mbo.pokedex.payload.SessionDto;
 import pokedex.pxt.mbo.pokedex.repository.UserRepository;
 import pokedex.pxt.mbo.pokedex.services.SessionService;
@@ -66,7 +68,7 @@ public class CustomUserDetailService implements UserDetailsService {
 		return new org.springframework.security.core.userdetails.User(
 			user.getUsername(),
 			user.getPassword(),
-			user.isAccountEnabled(),
+			user.getAccountEnabled(),
 			(!user.getAccountExpiration().isBefore(Constants.TODAY)),
 			(!user.getAccountPasswordExpiration().isBefore(Constants.TODAY)),
 			(user.getAccountLoginFailureCount() < Constants.LOGIN_MAX_FAIL_COUNT),
@@ -125,7 +127,7 @@ public class CustomUserDetailService implements UserDetailsService {
 	 */
 	@EventListener
 	public void handleFailureDisabledEvent(AuthenticationFailureDisabledEvent event) {
-		String username = event.getAuthentication().getName();
+		throw new PokedexException(HttpStatus.UNAUTHORIZED, "Your account is locked. Please verify your email and try again.");
 	}
 
 	/*

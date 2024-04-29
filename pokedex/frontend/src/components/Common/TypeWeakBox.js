@@ -5,12 +5,11 @@ import { clearTable } from "../CommonCss/Layout";
 import { Link } from "react-router-dom";
 import { li_pill } from "../CommonCss/PokedexCss";
 import { generateUUID } from "../CommonFunc/Common";
+import ToolTip from "./ToolTip";
 
 const TypeWeaksBox = ({ id, list }) => {
   /***** Definition ******/
   const c = useCssPokemonDetails();
-
-  console.log(list);
 
   return (
     <div id={id}>
@@ -18,10 +17,16 @@ const TypeWeaksBox = ({ id, list }) => {
       <ul css={[c.ul_style, clearTable]}>
         {list.map((_list, i) => (
           <li key={generateUUID()} css={[c.li_style(i), li_pill(_list.name)]}>
-            <Link to="/pokedex">
+            <Link to="/pokedex" state={{action: id, type_id:_list.type_id}}>
               <span>
                 {capitalizeFirstLetter(_list.name)}
-                {_list.effectivePoint > 2.0 && <i css={c.extraDamage}></i>}
+                {_list.effectivePoint > 2.0 && (
+                  <>
+                    <ToolTip text="Deals 4x damage">
+                      <i css={c.extraDamage} />
+                    </ToolTip>
+                  </>
+                )}
               </span>
             </Link>
           </li>
@@ -57,7 +62,7 @@ const useCssPokemonDetails = () => {
    * @param {Number} i - listのi番目
    */
   const li_style = (i) => css`
-    margin: ${i === (1 || 3 || 5) ? "0.5em 1.5625% 0 1.5625%" : "0.5em 0 0 0"};
+    margin: ${i === 1 || i === 4 || i === 7 ? "0.5em 1.5625% 0 1.5625%" : "0.5em 0 0 0"};
     float: left;
     width: 32.29%;
     border-radius: 5px;
@@ -72,6 +77,7 @@ const useCssPokemonDetails = () => {
       line-height: 100%;
       padding: 0.5em 0;
       width: 100%;
+      z-index: 3;
 
       > span {
         display: inline-block;
@@ -85,10 +91,11 @@ const useCssPokemonDetails = () => {
     background-color: #616161;
     position: absolute;
     top: -2px;
-    right: -24px;
+    right: 15px;
     height: 20px;
     vertical-align: middle;
     width: 20px;
+    z-index: 5;
 
     :before {
       content: "*";

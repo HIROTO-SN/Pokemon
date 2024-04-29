@@ -1,11 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import FilterHeader from "./FilterHeader";
+import { isStrEmptyOrNull } from "../../../../components/CommonFunc/Common";
+import { useSearchDispatch } from "../../contexts/SearchContext";
 import FilterContent from "./FilterContent";
+import FilterHeader from "./FilterHeader";
 import FilterMobile from "./FilterMobile";
 
-const Filter = () => {
+const Filter = ({ passedState }) => {
   const [toggleActive, setToggleActive] = useState(false);
 
   const filter = css`
@@ -124,7 +126,19 @@ const Filter = () => {
     }
   `;
 
+  /***** Definition ******/
+  const searchDipatch = useSearchDispatch();
+
   /***** JS ******/
+  useEffect(() => {
+    if (!isStrEmptyOrNull(passedState)) {
+      if (passedState.action === "type") {
+        searchDipatch({ type: "checkType", val: [passedState.type_id] });
+      } else if (passedState.action === "weak") {
+        searchDipatch({ type: "checkWeak", val: [passedState.type_id] });
+      }
+    }
+  })
   
   /***** JSX ******/
   return (

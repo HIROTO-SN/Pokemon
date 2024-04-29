@@ -16,12 +16,12 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import pokedex.pxt.mbo.pokedex.common.Constants;
 
 @Getter
 @Setter
@@ -61,7 +61,7 @@ public class User {
 	private boolean displayPokeClubProfile = true;
 	
 	@Column(name = "account_enabled")
-	private boolean accountEnabled = true;
+	private boolean accountEnabled = false;
 
 	@Column(name = "account_expiration")
 	private LocalDate accountExpiration;
@@ -87,19 +87,11 @@ public class User {
 					joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "user_id"),
 					inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "role_id"))
 	private Set<Role> roles;
+	
+	@OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+	private Token token;
 
-	/*
-	 * ログイン成功時にログイン失敗回数をインクリメントする
-	 */
-	public User resetLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, screenName, newsInfoReceiveFlg, updateCenterReceiveFlg, displayPokeClubProfile, accountEnabled, accountExpiration, accountPasswordExpiration, 0, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
+	public Boolean getAccountEnabled() {
+		return this.accountEnabled;
 	}
-
-	/*
-	 * ログイン失敗時にログイン失敗回数をインクリメントする
-	 */
-	public User incrementLoginFailureCount() {
-		return new User(user_id, username, password, email, country, birthday, screenName, newsInfoReceiveFlg, updateCenterReceiveFlg, displayPokeClubProfile, accountEnabled, accountExpiration, accountPasswordExpiration, accountLoginFailureCount + 1, accountLockedDate, createdDate, Constants.CURRENT_DATE_TIME, roles);
-	}
-
 }

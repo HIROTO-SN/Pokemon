@@ -9,9 +9,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import pokedex.pxt.mbo.pokedex.payload.CheckNamesDto;
-import pokedex.pxt.mbo.pokedex.payload.LoginDto;
-import pokedex.pxt.mbo.pokedex.payload.RegisterDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.CheckNamesDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.JwtAuthResponse;
+import pokedex.pxt.mbo.pokedex.payload.Account.LoginDto;
+import pokedex.pxt.mbo.pokedex.payload.Account.RegisterDto;
 import pokedex.pxt.mbo.pokedex.services.AuthService;
 
 
@@ -27,21 +28,23 @@ public class AuthController {
 	}
 
 	// ログインREST API作成
-	@PostMapping(value = {"/login", "/signin"})
-	public ResponseEntity<String> login(@RequestBody LoginDto loginDto) {
-		String response = authService.login(loginDto);
-		return ResponseEntity.ok(response);
+	@PostMapping(value = {"/login", "/signin"}, headers="AUTH-API-VERSION=1")
+	public ResponseEntity<JwtAuthResponse> login(@RequestBody LoginDto loginDto) {
+		String token = authService.login(loginDto);
+		JwtAuthResponse jwtAuthResponse = new JwtAuthResponse();
+		jwtAuthResponse.setAccessToken(token);
+		return ResponseEntity.ok(jwtAuthResponse);
 	}
 
 	// ログインアカウントの追加
-	@PostMapping(value = {"/register", "/signup"})
+	@PostMapping(value = {"/register", "/signup"}, headers="AUTH-API-VERSION=1")
 	public ResponseEntity<String> register(@RequestBody RegisterDto registerDto) {
 		String response = authService.register(registerDto);
 		return new ResponseEntity<>(response, HttpStatus.CREATED);
 	}
 	
 	// アカウント追加時のユーザー名、スクリーン名チェック
-	@PostMapping("/checknames")
+	@PostMapping(value="/checknames", headers="AUTH-API-VERSION=1")
 	public ResponseEntity<List<String>> checkNames(@RequestBody CheckNamesDto CheckNamesDto) {
 		List<String> response = authService.checkNames(CheckNamesDto);
 		if (response.size() > 0) {

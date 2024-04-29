@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <springProperty scope="context" name="log.path" source="logging.file.path"/>
+    <logger name="java.base" level="OFF"/>
+    <logger name="org.hibernate" level="OFF"/>
+    
+    <property name="logname" value="app" />
+    <property name="logpath" value="C:/Users/hirot/Desktop/react-3-apps/pokemon-app/pokedex/src/main/java/logs" />
+
+    <!-- FileAppender to output logs to a file -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <!--日ごとにログファイル作成 -->
+        <file>${logpath}/${logname}.log</file>
+        <!--日ごとにログファイル作成 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!--日付けが変わったら年月フォルダ内にzipファイル作成 -->
+            <fileNamePattern>${logpath}/${logname}-%d{yyyy-MM-dd}.log.zip</fileNamePattern>
+            <!--7日後に破棄 -->
+            <maxHistory>7</maxHistory>
+        </rollingPolicy>
+        <encoder>   
+            <charset>UTF-8</charset>
+            <pattern>%date %level [%thread] %logger %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <!-- INFO level or higher logs will be output to the file -->
+    <root level="info">
+        <appender-ref ref="FILE" />
+    </root>
+</configuration>

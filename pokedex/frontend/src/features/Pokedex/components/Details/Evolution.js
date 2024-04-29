@@ -7,8 +7,8 @@ import EvolutionList from "./Evolution-list";
 
 const Evolution = ({ evolutionList, evolutionPoint }) => {
   /***** Definition ******/
-  console.log(evolutionPoint);
-  console.log(evolutionList);
+  // console.log(evolutionPoint);
+  // console.log(evolutionList);
   const c = useCssEvolution();
 
   /***** JSX ******/
