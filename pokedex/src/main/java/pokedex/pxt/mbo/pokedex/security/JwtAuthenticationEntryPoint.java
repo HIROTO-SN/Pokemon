@@ -12,6 +12,9 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtAuthenticationEntryPoint implements AuthenticationEntryPoint {
+    /*
+    * JWT認証エラーが発生した場合に実行されるメソッド
+    */
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response,
             AuthenticationException authException)

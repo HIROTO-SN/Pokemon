@@ -15,7 +15,15 @@ import {
  */
 export async function nameAvailabilityCheck(target, value) {
   try {
-    const res = await axios.post(nameAvailabilityCheckUrl, { target, value });
+    const res = await axios.post(
+      nameAvailabilityCheckUrl,
+      { target, value },
+      {
+        headers: {
+          "AUTH-API-VERSION": 1,
+        },
+      }
+    );
     const result = { data: res.data, status: res.status };
     return result;
   } catch (e) {
@@ -31,7 +39,11 @@ export async function singUp(accountInfo) {
   const newCountry = accountInfo.country.name;
   accountInfo.country = newCountry;
   try {
-    const res = await axios.post(singupUrl, accountInfo);
+    const res = await axios.post(singupUrl, accountInfo, {
+      headers: {
+        "AUTH-API-VERSION": 1,
+      },
+    });
     return res.status;
   } catch (e) {
     console.log("error:" + e);
@@ -45,9 +57,17 @@ export async function singUp(accountInfo) {
  */
 export async function sendEmail(to) {
   try {
-    const res = await axios.post(sendEmailUrl, {
-      to: to,
-    });
+    const res = await axios.post(
+      sendEmailUrl,
+      {
+        to: to,
+      },
+      {
+        headers: {
+          Accept: "application/vnd.mail.v1+json",
+        },
+      }
+    );
     return res.status;
   } catch (e) {
     console.log("error:" + e);
@@ -61,9 +81,17 @@ export async function sendEmail(to) {
  */
 export async function chkToken(token) {
   try {
-    const res = await axios.get(chkTokenlUrl, {
-      params: { token: token },
-    });
+    const res = await axios.get(
+      chkTokenlUrl,
+      {
+        params: { token: token },
+      },
+      {
+        headers: {
+          Accept: "application/vnd.mail.v1+json",
+        },
+      }
+    );
     return res.status === 200 ? true : false;
   } catch (e) {
     console.log("error:" + e);
@@ -83,8 +111,12 @@ export function verifyEmail(accountInfo, token) {
       username: accountInfo.username,
       password: accountInfo.password,
       token: token,
-    }
-    axios.post(verifyEmailUrl, reqBody);
+    };
+    axios.post(verifyEmailUrl, reqBody, {
+      headers: {
+        Accept: "application/vnd.mail.v1+json",
+      },
+    });
   } catch (e) {
     console.log("error:" + e);
   }

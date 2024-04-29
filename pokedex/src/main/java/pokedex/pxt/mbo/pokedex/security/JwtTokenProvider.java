@@ -27,7 +27,9 @@ public class JwtTokenProvider {
 	@Value("${app.jwt.expiration-milliseconds}")
 	private long jwtExpirationDate;
 
-	// generate JWT token
+	/*
+	* トークンを生成
+	*/
 	public String generateToken(Authentication authentication) {
 		String username = authentication.getName();
 		Date currentDate = new Date();
@@ -41,11 +43,16 @@ public class JwtTokenProvider {
 		return token;
 	}
 
+	/*
+	* 認証アルゴリズム
+	*/
 	private Key key() {
 		return Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtSecret));
 	}
 
-	// get username from JWT token
+	/*
+	* ユーザー名を取得
+	*/
 	public String getUsername(String token) {
 		return Jwts.parser()
 				.verifyWith((SecretKey) key())
@@ -54,15 +61,17 @@ public class JwtTokenProvider {
 				.getPayload()
 				.getSubject();
 	}
-
-	// validate JWT token
+ 
+	/*
+	* トークン認証
+	*/
 	public boolean validateToken(String token) {
 		try {
 			Jwts.parser()
 					.verifyWith((SecretKey)key())
-					.build()
+				.build()
 					.parse(token);
-			return true;
+		return true;
 		} catch (MalformedJwtException e) {
 			throw new PokedexException(HttpStatus.BAD_REQUEST, "Invalid JWT token");
  		} catch (ExpiredJwtException e) {

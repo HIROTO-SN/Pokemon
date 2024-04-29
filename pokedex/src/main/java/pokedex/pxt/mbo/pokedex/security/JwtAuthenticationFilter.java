@@ -27,6 +27,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		this.userDetailsService = userDetailsService;
 	}
 
+	/*
+	* トークンとユーザーの紐づけ
+	*/
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
 			throws ServletException, IOException {
@@ -48,6 +51,9 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 		filterChain.doFilter(request, response);
 	}
 
+	/*
+	* ヘッダーからトークンを取得
+	*/
 	private String getTokenFromRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
 		if (StringUtils.hasText(bearerToken) && bearerToken.startsWith("Bearer ")) {
