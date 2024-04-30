@@ -16,6 +16,17 @@ export const lal_updates_check =
   "News and updates about Pokémon Center (our official online shop)";
 export const lal_term_check = "I accept the Pokemon.com Terms of Use.";
 
+// VerifyEmail
+export const CREATE_ACCOUNT = {
+  TITLE: "Hello! Thank you for creating an account!",
+  CONTENT: "  \nWe have sent you a verification email. Please verify your account\nbefore logging in to the Pokémon Trainer Club. "
+}
+export const ACTIVATED_ACCOUNT = {  
+  TITLE: "Account created!",
+  CONTENT: "Your account has been successfully activated. Please go to login page and explore the Pokémon Trainer Club!"
+}
+
+
 /* POKEDEX */
 export const NUMBER_RANGE = {
   MIN: 1,

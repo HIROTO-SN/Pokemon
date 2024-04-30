@@ -1,8 +1,9 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { accountButton, notchBottomCenter } from "./Login";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { hiddenMobile } from "../CommonCss/Layout";
+import { sendEmail } from "../api/SignUpApi";
+import { accountButton, notchBottomCenter } from "./Login";
 
 const LoginCreate = () => {
   /***** CSS ******/
@@ -71,7 +72,7 @@ const LoginCreate = () => {
       <button 
         id="user-account-signup"
         css={[accountButton, buttonLightblue]}
-        onClick={() => navigate("/verifyage")}
+        onClick={() => navigate("/verifyaccount/1")}
       >
         Create an Account!
       </button>

@@ -21,6 +21,7 @@ import {
   inRowSelect,
   submitButton,
   customScrollbar,
+  requiredSVG,
 } from "../../CommonCss/AccountCss";
 import {
   alertBox,
@@ -63,7 +64,7 @@ import {
   p_password,
   p_username,
 } from "../../../constants/ConstantsGeneral";
-import { nameAvailabilityCheck, singUp } from "../../api/SignUpApi";
+import { nameAvailabilityCheck, sendEmail, singUp } from "../../api/SignUpApi";
 
 const VerifyAccount = ({ Banner }) => {
   /***** CSS ******/
@@ -117,14 +118,6 @@ const VerifyAccount = ({ Banner }) => {
     font-weight: 500;
     line-height: 125%;
     margin: 0.5em 0;
-  `;
-
-  //　必須サイン（ポケモンボールSVG）
-  const requiredSVG = css`
-    height: 0.5em;
-    width: 0.5em;
-    margin-right: 0.2em;
-    margin-bottom: 0.3em;
   `;
 
   // Terms&Condition囲い
@@ -194,9 +187,7 @@ const VerifyAccount = ({ Banner }) => {
   /***** JS ******/
   // 初期表示時処理
   useEffect(() => {
-    const newBirth = sessionStorage.getItem('birth');
-    // const newCountry = JSON.parse(sessionStorage.getItem('country'));
-    // setAccountInfo({ ...accountInfo, birth: newBirth, country: newCountry});
+    window.scroll({ top: 0, behavior: "smooth" });
   }, []);
 
   const checkAvailHandler = async (target) => {
@@ -362,23 +353,16 @@ const VerifyAccount = ({ Banner }) => {
       }
     });
     if (!errFlg) {
-      await singUp(accountInfo);
-      sessionStorage.clear();
-      navigate("/verifyemail");
+      const res_sign = await singUp(accountInfo);
+      const res_mail = await sendEmail(accountInfo.email);
+      if (res_sign === 200 && res_mail === 200) {
+        sessionStorage.clear();
+        navigate("/verifyaccount/3");
+      } else {
+        window.location.reload();
+      }
     }
   };
-
-  // Continueボタン押下時の重複チェックとメッセージ作成
-  // const checkDuplicateForContinue = (target, currentErr) => {
-  //   const _available = available.find((el) => el.name === target);
-  //   const _response = response.find((el) => el.name === target);
-  //   // 重複があるとき
-  //   if (_response.status === 226) {
-  //     return "That " + _available.message + "\n" + _response.data.join("\n");
-  //   } else {
-  //     return currentErr;
-  //   }
-  // };
 
   /***** JSX ******/
   return (
@@ -425,7 +409,7 @@ const VerifyAccount = ({ Banner }) => {
                   />
                   <p css={nameFieldDesc}>{p_username}</p>
                   {error.username != "" && (
-                    <AlertSignUp error={error.username} />
+                    <AlertSignUp error={error.username} position="relative" />
                   )}
                 </div>
                 <label htmlFor="password">
@@ -453,7 +437,7 @@ const VerifyAccount = ({ Banner }) => {
                   />
                   <p css={nameFieldDesc}>{p_password}</p>
                   {error.password != "" && (
-                    <AlertSignUp error={error.password} />
+                    <AlertSignUp error={error.password} position="relative"/>
                   )}
                 </div>
                 <label htmlFor="confirm_password">
@@ -480,7 +464,7 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={50}
                   />
                   {error.confirmPassword != "" && (
-                    <AlertSignUp error={error.confirmPassword} />
+                    <AlertSignUp error={error.confirmPassword} position="relative"/>
                   )}
                 </div>
                 <label htmlFor="email">
@@ -505,7 +489,7 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={75}
                   />
                   <p css={nameFieldDesc}>{p_email}</p>
-                  {error.email != "" && <AlertSignUp error={error.email} />}
+                  {error.email != "" && <AlertSignUp error={error.email} position="relative"/>}
                 </div>
                 <label htmlFor="confirm_email">
                   <MdOutlineCatchingPokemon css={requiredSVG} />
@@ -529,7 +513,7 @@ const VerifyAccount = ({ Banner }) => {
                     maxLength={75}
                   />
                   {error.confirmEmail != "" && (
-                    <AlertSignUp error={error.confirmEmail} />
+                    <AlertSignUp error={error.confirmEmail} position="relative"/>
                   )}
                 </div>
                 <div></div>
@@ -610,7 +594,7 @@ const VerifyAccount = ({ Banner }) => {
                     onClick={() => checkAvailHandler("screenName")}
                   />
                   {error.screenName != "" && (
-                    <AlertSignUp error={error.screenName} />
+                    <AlertSignUp error={error.screenName} position="relative"/>
                   )}
                 </div>
               </div>
@@ -638,16 +622,16 @@ const VerifyAccount = ({ Banner }) => {
               <div></div>
             </div>
           </div>
+          <p style={{ paddingTop: "20px", marginTop: "1.5em" }}>
+            {p_continue_warning}
+            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>.
+          </p>
           <AcceptInfo
             id="terms"
             lal={lal_term_check}
             handler={checkClickHandler}
             termAlert={termAlert}
           />
-          <p style={{ paddingTop: "20px" }}>
-            {p_continue_warning}
-            <a href="http://www.pokemon.com/us/terms-of-use/">Terms of Use</a>.
-          </p>
           <div></div>
           <input
             type="button"

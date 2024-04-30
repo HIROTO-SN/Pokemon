@@ -1,17 +1,22 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
+import { animeFadeIn } from "../../CommonCss/PokedexCss";
 
-const AlertSignUp = ({ error }) => {
+const AlertSignUp = ({ error, position }) => {
   /***** CSS ******/
-  const inlineFormError = css`
+  /**
+   * 全体
+   * @param {String} p: ポジション位置
+   */
+  const inlineFormError = (p) => css`
     background-color: #616161;
     border-radius: 5px;
     color: #fff;
     float: left;
-    margin-top: 1em;
-    padding-left: 10%;
-    position: relative;
-    width: 90%;
+    margin-top: ${p === "relative" ? "1em" : "0"};
+    padding-left: ${p === "relative" ? "10%" : "0"};
+    position: ${p};
+    width: ${p === "relative" ? "90%" : "30%"};
     :before {
       content: "!";
       color: #fff;
@@ -43,29 +48,41 @@ const AlertSignUp = ({ error }) => {
       z-index: 2;
     }
 
-		> span {
-			float: left; 
-			font-size: 87.5%;
-			line-height: 150%;
-			margin: 0.75em 1.5em;
-		}
+    > span {
+      float: left;
+      font-size: 87.5%;
+      line-height: 150%;
+      margin: 0.75em 1.5em;
+      ${p === "absolute" && "width: 86.9%"}
+    }
   `;
 
-	const errorList = css`
-		> li {
-			white-space: pre-line;
-		}
-	`
+  /**
+   * リスト部
+   * @param {String} p: ポジション位置
+   */
+  const errorList = (p) => css`
+    > li {
+      white-space: pre-line;
+      ${p === "absolute" && "margin-left: 6.5%"}
+    }
+  `;
 
   return (
-		<div css={inlineFormError}>
-			<span>
-				<ul css={errorList}>
-					<li>{error}</li>
-				</ul>
-			</span>
-		</div>
-	)
+    <div
+      css={
+        position === "relative"
+          ? inlineFormError(position)
+          : [inlineFormError(position), animeFadeIn(0.6)]
+      }
+    >
+      <span>
+        <ul css={errorList(position)}>
+          <li>{error}</li>
+        </ul>
+      </span>
+    </div>
+  );
 };
 
 export default AlertSignUp;

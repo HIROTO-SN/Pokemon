@@ -1,7 +1,6 @@
 package pokedex.pxt.mbo.pokedex.controllers;
 
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import lombok.extern.slf4j.Slf4j;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.Pagination;
@@ -23,6 +23,7 @@ import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
 @RestController
 @RequestMapping("/pokedex")
 @CrossOrigin(origins = "http://localhost:3000")
+@Slf4j
 public class PokemonController {
 
 	@Autowired
@@ -34,13 +35,21 @@ public class PokemonController {
 	 * @param request <SearchDto> リクエスト
 	 * @return response <PokemonDto>
 	 */
-	@PostMapping("/pokeList")
+	@PostMapping(value="/pokeList", produces="application/vnd.poke.v1+json")
 	public ResponseEntity<List<PokemonDto>> getPokemonList(@RequestBody SearchDto searchDto) {
-		List<PokemonDto> response = pokemonDataService.getPokemonList(searchDto);
-		if (response.size() == 0) {
-			return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.OK);
+		try {
+			List<PokemonDto> response = pokemonDataService.getPokemonList(searchDto);
+			if (response.size() == 0) {
+				return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.OK);
+			}
+		} catch (RuntimeException ex) {
+			log.error("Unexpected runtime exception occurred: {}", ex.getMessage(), ex);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+		} catch (Exception ex) {
+			log.error("An unexpected error occurred", ex);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -50,13 +59,18 @@ public class PokemonController {
 	 * @param request <int> ポケモンId
 	 * @return response <PokemonDetailsDto>
 	 */
-	@GetMapping("/pokedetails")
+	@GetMapping(value="/pokedetails", produces="application/vnd.poke.v1+json")
 	public ResponseEntity<PokemonDetailsInfoDto> getPokemonDetails(@RequestParam("pokemonName") String pokemonName) {
-		PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonName);
-		if (response == null) {
-			return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.NO_CONTENT);
-		} else {
-			return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.OK);
+		try {
+			PokemonDetailsInfoDto response = pokemonDataService.getPokemonDetails(pokemonName);
+			if (response == null) {
+				return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.NO_CONTENT);
+			} else {
+				return new ResponseEntity<PokemonDetailsInfoDto>(response, HttpStatus.OK);
+			}
+		} catch (Exception ex) {
+			log.error("An unexpected error occurred", ex);
+			return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
 
@@ -66,7 +80,7 @@ public class PokemonController {
 	 * @param request <int> ポケモンId
 	 * @return response <PokemonDto>
 	 */
-	@GetMapping("/pokePrevNext")
+	@GetMapping(value="/pokePrevNext", produces="application/vnd.poke.v1+json")
 	public ResponseEntity<List<Pagination>> getPokemonPrevNextData(@RequestParam("pokemonName") String pokemonName) {
 		List<Pagination> response = pokemonDataService.getPokemonPrevNextData(pokemonName);
 		return new ResponseEntity<List<Pagination>>(response, HttpStatus.OK);
