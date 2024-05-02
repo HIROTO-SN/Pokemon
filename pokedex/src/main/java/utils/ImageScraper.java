@@ -28,25 +28,35 @@ public class ImageScraper {
 		WebDriver driver = new ChromeDriver();
 
 		// website指定
-		driver.get("https://www.pokemon.com/us/pokedex/raichu");
+		driver.get("https://www.pokemon.com/us/pokedex/venusaur");
+
+		// 全ての<p>タグを抽出
+		List<WebElement> pTags = driver.findElements(By.cssSelector("p.x-version, p.y-version"));
+
+		// pタグのテキストを取得
+		for (WebElement pTag : pTags) {
+			String text = pTag.getText();
+			System.out.println("Text: " + text);
+		}
 
 		// 全てのimageを抽出
-		List<WebElement> images = driver.findElements(By.tagName("img"));
+		// List<WebElement> images = driver.findElements(By.tagName("img"));
 
-		// imageのソース部を抜き出す
-		for (WebElement image : images) {
-			String src = image.getAttribute("src");
-			if (src != null && src.contains("assets.pokemon.com/assets/cms2/img/pokedex/full")) {
-				System.out.println("Image Source: " + src);
-				try {
-					// imageダウンロード
-					downloadImage(src);
-					System.out.println("Image downloaded: " + src);
-				} catch (Exception e) {
-					System.err.println("Error downloading image: " + e.getMessage());
-				}
-			}
-		}
+		// // imageのソース部を抜き出す
+		// for (WebElement image : images) {
+		// String src = image.getAttribute("src");
+		// if (src != null &&
+		// src.contains("assets.pokemon.com/assets/cms2/img/pokedex/full")) {
+		// System.out.println("Image Source: " + src);
+		// try {
+		// // imageダウンロード
+		// downloadImage(src);
+		// System.out.println("Image downloaded: " + src);
+		// } catch (Exception e) {
+		// System.err.println("Error downloading image: " + e.getMessage());
+		// }
+		// }
+		// }
 
 		// ドライバーを破棄
 		driver.quit();
@@ -57,10 +67,10 @@ public class ImageScraper {
 		String fileName = imageUrl.substring(imageUrl.lastIndexOf("/") + 1);
 		// String fileName = "";
 		// try {
-		// 	int parsedFileName = Integer.parseInt(fileNameString.replace("_f3.png", ""));
-		// 	fileName = String.format("%04d", parsedFileName) + ".png";
+		// int parsedFileName = Integer.parseInt(fileNameString.replace("_f3.png", ""));
+		// fileName = String.format("%04d", parsedFileName) + ".png";
 		// } catch (NumberFormatException e) {
-		// 	e.printStackTrace();
+		// e.printStackTrace();
 		// }
 
 		// ダウンロードフォルダーディレクトリー作成

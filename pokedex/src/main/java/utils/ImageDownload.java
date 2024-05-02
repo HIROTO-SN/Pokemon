@@ -17,8 +17,7 @@ public class ImageDownload {
 
 		// URLを作成し接続
 		String urlbase = "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/";
-		int i;
-		for (i = 10163; i <= 10175; i++) {
+		for (int i = 10176; i <= 10200; i++) {
 			String imageUrl = urlbase + i + ".png";
 			URL url = new URL(imageUrl);
 			URLConnection connection = url.openConnection();
