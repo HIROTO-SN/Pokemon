@@ -127,6 +127,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 									.and(spec.idBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
 									.and(spec.nameContains(searchDto.getSearchInput()))
 									.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
+									.and(spec.weakSearch(searchDto.getWeaks()))
 									.and(spec.abilitySearch(searchDto.getAbility(), "1", "2"))
 									.and(spec.heightWeightSearch(searchDto.getHeightPoint(), "height"))
 									.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight")),

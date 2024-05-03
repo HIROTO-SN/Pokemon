@@ -2,6 +2,7 @@ package pokedex.pxt.mbo.pokedex.specification;
 
 import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -10,8 +11,13 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import pokedex.pxt.mbo.pokedex.common.Constants;
+import pokedex.pxt.mbo.pokedex.repository.TypeChartRepository;
 
 public class PokemonSpecification<Pokemon> {
+
+	@Autowired
+	private TypeChartRepository typeChartRepository;
+
 	/**
 	 * PokemonIdで検索
 	 * 
@@ -114,6 +120,35 @@ public class PokemonSpecification<Pokemon> {
 					.equal(root.join("type" + no, JoinType.LEFT)
 							.get("typeId"), type.intValue());
 		};
+	}
+
+	/**
+	 * タイプによる検索成形用
+	 * 
+	 * @param weaks List<Integer> 検索対象WeakIdリスト
+	 * @return Specification<Pokemon>
+	 */
+	public Specification<Pokemon> weakSearch(List<Integer> weaks) {
+		if (weaks == null) {
+			return null;
+		} else {
+			List<TypePair> typePair;
+			typeChartRepository.findAll().forEach(w -> {
+				for (int i = 1; i <= Constants.POKE_TYPE.get("TYPE_COUNT"); i++) {
+					String a = "a";
+
+				}
+			});
+			return null;
+		}
+	}
+
+	/**
+	 * Weakリスト作成用のタイプペアオブジェ
+	 */
+	private static class TypePair {
+		public int type_1;
+		public int type_2;
 	}
 
 	/**

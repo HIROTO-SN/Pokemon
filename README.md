@@ -1,70 +1,83 @@
-# Getting Started with Create React App
+# REST API with Docker Desktop in Java and React
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+This project demonstrates how to create a RESTful API using Java for the backend, React for the frontend, and MySQL for the database, with the backend and database containerized using Docker Desktop.
 
-## Available Scripts
+## Prerequisites
 
-In the project directory, you can run:
+- Docker Desktop installed on your machine
+- Java Development Kit (JDK)
+- Node.js and npm installed
+- MySQL client or administration tool (optional for database management)
 
-### `npm start`
+## Backend Setup
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+1. Clone this repository to your local machine.
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+2. Navigate to the `backend` directory.
 
-### `npm test`
+    ```bash
+    cd backend
+    ```
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+3. Build the Docker image for the backend Java application.
 
-### `npm run build`
+    ```bash
+    docker build -t backend .
+    ```
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+4. Run the Docker container for the backend.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+    ```bash
+    docker run -d -p 8080:8080 --name backend backend
+    ```
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+5. Access the backend API at: http://localhost:8080
 
-### `npm run eject`
+## Database Setup
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+1. Ensure Docker Desktop is running on your machine.
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+2. Navigate to the root directory of the project.
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+3. Start the MySQL database container using Docker Compose.
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+    ```bash
+    docker-compose up -d
+    ```
 
-## Learn More
+4. Access the MySQL database using your preferred client or administration tool.
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+    - Host: localhost
+    - Port: 3306
+    - Username: develop
+    - Password: develop
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+## Frontend Setup
 
-### Code Splitting
+1. Navigate to the `frontend` directory.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+    ```bash
+    cd frontend
+    ```
 
-### Analyzing the Bundle Size
+2. Start the frontend development server.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+    ```bash
+    npm start
+    ```
 
-### Making a Progressive Web App
+3. Access the frontend application at: http://localhost:3000
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## Usage
 
-### Advanced Configuration
+- The frontend provides a user interface to interact with the RESTful API endpoints exposed by the backend.
+- You can perform CRUD operations on resources such as users, products, etc.
+- Explore the code in the `backend` and `frontend` directories to understand how the application works.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
+## Contributing
 
-### Deployment
+Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
+## License
 
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+[MIT](https://choosealicense.com/licenses/mit/)
