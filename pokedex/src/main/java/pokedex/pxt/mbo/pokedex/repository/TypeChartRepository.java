@@ -1,5 +1,8 @@
 package pokedex.pxt.mbo.pokedex.repository;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
@@ -10,4 +13,5 @@ public interface TypeChartRepository extends JpaRepository<TypeChart, Integer>, 
 	 * type1とtype2で検索
 	 */
 	public TypeChart findByType1AndType2(Integer type1, Integer type2);
+
 }
