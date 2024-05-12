@@ -2,7 +2,6 @@ package pokedex.pxt.mbo.pokedex.specification;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 
 import jakarta.persistence.criteria.CriteriaBuilder;
@@ -11,12 +10,9 @@ import jakarta.persistence.criteria.JoinType;
 import jakarta.persistence.criteria.Predicate;
 import jakarta.persistence.criteria.Root;
 import pokedex.pxt.mbo.pokedex.common.Constants;
-import pokedex.pxt.mbo.pokedex.repository.TypeChartRepository;
+import pokedex.pxt.mbo.pokedex.services.PokemonDataService.TypePair;
 
 public class PokemonSpecification<Pokemon> {
-
-	@Autowired
-	private TypeChartRepository typeChartRepository;
 
 	/**
 	 * PokemonIdで検索
@@ -123,32 +119,30 @@ public class PokemonSpecification<Pokemon> {
 	}
 
 	/**
-	 * タイプによる検索成形用
+	 * 弱点（weaks）による検索成形用
 	 * 
-	 * @param weaks List<Integer> 検索対象WeakIdリスト
+	 * @param weaks List<TypePair> 検索対象タイプIDペアリスト
+	 * @param n1    String type1
+	 * @param n2    String type2
 	 * @return Specification<Pokemon>
 	 */
-	public Specification<Pokemon> weakSearch(List<Integer> weaks) {
+	public Specification<Pokemon> weakSearch(List<TypePair> weaks, String n1, String n2) {
 		if (weaks == null) {
 			return null;
 		} else {
-			List<TypePair> typePair;
-			typeChartRepository.findAll().forEach(w -> {
-				for (int i = 1; i <= Constants.POKE_TYPE.get("TYPE_COUNT"); i++) {
-					String a = "a";
-
+			Specification<Pokemon> retSpecification = null;
+			for (TypePair weak : weaks) {
+				Specification<Pokemon> spec = weak.type_2 == null ? typeEqual(weak.type_1, n1)
+						: typeEqual(weak.type_1, n1).and(typeEqual(weak.type_2, n2))
+								.or(typeEqual(weak.type_1, n2).and(typeEqual(weak.type_2, n1)));
+				if (retSpecification == null) {
+					retSpecification = spec;
+				} else {
+					retSpecification = retSpecification.or(spec);
 				}
-			});
-			return null;
+			}
+			return retSpecification;
 		}
-	}
-
-	/**
-	 * Weakリスト作成用のタイプペアオブジェ
-	 */
-	private static class TypePair {
-		public int type_1;
-		public int type_2;
 	}
 
 	/**
