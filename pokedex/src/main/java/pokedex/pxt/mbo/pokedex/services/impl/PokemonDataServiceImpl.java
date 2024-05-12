@@ -127,7 +127,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 									.and(spec.idBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
 									.and(spec.nameContains(searchDto.getSearchInput()))
 									.and(spec.typeSearch(searchDto.getTypes(), "1", "2"))
-									.and(spec.weakSearch(searchDto.getWeaks()))
+									.and(spec.weakSearch(getWeakTypePair(searchDto.getWeaks()), "1", "2"))
 									.and(spec.abilitySearch(searchDto.getAbility(), "1", "2"))
 									.and(spec.heightWeightSearch(searchDto.getHeightPoint(), "height"))
 									.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight")),
@@ -496,6 +496,44 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			}
 		}
 		return weakDtoList;
+	}
+
+	/**
+	 * PokemonのWeakペアリストを取得
+	 * 
+	 * @param weakList <List<Integer>> 検索Weakリスト
+	 * @return <SearchDto> SearchDtoオブジェクト(検索内容)
+	 */
+	private List<TypePair> getWeakTypePair(List<Integer> weakList) {
+		List<TypePair> typePair = new ArrayList<>();
+		if (weakList.size() > 0) {
+			typeChartRepository.findAll().forEach(weak -> {
+				boolean matchFlg = weakList.stream().allMatch(id -> {
+					try {
+						double effectivePoint = (double) weak.getClass().getField("effective" + id + "Point").get(weak);
+						return effectivePoint >= 2.0;
+					} catch (NoSuchFieldException e) {
+						e.printStackTrace();
+						return false;
+					} catch (IllegalAccessException e) {
+						e.printStackTrace();
+						return false;
+					}
+				});
+				if (matchFlg) {
+					boolean addFlg = typePair.stream().anyMatch(pair -> {
+						if (weak.getType2() != null) {
+							return pair.type_1 == weak.getType2() && pair.type_2 == weak.getType1();
+						}
+						return false;
+					});
+					if (!addFlg) {
+						typePair.add(new TypePair(weak.getType1(), weak.getType2()));
+					}
+				}
+			});
+		}
+		return typePair;
 	}
 
 	/**
