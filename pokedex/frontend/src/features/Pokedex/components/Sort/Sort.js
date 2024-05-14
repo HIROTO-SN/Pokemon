@@ -94,6 +94,7 @@ const Sort = () => {
   /***** JS ******/
   const clickSurprise = async() => {
     // actionTypeを"surprise"に指定して検索
+    searchDispatch({ type: "reset", val: "asc" });
     await pokeSearchSubmit(initSearchState, setPokemon, searchDispatch, setNoResult, "surprise");
   };
 
