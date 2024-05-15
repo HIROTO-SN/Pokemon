@@ -1,15 +1,28 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { CgPokemon } from "react-icons/cg";
 import { IoIosArrowDown, IoIosArrowUp } from "react-icons/io";
+import {
+  useSearchCondition,
+  useSearchDispatch,
+  useSetLoader,
+  useSetNoResult,
+  useSetPokemonData,
+} from "../../features/Pokedex/contexts/SearchContext";
 import { pokeSearchSubmit } from "../../features/Pokedex/utils/PokeCommmonFunc";
-import { useSearchCondition, useSearchDispatch, useSetLoader, useSetNoResult, useSetPokemonData } from "../../features/Pokedex/contexts/SearchContext";
 
 /**
  * カスタムセレクトボックス
  */
-const CustomSelect = ({ type: typeAction, state, dispatch, list, custom, clickSubmit }) => {
+const CustomSelect = ({
+  type: typeAction,
+  state,
+  dispatch,
+  list,
+  custom,
+  clickSubmit,
+}) => {
   /***** CSS *****/
   const useCss = useSelectCss();
   const useSearch = useSearchCondition();
@@ -20,15 +33,22 @@ const CustomSelect = ({ type: typeAction, state, dispatch, list, custom, clickSu
 
   /***** Definition ******/
   const [isListOpened, setIsListOpened] = useState(false);
+  const selectBoxRef = useRef(null);
 
   /***** JS ******/
-  const listItemClickHandler = async(list, clickSubmit) => {
+  const listItemClickHandler = async (list, clickSubmit) => {
     arrowClickHandler();
-    dispatch({ type: typeAction, val: list.id })
-    if (clickSubmit && state !== list.id ) {
+    dispatch({ type: typeAction, val: list.id });
+    if (clickSubmit && state !== list.id) {
       setLoader(true);
-      const newSearch = { ...useSearch, sortBy: list.id};
-      await pokeSearchSubmit(newSearch, setPokemon, searchDipatch, setNoResult, "search");
+      const newSearch = { ...useSearch, sortBy: list.id };
+      await pokeSearchSubmit(
+        newSearch,
+        setPokemon,
+        searchDipatch,
+        setNoResult,
+        "search"
+      );
       setLoader(false);
     }
   };
@@ -40,12 +60,32 @@ const CustomSelect = ({ type: typeAction, state, dispatch, list, custom, clickSu
     setIsListOpened(!isListOpened);
   };
 
+  /**
+   * セレクトボックス外クリック時のイベント処理
+   * @param  {Object} event - イベントオブジェクト
+   */
+  const handleClickOutside = (event) => {
+    if (selectBoxRef.current && !selectBoxRef.current.contains(event.target)) {
+      setIsListOpened(false);
+    }
+  };
+
+  /**
+   * セレクトボックス外クリック時のイベント追加、解除処理
+   */
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
+
   /***** JSX ******/
   return (
-    <div css={useCss.wrapper}>
+    <div ref={selectBoxRef} css={useCss.wrapper}>
       <label onClick={() => arrowClickHandler()}>
         <CgPokemon css={useCss.svg1Custom()} />
-        {list.find(li => li.id === state).name}
+        {list.find((li) => li.id === state).name}
         {isListOpened ? (
           <IoIosArrowUp
             css={useCss.svg2Custom()}
@@ -189,7 +229,7 @@ const useSelectCss = () => {
     padding: 0.75em 3.125% 0.675em;
     cursor: pointer;
     :hover {
-      color: ${custom.listWordColor != void 0 && custom.listWordColor };
+      color: ${custom.listWordColor != void 0 && custom.listWordColor};
       background-color: #313131;
     }
   `;
