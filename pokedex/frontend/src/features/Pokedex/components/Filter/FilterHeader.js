@@ -17,6 +17,7 @@ import {
   useSetPokemonData,
 } from "../../contexts/SearchContext.js";
 import { pokeSearchSubmit } from "../../utils/PokeCommmonFunc.js";
+import FilterHeaderSearch from "./FilterHeader-search.js";
 
 const FilterHeader = () => {
   /***** Definition ******/
@@ -42,6 +43,8 @@ const FilterHeader = () => {
     setLoader(false);
   };
 
+  console.log(useSearch);
+
   /***** JSX ******/
   return (
     <DivFilterHead>
@@ -49,23 +52,7 @@ const FilterHeader = () => {
         <div css={[column6, push1]}>
           <div css={filterTextSearch}>
             <label>Name or Number</label>
-            <div css={searchInputItems}>
-              <span css={twitterTypehead}>
-                <input css={ttHint}></input>
-                <input
-                  id="searchInput"
-                  onBlur={(e) => searchInputChange(e)}
-                ></input>
-                <pre></pre>
-              </span>
-              <Scroll
-                to="result"
-                smooth={true}
-                duration={1000}
-                css={buttonSearch}
-                onClick={() => clickSearch()}
-              ></Scroll>
-            </div>
+            <FilterHeaderSearch/>
           </div>
           <p css={subtitle}>
             Use the Advanced Search to explore Pokémon by type, weakness,
