@@ -106,15 +106,15 @@ public class PokemonSpecification<Pokemon> {
 	/**
 	 * タイプによる検索
 	 * 
-	 * @param type Integer タイプID
-	 * @param no   String タイプNo
+	 * @param typeId Integer タイプID
+	 * @param no     String タイプNo
 	 * @return Specification<Pokemon>
 	 */
-	public Specification<Pokemon> typeEqual(Integer type, String no) {
-		return type == null ? null : (root, query, builder) -> {
-			return builder
-					.equal(root.join("type" + no, JoinType.LEFT)
-							.get("typeId"), type.intValue());
+	public Specification<Pokemon> typeEqual(Integer typeId, String no) {
+		return (root, query, builder) -> {
+			return builder.equal(root.get("type" + no).get("typeId"), typeId);
+			// .equal(root.join("type" + no, JoinType.LEFT)
+			// .get("typeId"), type.intValue());
 		};
 	}
 
@@ -132,9 +132,7 @@ public class PokemonSpecification<Pokemon> {
 		} else {
 			Specification<Pokemon> retSpecification = null;
 			for (TypePair weak : weaks) {
-				Specification<Pokemon> spec = weak.type_2 == null ? typeEqual(weak.type_1, n1)
-						: typeEqual(weak.type_1, n1).and(typeEqual(weak.type_2, n2))
-								.or(typeEqual(weak.type_1, n2).and(typeEqual(weak.type_2, n1)));
+				Specification<Pokemon> spec = typeEqual(weak.type_1, n1).and(typeEqual(weak.type_2, n2));
 				if (retSpecification == null) {
 					retSpecification = spec;
 				} else {

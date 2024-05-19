@@ -520,16 +520,19 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 						return false;
 					}
 				});
+				// if (matchFlg) {
+				// 	boolean addFlg = typePair.stream().anyMatch(pair -> {
+				// 		if (weak.getType2() != null) {
+				// 			return pair.type_1 == weak.getType2() && pair.type_2 == weak.getType1();
+				// 		}
+				// 		return false;
+				// 	});
+				// 	if (!addFlg) {
+				// 		typePair.add(new TypePair(weak.getType1(), weak.getType2()));
+				// 	}
+				// }
 				if (matchFlg) {
-					boolean addFlg = typePair.stream().anyMatch(pair -> {
-						if (weak.getType2() != null) {
-							return pair.type_1 == weak.getType2() && pair.type_2 == weak.getType1();
-						}
-						return false;
-					});
-					if (!addFlg) {
-						typePair.add(new TypePair(weak.getType1(), weak.getType2()));
-					}
+					typePair.add(new TypePair(weak.getType1(), weak.getType2()));
 				}
 			});
 		}
