@@ -12,7 +12,6 @@ import { useLocation } from "react-router-dom";
 const Pokedex = () => {
   /***** Defintion ******/
   const location = useLocation();
-  console.log(location.state);
 
   /***** JSX ******/
   return (

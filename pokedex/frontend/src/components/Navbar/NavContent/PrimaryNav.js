@@ -1,21 +1,19 @@
-import { Link } from "react-router-dom";
-import React, { useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolUtils";
 
 const PrimaryNav = () => {
-  
-  
   const iconPath = "../icons/";
   const iconList = [
     { name: "home", backgroundCSS: "#AAAAAA", link: "/home" },
     { name: "pokedex", backgroundCSS: "#FF0033", link: "/pokedex" },
-    { name: "game", backgroundCSS: "#FF6666", link: "/pokemon-video-games" },
-    { name: "trading", backgroundCSS: "#FFCC00", link: "/pokemon-tcg" },
+    { name: "game", backgroundCSS: "#FF6666", link: "/game" },
+    { name: "trading", backgroundCSS: "#FFCC00", link: "/trading" },
     { name: "animation", backgroundCSS: "#00BB00", link: "/animation" },
-    { name: "trophy", backgroundCSS: "#0099FF", link: "/play-pokemon" },
-    { name: "news", backgroundCSS: "#0000FF", link: "/pokemon-news" },
+    { name: "trophy", backgroundCSS: "#0099FF", link: "/trophy" },
+    { name: "news", backgroundCSS: "#0000FF", link: "/news" },
   ];
   const [clickActive, setClickActive] = useState(false);
   const [clickedTag, setClickedTag] = useState([]);
@@ -23,22 +21,50 @@ const PrimaryNav = () => {
   const extension = ".png";
   const imageBeforeTag = " span img:nth-of-type(1)"; //イメージ変更前DOM指定用
   const imageAfterTag = " span img:nth-of-type(2)"; //イメージ変更後DOM指定用
-  
-  const changeColor = (icon, action) =>{
+
+  const location = useLocation();
+  const [isReloaded, setIsReloaded] = useState(false);
+
+  useEffect(() => {
+    // ページがロードされた場合
+    const wasReloaded = sessionStorage.getItem('wasReloaded') === 'true';
+    if (wasReloaded) {
+      setIsReloaded(true);
+      // セッションをクリア
+      sessionStorage.removeItem('wasReloaded');
+      const pathSegments = location.pathname.split('/');
+      const pageName = pathSegments[pathSegments.length - 1] || pathSegments[pathSegments.length - 2];
+      changeColor(iconList.find(icon => icon.name === pageName), "add");
+    }
+
+    const handleBeforeUnload = () => {
+      sessionStorage.setItem('wasReloaded', 'true');
+    };
+
+    // インベントリスナーを追加
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // インベントリスナーを削除
+    return () => {
+      window.addEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
+
+  const changeColor = (icon, action) => {
     const el_title = document.querySelector("#title" + icon.name);
     const el_li = document.querySelector("#" + icon.name);
     const el_imageB = document.querySelector("#" + icon.name + imageBeforeTag);
     const el_imageA = document.querySelector("#" + icon.name + imageAfterTag);
 
     switch (action) {
-      case 'add':
+      case "add":
         el_title.style.color = "white";
         el_li.style.color = "white";
         el_li.style.background = icon.backgroundCSS;
         el_imageB.style.opacity = "0%";
         el_imageA.style.opacity = "100%";
         break;
-      case 'remove':
+      case "remove":
         el_title.style.color = "#464646";
         el_li.style.color = "#464646";
         el_li.style.background = "#fff";
@@ -46,21 +72,21 @@ const PrimaryNav = () => {
         el_imageA.style.opacity = "0%";
         break;
     }
-  }
-    
-  const clickHandler = (icon) =>{
-    clickActive && changeColor(clickedTag, 'remove');
+  };
+
+  const clickHandler = (icon) => {
+    clickActive && changeColor(clickedTag, "remove");
     setClickedTag(icon);
     setClickActive(true);
-  }
-    
-  const mouseEnterHandler = (icon) =>{
-    changeColor(icon, 'add');
-  }
-    
-  const mouseLeaveHandler = (icon) =>{
-    clickedTag.name !== icon.name && changeColor(icon, 'remove');
-  }
+  };
+
+  const mouseEnterHandler = (icon) => {
+    changeColor(icon, "add");
+  };
+
+  const mouseLeaveHandler = (icon) => {
+    clickedTag.name !== icon.name && changeColor(icon, "remove");
+  };
 
   return (
     <ul css={primaryNav}>
@@ -116,7 +142,7 @@ const primaryNav = css`
     width: 100%;
   }
   li:after {
-    content: ' ';
+    content: " ";
     height: 6px;
     left: 0;
     position: absolute;
@@ -148,7 +174,6 @@ const primaryNav = css`
     border-bottom-right-radius: 5px;
   }
   li.home:hover {
-
   }
   /* タイトル部共通 */
   span.title {

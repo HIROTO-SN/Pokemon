@@ -43,8 +43,6 @@ const FilterHeader = () => {
     setLoader(false);
   };
 
-  console.log(useSearch);
-
   /***** JSX ******/
   return (
     <DivFilterHead>
