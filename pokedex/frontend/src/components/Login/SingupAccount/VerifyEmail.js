@@ -43,7 +43,6 @@ const VerifyEmail = ({ Banner }) => {
   const searchParams = new URLSearchParams(location.search);
   const token = searchParams.get("token");
   const [pageType, setPageType] = useState("");
-  console.log(pageType);
 
   /***** JS ******/
   useLayoutEffect(() => {
