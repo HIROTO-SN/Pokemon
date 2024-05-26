@@ -227,7 +227,6 @@ const PokemonDetails = () => {
       setEvolutionDetails(res.data.evolutionDetails);
       setPokePrevNextData(res_paging.data);
       formSelectAction(1);
-      // console.log("res.data :");
       setEvolutionPoints(getEvolutionPoints(res.data.evolutionDetails));
       setloadFlg(true);
     };
