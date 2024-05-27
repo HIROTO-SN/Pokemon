@@ -150,8 +150,6 @@ const FilterHeaderSearch = () => {
     setLoader(false);
   };
 
-  console.log(useSearch);
-
   /***** JSX ******/
   return (
     <div css={searchInputItems}>
