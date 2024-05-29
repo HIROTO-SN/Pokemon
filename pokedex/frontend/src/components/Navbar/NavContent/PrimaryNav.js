@@ -75,7 +75,7 @@ const PrimaryNav = () => {
   };
 
   const clickHandler = (icon) => {
-    clickActive && changeColor(clickedTag, "remove");
+    clickActive && clickedTag.name !== icon.name && changeColor(clickedTag, "remove");
     setClickedTag(icon);
     setClickActive(true);
   };
