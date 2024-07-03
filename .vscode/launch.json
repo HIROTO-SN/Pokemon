@@ -6,6 +6,13 @@
 	"configurations": [
 		{
 			"type": "java",
+			"name": "WebScraper2",
+			"request": "launch",
+			"mainClass": "utils.WebScraper2",
+			"projectName": "pokedex"
+		},
+		{
+			"type": "java",
 			"name": "WebScraper",
 			"request": "launch",
 			"mainClass": "utils.WebScraper",

@@ -22,7 +22,8 @@ public class WebScraper {
 
 		try {
 			// website指定
-			String url = "https://bulbapedia.bulbagarden.net/wiki/Kleavor_(Pok%C3%A9mon)";
+			// String url = "https://bulbapedia.bulbagarden.net/wiki/Nidoran%E2%99%80";
+			String url = "https://bulbapedia.bulbagarden.net/wiki/Blastoise";
 
 			// HTMLアクセステスト
 			Connection.Response response = Jsoup.connect(url).execute();
@@ -35,7 +36,7 @@ public class WebScraper {
 			if (httpStatus.is2xxSuccessful()) {
 				Document doc = response.parse();
 				// Find the span with the specific text
-				String targetText = "Scarlet";
+				String targetText = "Brilliant Diamond";
 				Elements spans = doc.select("span:containsOwn(" + targetText + ")");
 
 				for (Element span : spans) {
