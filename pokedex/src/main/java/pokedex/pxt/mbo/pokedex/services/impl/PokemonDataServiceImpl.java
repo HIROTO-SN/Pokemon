@@ -1,26 +1,18 @@
 package pokedex.pxt.mbo.pokedex.services.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.net.URLEncoder;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +23,6 @@ import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.TypeChart;
-import pokedex.pxt.mbo.pokedex.exception.PokedexException;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.TypesDto;
@@ -339,8 +330,8 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		// バージョン情報
 		dto.setVersions(new ArrayList<DetailsStrVal>(
 				Arrays.asList(
-						new DetailsStrVal("x", getVersionInfos(poke.getPokemonName(), "Scarlet")),
-						new DetailsStrVal("y", getVersionInfos(poke.getPokemonName(), "Violet")))));
+						new DetailsStrVal("x", poke.getV1_description()),
+						new DetailsStrVal("y", poke.getV2_description()))));
 		// ステータス（HP・Attack・Defenseなど）
 		dto.setStatList(new ArrayList<DetailsIntVal>(
 				Arrays.asList(
@@ -535,62 +526,6 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			});
 		}
 		return typePair;
-	}
-
-	/**
-	 * Pokemonのバージョン情報を別サイトからスクレイプ
-	 * 
-	 * @param name <String> スクレイプ対象ポケモン名
-	 * @param target <String> Scarlet/Violet
-	 * @return バージョン情報
-	 */
-	private String getVersionInfos(String name, String target) throws PokedexException{
-
-		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
-		try {
-			// website指定
-			String encodedName = URLEncoder.encode(name, "UTF-8");
-			String url = "https://bulbapedia.bulbagarden.net/wiki/" + encodedName + "_(Pok%C3%A9mon)";
-
-			// HTMLアクセステスト
-			Connection.Response response = Jsoup.connect(url).execute();
-
-			// アクセスコードを取得（アクセス可否判定）
-			int statusCode = response.statusCode();
-			httpStatus = HttpStatus.valueOf(statusCode);
-
-			// ステータスが200の時は処理を続行
-			if (httpStatus.is2xxSuccessful()) {
-				Document doc = response.parse();
-				// Find the span with the specific text
-				String targetText = target;
-				Elements spans = doc.select("span:containsOwn(" + targetText + ")");
-
-				for (Element span : spans) {
-					if (span.text().trim().equals(targetText)) {
-						// Navigate to the parent th, then tr, and find the td
-						Element tr = span.parent().parent().parent();
-						if (tr != null) {
-							Element td = tr.select("td.roundy").first();
-							if (td != null) {
-								// Print the found span
-								return td.text();
-							}
-						}
-					}
-				}
-				return null;
-			} else {
-				log.error("Failed to fetch the web page. HTTP status: {}", request.getRequestURL().toString());
-				return null;
-			}
-		} catch (IOException e) {
-			log.error("Web scraping failed with an IO error at {} : {}", request.getRequestURL().toString(), e.getMessage());
-			return null;
-		} catch (Exception e) {
-			log.error("Web scraping failed unexpectedly occurred at {} : {}", request.getRequestURL().toString(), e.getMessage());
-			return null;
-		}
 	}
 
 	/**
