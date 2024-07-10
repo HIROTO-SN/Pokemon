@@ -36,6 +36,9 @@ public class Pokemon {
 	@Column(name = "pokemon_name", nullable = false, unique = true)
 	private String pokemonName;
 
+	@Column(name = "form_name")
+	private String formName;
+
 	@Column(nullable = true)
 	private double height;
 
