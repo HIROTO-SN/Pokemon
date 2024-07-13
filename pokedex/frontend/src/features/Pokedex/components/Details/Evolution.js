@@ -261,11 +261,13 @@ const useCssEvolution = () => {
       case 1:
         return "29.0225%";
       case 11:
+      case 22:
         if (s === 1) {
           return "21.7625%";
         } else if (s === 2) {
           return "58.0325%";
         }
+        break;
       case 31:
       case 81:
         return s === 1 ? "3.6225%" : "0";
@@ -278,6 +280,7 @@ const useCssEvolution = () => {
         } else if (s === 3) {
           return "72.5425%";
         }
+        break;
       default:
         return "1em";
       case 211:
