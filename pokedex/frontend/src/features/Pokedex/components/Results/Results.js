@@ -144,6 +144,8 @@ const Results = ( { passedState } ) => {
         }
         break;
       }
+      default:
+        break;
     }
   };
 
