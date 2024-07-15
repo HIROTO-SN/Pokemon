@@ -1,4 +1,4 @@
-package pokedex.pxt.mbo.pokedex.payload.pokemon;
+package pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList;
 
 import java.util.List;
 
@@ -12,8 +12,6 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PokemonDto {
-	private int pokemonId;
-	private int formId;
-	private String pokemonName;
-	private List<TypesDto> types;
+	private boolean hasMoreThanTwoPages;
+	private List<PokemonBasic> pokemonList;
 }

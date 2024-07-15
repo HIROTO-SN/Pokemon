@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
@@ -23,7 +24,6 @@ import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.TypeChart;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.TypesDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails;
@@ -31,6 +31,8 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.Abilitie
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttLeft;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttRight;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.WeakDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList.PokemonBasic;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsDblVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsIntVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsStrVal;
@@ -101,8 +103,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param request <searchDto> リクエスト
 	 * @return PokemonDtoオブジェクト
 	 */
-	public List<PokemonDto> getPokemonList(SearchDto searchDto) {
-		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
+	public PokemonDto getPokemonList(SearchDto searchDto) {
+		boolean hasMoreThanTwoPages = true;
+		List<PokemonBasic> pokemonBasic = new ArrayList<>();
 		try {
 			// 初回表示時
 			switch (searchDto.getActionType()) {
@@ -114,14 +117,14 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 							Constants.POKE.get("PAGE_SIZE"))
 							.ifPresent(poke -> {
 								poke.forEach(_poke -> {
-									pokemonDto.add(setPokemonDto(_poke));
+									pokemonBasic.add(setPokemonDto(_poke));
 								});
 							});
 					break;
 				}
 				case "search": {
 					// 初回以外の検索または'Surprise Me!'ではない時の「Load more」押下時
-					pokemonRepository.findAll(
+					Page<Pokemon> pokemonSearch = pokemonRepository.findAll(
 							Specification
 									.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
 									.and(spec.idBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
@@ -133,11 +136,12 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 									.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight")),
 							PageRequest.of(searchDto.getPageNumber(),
 									Constants.POKE.get("PAGE_SIZE"),
-									manageSort(searchDto.getSortBy())))
+									manageSort(searchDto.getSortBy())));
+					pokemonSearch									
 							.forEach(poke -> {
-								pokemonDto.add(setPokemonDto(poke));
+								pokemonBasic.add(setPokemonDto(poke));
 							});
-
+					hasMoreThanTwoPages = pokemonSearch.getTotalPages() >= 2;
 					break;
 				}
 				case "surprise": {
@@ -166,7 +170,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 									.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
 									.and(spec.idInclude(idList)))
 							.forEach(poke -> {
-								pokemonDto.add(setPokemonDto(poke));
+								pokemonBasic.add(setPokemonDto(poke));
 							});
 					break;
 				}
@@ -179,7 +183,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			log.error("Invalid action type at {} : [searchDto.getActionType() = {}]", request.getRequestURL().toString(),
 					searchDto.getActionType());
 		}
-		return pokemonDto;
+		return new PokemonDto(hasMoreThanTwoPages, pokemonBasic);
 	}
 
 	/**
@@ -270,21 +274,21 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
 	 * @return <PokemonDto> PokemonDtoオブジェクト
 	 */
-	private PokemonDto setPokemonDto(Pokemon poke) {
+	private PokemonBasic setPokemonDto(Pokemon poke) {
 
-		PokemonDto dto = new PokemonDto();
-		dto.setPokemonId(poke.getPokemonId());
-		dto.setFormId(poke.getFormId());
-		dto.setPokemonName(poke.getPokemonName());
+		PokemonBasic PokemonBasic = new PokemonBasic();
+		PokemonBasic.setPokemonId(poke.getPokemonId());
+		PokemonBasic.setFormId(poke.getFormId());
+		PokemonBasic.setPokemonName(poke.getPokemonName());
 		// タイプを取得しセット
 		List<TypesDto> typeList = new ArrayList<>();
 		typeList.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
 		if (poke.getType2() != null) {
 			typeList.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
 		}
-		dto.setTypes(typeList);
+		PokemonBasic.setTypes(typeList);
 
-		return dto;
+		return PokemonBasic;
 	}
 
 	/**

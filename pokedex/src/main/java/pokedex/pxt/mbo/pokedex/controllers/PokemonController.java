@@ -14,10 +14,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.Pagination;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsInfoDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList.PokemonDto;
 import pokedex.pxt.mbo.pokedex.services.PokemonDataService;
 
 @RestController
@@ -36,13 +36,13 @@ public class PokemonController {
 	 * @return response <PokemonDto>
 	 */
 	@PostMapping(value="/pokeList", produces="application/vnd.poke.v1+json")
-	public ResponseEntity<List<PokemonDto>> getPokemonList(@RequestBody SearchDto searchDto) {
+	public ResponseEntity<PokemonDto> getPokemonList(@RequestBody SearchDto searchDto) {
 		try {
-			List<PokemonDto> response = pokemonDataService.getPokemonList(searchDto);
-			if (response.size() == 0) {
-				return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.NO_CONTENT);
+			PokemonDto response = pokemonDataService.getPokemonList(searchDto);
+			if (response == null) {
+				return new ResponseEntity<PokemonDto>(response, HttpStatus.NO_CONTENT);
 			} else {
-				return new ResponseEntity<List<PokemonDto>>(response, HttpStatus.OK);
+				return new ResponseEntity<PokemonDto>(response, HttpStatus.OK);
 			}
 		} catch (RuntimeException ex) {
 			log.error("Unexpected runtime exception occurred: {}", ex.getMessage(), ex);

@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 
 import pokedex.pxt.mbo.pokedex.common.ApiEndPoints;
 import pokedex.pxt.mbo.pokedex.payload.SessionDto;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList.PokemonDto;
 import pokedex.pxt.mbo.pokedex.services.SessionService;
 
 @Service
