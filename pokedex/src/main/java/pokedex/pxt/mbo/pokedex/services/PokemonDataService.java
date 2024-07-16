@@ -6,14 +6,14 @@ import org.springframework.stereotype.Service;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.Pagination;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.PokemonDetailsInfoDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList.PokemonDto;
 
 @Service
 public interface PokemonDataService {
-	public List<PokemonDto> getPokemonList(SearchDto searchDto);
+	public PokemonDto getPokemonList(SearchDto searchDto);
 
 	public PokemonDetailsInfoDto getPokemonDetails(String pokemonName);
 

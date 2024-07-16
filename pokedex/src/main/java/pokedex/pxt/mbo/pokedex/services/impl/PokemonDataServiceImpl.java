@@ -1,26 +1,19 @@
 package pokedex.pxt.mbo.pokedex.services.impl;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
-import java.net.URLEncoder;
 
-import org.jsoup.Connection;
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,8 +24,6 @@ import pokedex.pxt.mbo.pokedex.common.Constants;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Evolution;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.Pokemon;
 import pokedex.pxt.mbo.pokedex.entity.pokemon.TypeChart;
-import pokedex.pxt.mbo.pokedex.exception.PokedexException;
-import pokedex.pxt.mbo.pokedex.payload.pokemon.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.SearchDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.TypesDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails;
@@ -40,6 +31,8 @@ import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.Abilitie
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttLeft;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.AttRight;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.AttributeDetails.WeakDto;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList.PokemonBasic;
+import pokedex.pxt.mbo.pokedex.payload.pokemon.pokeList.PokemonDto;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsDblVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsIntVal;
 import pokedex.pxt.mbo.pokedex.payload.pokemon.details.DetailsStrVal;
@@ -110,8 +103,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param request <searchDto> リクエスト
 	 * @return PokemonDtoオブジェクト
 	 */
-	public List<PokemonDto> getPokemonList(SearchDto searchDto) {
-		List<PokemonDto> pokemonDto = new ArrayList<PokemonDto>();
+	public PokemonDto getPokemonList(SearchDto searchDto) {
+		boolean hasMoreThanTwoPages = true;
+		List<PokemonBasic> pokemonBasic = new ArrayList<>();
 		try {
 			// 初回表示時
 			switch (searchDto.getActionType()) {
@@ -123,14 +117,14 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 							Constants.POKE.get("PAGE_SIZE"))
 							.ifPresent(poke -> {
 								poke.forEach(_poke -> {
-									pokemonDto.add(setPokemonDto(_poke));
+									pokemonBasic.add(setPokemonDto(_poke));
 								});
 							});
 					break;
 				}
 				case "search": {
 					// 初回以外の検索または'Surprise Me!'ではない時の「Load more」押下時
-					pokemonRepository.findAll(
+					Page<Pokemon> pokemonSearch = pokemonRepository.findAll(
 							Specification
 									.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
 									.and(spec.idBetween(searchDto.getNumberRangeMin(), searchDto.getNumberRangeMax()))
@@ -142,11 +136,12 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 									.and(spec.heightWeightSearch(searchDto.getWeightPoint(), "weight")),
 							PageRequest.of(searchDto.getPageNumber(),
 									Constants.POKE.get("PAGE_SIZE"),
-									manageSort(searchDto.getSortBy())))
+									manageSort(searchDto.getSortBy())));
+					pokemonSearch									
 							.forEach(poke -> {
-								pokemonDto.add(setPokemonDto(poke));
+								pokemonBasic.add(setPokemonDto(poke));
 							});
-
+					hasMoreThanTwoPages = pokemonSearch.getTotalPages() >= 2;
 					break;
 				}
 				case "surprise": {
@@ -175,7 +170,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 									.where(spec.formIdEquals(Constants.POKE.get("FORM_ID_FOR_LIST")))
 									.and(spec.idInclude(idList)))
 							.forEach(poke -> {
-								pokemonDto.add(setPokemonDto(poke));
+								pokemonBasic.add(setPokemonDto(poke));
 							});
 					break;
 				}
@@ -188,7 +183,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			log.error("Invalid action type at {} : [searchDto.getActionType() = {}]", request.getRequestURL().toString(),
 					searchDto.getActionType());
 		}
-		return pokemonDto;
+		return new PokemonDto(hasMoreThanTwoPages, pokemonBasic);
 	}
 
 	/**
@@ -279,21 +274,21 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @param pokemon <Pokemon> Pokemonエンティティオブジェクト
 	 * @return <PokemonDto> PokemonDtoオブジェクト
 	 */
-	private PokemonDto setPokemonDto(Pokemon poke) {
+	private PokemonBasic setPokemonDto(Pokemon poke) {
 
-		PokemonDto dto = new PokemonDto();
-		dto.setPokemonId(poke.getPokemonId());
-		dto.setFormId(poke.getFormId());
-		dto.setPokemonName(poke.getPokemonName());
+		PokemonBasic PokemonBasic = new PokemonBasic();
+		PokemonBasic.setPokemonId(poke.getPokemonId());
+		PokemonBasic.setFormId(poke.getFormId());
+		PokemonBasic.setPokemonName(poke.getPokemonName());
 		// タイプを取得しセット
 		List<TypesDto> typeList = new ArrayList<>();
 		typeList.add(new TypesDto(poke.getType1().getTypeId(), poke.getType1().getName()));
 		if (poke.getType2() != null) {
 			typeList.add(new TypesDto(poke.getType2().getTypeId(), poke.getType2().getName()));
 		}
-		dto.setTypes(typeList);
+		PokemonBasic.setTypes(typeList);
 
-		return dto;
+		return PokemonBasic;
 	}
 
 	/**
@@ -339,8 +334,8 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 		// バージョン情報
 		dto.setVersions(new ArrayList<DetailsStrVal>(
 				Arrays.asList(
-						new DetailsStrVal("x", getVersionInfos(poke.getPokemonName(), "Scarlet")),
-						new DetailsStrVal("y", getVersionInfos(poke.getPokemonName(), "Violet")))));
+						new DetailsStrVal("x", poke.getV1_description()),
+						new DetailsStrVal("y", poke.getV2_description()))));
 		// ステータス（HP・Attack・Defenseなど）
 		dto.setStatList(new ArrayList<DetailsIntVal>(
 				Arrays.asList(
@@ -535,62 +530,6 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 			});
 		}
 		return typePair;
-	}
-
-	/**
-	 * Pokemonのバージョン情報を別サイトからスクレイプ
-	 * 
-	 * @param name <String> スクレイプ対象ポケモン名
-	 * @param target <String> Scarlet/Violet
-	 * @return バージョン情報
-	 */
-	private String getVersionInfos(String name, String target) throws PokedexException{
-
-		HttpStatus httpStatus = HttpStatus.INTERNAL_SERVER_ERROR;;
-		try {
-			// website指定
-			String encodedName = URLEncoder.encode(name, "UTF-8");
-			String url = "https://bulbapedia.bulbagarden.net/wiki/" + encodedName + "_(Pok%C3%A9mon)";
-
-			// HTMLアクセステスト
-			Connection.Response response = Jsoup.connect(url).execute();
-
-			// アクセスコードを取得（アクセス可否判定）
-			int statusCode = response.statusCode();
-			httpStatus = HttpStatus.valueOf(statusCode);
-
-			// ステータスが200の時は処理を続行
-			if (httpStatus.is2xxSuccessful()) {
-				Document doc = response.parse();
-				// Find the span with the specific text
-				String targetText = target;
-				Elements spans = doc.select("span:containsOwn(" + targetText + ")");
-
-				for (Element span : spans) {
-					if (span.text().trim().equals(targetText)) {
-						// Navigate to the parent th, then tr, and find the td
-						Element tr = span.parent().parent().parent();
-						if (tr != null) {
-							Element td = tr.select("td.roundy").first();
-							if (td != null) {
-								// Print the found span
-								return td.text();
-							}
-						}
-					}
-				}
-				return null;
-			} else {
-				log.error("Failed to fetch the web page. HTTP status: {}", request.getRequestURL().toString());
-				return null;
-			}
-		} catch (IOException e) {
-			log.error("Web scraping failed with an IO error at {} : {}", request.getRequestURL().toString(), e.getMessage());
-			return null;
-		} catch (Exception e) {
-			log.error("Web scraping failed unexpectedly occurred at {} : {}", request.getRequestURL().toString(), e.getMessage());
-			return null;
-		}
 	}
 
 	/**

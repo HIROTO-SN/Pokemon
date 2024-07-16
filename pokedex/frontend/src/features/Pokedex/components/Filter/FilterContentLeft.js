@@ -224,6 +224,8 @@ const FilterContentLeft = () => {
           searchDipatch({ type: "checkWeak", val: [...clickedWeakList, id] });
         }
         break;
+      default:
+        break;
     }
   };
 

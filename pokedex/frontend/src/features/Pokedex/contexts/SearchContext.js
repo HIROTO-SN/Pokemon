@@ -30,6 +30,7 @@ export const initSearchState = {
   sortBy: "asc",
   pageNumber: 0,
   actionType: "init",
+  isLoadMoreNeeded: false,
 };
 
 /*
@@ -99,6 +100,8 @@ export const SearchProvider = ({ children }) => {
           };
         case "reset":
           return { ...initSearchState, sortBy: action.val };
+        default:
+          break;
       }
     },
     initSearchState
