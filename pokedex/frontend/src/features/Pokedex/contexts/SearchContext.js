@@ -97,6 +97,7 @@ export const SearchProvider = ({ children }) => {
             pokeIdList: action.pokeIdList,
             pageNumber: action.val,
             actionType: action.actionType,
+            isLoadMoreNeeded: action.hasMoreThanTwoPages
           };
         case "reset":
           return { ...initSearchState, sortBy: action.val };

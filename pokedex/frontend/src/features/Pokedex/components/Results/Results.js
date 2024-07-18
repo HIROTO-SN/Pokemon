@@ -80,11 +80,11 @@ const Results = ( { passedState } ) => {
           searchDipatch({ type: "checkWeak", val: [passedState.type_id] });
         }
         const res = await getPokemonList(newSearch);
-        loadPokemon(res.data, "init");
+        loadPokemon(res.data.pokemonList, "init");
       } else {
         // 初期表示用ポケモンリストを取得
         const res = await getPokemonList(search);
-        loadPokemon(res.data, "init");
+        loadPokemon(res.data.pokemonList, "init");
       }
       setLoader(false);
     };
@@ -102,7 +102,7 @@ const Results = ( { passedState } ) => {
     // ローダーを表示
     setLoader(true);
     const nextTwelvePokemon = await getPokemonList(search);
-    loadPokemon(nextTwelvePokemon.data, "more");
+    loadPokemon(nextTwelvePokemon.data.pokemonList, "more");
     // ローダーを再度非表示
     setLoader(false);
   };
@@ -162,7 +162,10 @@ const Results = ( { passedState } ) => {
           </ul>
           <div css={contentBlock}>
             {loader && <Load />}
-            <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
+            {
+              search.isLoadMoreNeeded &&
+              <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
+            }
           </div>
         </>
         :
