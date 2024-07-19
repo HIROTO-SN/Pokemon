@@ -22,13 +22,14 @@ export const pokeSearchSubmit = async (
     actionType: actionType,
   };
   const res = await getSearchedPokemonList(newSearch);
-  setPoke(res.data);
+  setPoke(res.data.pokemonList);
   setNoResult(res.status);
   dispatchSearch({
     type: "setPageNumber",
-    pokeIdList: getPokeIdList(res.data),
+    pokeIdList: getPokeIdList(res.data.pokemonList),
     val: 1,
     actionType: actionType,
+    hasMoreThanTwoPages: res.data.hasMoreThanTwoPages,
   });
 };
 
@@ -57,7 +58,5 @@ export const getEvolutionPoint = (data) => {
   for (var i = 0; i <= data.length; i++) {
     
   }
-
-
   return point;
 };
