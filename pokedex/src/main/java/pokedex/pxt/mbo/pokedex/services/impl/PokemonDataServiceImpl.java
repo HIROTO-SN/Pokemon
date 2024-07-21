@@ -141,7 +141,7 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 							.forEach(poke -> {
 								pokemonBasic.add(setPokemonDto(poke));
 							});
-					hasMoreThanTwoPages = pokemonSearch.getTotalPages() >= 2;
+					hasMoreThanTwoPages = pokemonSearch.hasNext();
 					break;
 				}
 				case "surprise": {
