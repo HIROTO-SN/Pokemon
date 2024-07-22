@@ -1,7 +1,7 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
-import { useEffect, useLayoutEffect, useState } from "react";
+import { useLayoutEffect, useState } from "react";
 import { MdOutlineCatchingPokemon } from "react-icons/md";
 import { useLocation, useNavigate } from "react-router";
 import { Link } from "react-router-dom";
@@ -10,10 +10,12 @@ import {
   CREATE_ACCOUNT,
 } from "../../../constants/ConstantsGeneral";
 import { REGEX_ACTIVATION } from "../../../constants/ValidationMessage";
+import { useLoadFlg, useSetLoadFlg } from "../../../contexts/LoadContext";
 import {
   useInputAccountInfo,
   useSetInputAccountInfo,
 } from "../../../contexts/SignupContext";
+import Load from "../../../features/Pokedex/components/Results/Load";
 import { capitalizeFirstLetter } from "../../../features/Pokedex/utils/ConvToolUtils";
 import {
   contentBlock,
@@ -30,8 +32,6 @@ import { isStrEmptyOrNull } from "../../CommonFunc/Common";
 import { fieldInputEmptyCheck } from "../../CommonFunc/CommonAlert";
 import { chkToken, verifyEmail } from "../../api/SignUpApi";
 import AlertSignUp from "./AlertSignUp";
-import { useLoadFlg, useSetLoadFlg } from "../../../contexts/LoadContext";
-import Load from "../../../features/Pokedex/components/Results/Load";
 
 const VerifyEmail = ({ Banner }) => {
   /***** CSS ******/
