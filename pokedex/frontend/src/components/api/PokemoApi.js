@@ -12,7 +12,7 @@ export const getPokemonList = async (search) => {
       },
     });
   } catch (e) {
-    console.log("サーバーとの通信に失敗:" + e);
+    return null;
   }
 };
 

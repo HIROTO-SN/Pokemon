@@ -74,6 +74,7 @@ const Results = ({ passedState }) => {
   useEffect(() => {
     setloadFlg(true);
     const fetchPokemonData = async () => {
+      let res = null;
       if (!isStrEmptyOrNull(passedState)) {
         let newSearch;
         if (passedState.action === "type") {
@@ -91,13 +92,12 @@ const Results = ({ passedState }) => {
           };
           searchDipatch({ type: "checkWeak", val: [passedState.type_id] });
         }
-        const res = await getPokemonList(newSearch);
-        loadPokemon(res.data, "init");
+        res = await getPokemonList(newSearch);
       } else {
         // 初期表示用ポケモンリストを取得
-        const res = await getPokemonList(search);
-        loadPokemon(res.data, "init");
+        res = await getPokemonList(search);
       }
+      if(res) loadPokemon(res.data, "init");
       setLoader(false);
     };
     const timer = setTimeout(() => {
@@ -167,7 +167,7 @@ const Results = ({ passedState }) => {
   /***** JSX ******/
   return (
     <section id="result" css={[results, clearTable]}>
-      {pokemonData.length > 0 && typeof pokemonData !== void 0 ? (
+      {pokemonData && pokemonData.length > 0 ? (
         // Pokemonリストを取得できた時
         <>
           <ul css={resultsList}>
