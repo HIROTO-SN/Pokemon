@@ -15,6 +15,7 @@ import {
   useSearchCondition,
   useSearchDispatch,
   useSetLoader,
+  useSetNoResult,
   useSetPokemonData,
 } from "../../contexts/SearchContext.js";
 import { getPokeIdList } from "../../utils/PokeCommmonFunc.js";
@@ -65,6 +66,7 @@ const Results = ({ passedState }) => {
   const setPokemonData = useSetPokemonData();
   const search = useSearchCondition();
   const searchDipatch = useSearchDispatch();
+  const setNoResult = useSetNoResult();
 
   /***** JS ******/
   /**
@@ -97,7 +99,7 @@ const Results = ({ passedState }) => {
         // 初期表示用ポケモンリストを取得
         res = await getPokemonList(search);
       }
-      if(res) loadPokemon(res.data, "init");
+      res ? loadPokemon(res.data, "init") : setNoResult(500);
       setLoader(false);
     };
     const timer = setTimeout(() => {
