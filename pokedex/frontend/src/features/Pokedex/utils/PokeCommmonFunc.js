@@ -22,15 +22,18 @@ export const pokeSearchSubmit = async (
     actionType: actionType,
   };
   const res = await getSearchedPokemonList(newSearch);
-  setPoke(res.data.pokemonList);
   setNoResult(res.status);
-  dispatchSearch({
-    type: "setPageNumber",
-    pokeIdList: getPokeIdList(res.data.pokemonList),
-    val: 1,
-    actionType: actionType,
-    hasMoreThanTwoPages: res.data.hasMoreThanTwoPages,
-  });
+
+  if (res) {
+    setPoke(res.data.pokemonList);
+    dispatchSearch({
+      type: "setPageNumber",
+      pokeIdList: getPokeIdList(res.data.pokemonList),
+      val: 1,
+      actionType: actionType,
+      hasMoreThanTwoPages: res.data.hasMoreThanTwoPages,
+    });
+  }
 };
 
 /**
@@ -39,7 +42,7 @@ export const pokeSearchSubmit = async (
  * @return {List} idList - 表示されているpokemonIdリスト
  */
 export const getPokeIdList = (data) => {
-  if (!isStrEmptyOrNull(data)) {
+  if (data) {
     let idList = data.map((_data) => _data.pokemonId);
     return idList;
   }

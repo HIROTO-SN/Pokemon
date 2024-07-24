@@ -1,7 +1,12 @@
 /** @jsxImportSource @emotion/react */
 import { css } from "@emotion/react";
 import { useEffect } from "react";
-import { clearTable, column12, push1 } from "../../../../components/CommonCss/Layout.js";
+import {
+  clearTable,
+  column12,
+  push1,
+} from "../../../../components/CommonCss/Layout.js";
+import { isStrEmptyOrNull } from "../../../../components/CommonFunc/Common.js";
 import { getPokemonList } from "../../../../components/api/PokemoApi.js";
 import { useSetLoadFlg } from "../../../../contexts/LoadContext.js";
 import {
@@ -17,9 +22,8 @@ import Alert from "./Alert.js";
 import Load from "./Load.js";
 import LoadMore from "./LoadMore.js";
 import PokemonList from "./PokemonList.js";
-import { isStrEmptyOrNull } from "../../../../components/CommonFunc/Common.js";
 
-const Results = ( { passedState } ) => {
+const Results = ({ passedState }) => {
   /***** CSS ******/
   const results = css`
     overflow: visible;
@@ -70,22 +74,30 @@ const Results = ( { passedState } ) => {
   useEffect(() => {
     setloadFlg(true);
     const fetchPokemonData = async () => {
+      let res = null;
       if (!isStrEmptyOrNull(passedState)) {
         let newSearch;
         if (passedState.action === "type") {
-          newSearch = {...search, types: [passedState.type_id], actionType: "search"};
+          newSearch = {
+            ...search,
+            types: [passedState.type_id],
+            actionType: "search",
+          };
           searchDipatch({ type: "checkType", val: [passedState.type_id] });
         } else if (passedState.action === "weak") {
-          newSearch = {...search, weaks: [passedState.type_id], actionType: "search"};
+          newSearch = {
+            ...search,
+            weaks: [passedState.type_id],
+            actionType: "search",
+          };
           searchDipatch({ type: "checkWeak", val: [passedState.type_id] });
         }
-        const res = await getPokemonList(newSearch);
-        loadPokemon(res.data.pokemonList, "init");
+        res = await getPokemonList(newSearch);
       } else {
         // 初期表示用ポケモンリストを取得
-        const res = await getPokemonList(search);
-        loadPokemon(res.data.pokemonList, "init");
+        res = await getPokemonList(search);
       }
+      if(res) loadPokemon(res.data, "init");
       setLoader(false);
     };
     const timer = setTimeout(() => {
@@ -102,30 +114,31 @@ const Results = ( { passedState } ) => {
     // ローダーを表示
     setLoader(true);
     const nextTwelvePokemon = await getPokemonList(search);
-    loadPokemon(nextTwelvePokemon.data.pokemonList, "more");
+    loadPokemon(nextTwelvePokemon.data, "more");
     // ローダーを再度非表示
     setLoader(false);
   };
 
   /**
-   * @param {List} data - 取得したPokemonデータ
+   * @param {Object} data - 取得したPokemonデータオブジェクト
    * @param {String} type - Dispatchアクション名
    * PokemonリストのState更新関数
    */
   const loadPokemon = (data, type) => {
     switch (type) {
       case "init": {
-        setPokemonData(data);
+        setPokemonData(data.pokemonList);
         searchDipatch({
           type: "setPageNumber",
-          pokeIdList: getPokeIdList(data),
+          pokeIdList: getPokeIdList(data.pokemonList),
           val: 1,
           actionType: "search",
+          hasMoreThanTwoPages: true,
         });
         break;
       }
       case "more": {
-        const combinedPokemonData = [...pokemonData, ...data];
+        const combinedPokemonData = [...pokemonData, ...data.pokemonList];
         setPokemonData(combinedPokemonData);
         if (search.actionType === "surprise") {
           searchDipatch({
@@ -133,6 +146,7 @@ const Results = ( { passedState } ) => {
             pokeIdList: getPokeIdList(combinedPokemonData),
             val: search.pageNumber + 1,
             actionType: "surprise",
+            hasMoreThanTwoPages: data.hasMoreThanTwoPages,
           });
         } else {
           searchDipatch({
@@ -140,6 +154,7 @@ const Results = ( { passedState } ) => {
             pokeIdList: getPokeIdList(combinedPokemonData),
             val: search.pageNumber + 1,
             actionType: "search",
+            hasMoreThanTwoPages: data.hasMoreThanTwoPages,
           });
         }
         break;
@@ -152,23 +167,24 @@ const Results = ( { passedState } ) => {
   /***** JSX ******/
   return (
     <section id="result" css={[results, clearTable]}>
-      {pokemonData.length > 0 && typeof pokemonData !== void 0 ?
+      {pokemonData && pokemonData.length > 0 ? (
         // Pokemonリストを取得できた時
         <>
           <ul css={resultsList}>
             {pokemonData.map((pokemon, i) => {
-              return <PokemonList key={i} pokemon={pokemon} />;
+              return (
+                <PokemonList key={i} pokemon={pokemon} />
+              );
             })}
           </ul>
           <div css={contentBlock}>
             {loader && <Load />}
-            {
-              search.isLoadMoreNeeded &&
+            {search.isLoadMoreNeeded && (
               <LoadMore clickedloadMorePokemon={clickedloadMorePokemon} />
-            }
+            )}
           </div>
         </>
-        :
+      ) : (
         // Pokemonリストを取得できず、エラーの時
         <>
           {loader && <Load />}
@@ -176,7 +192,7 @@ const Results = ( { passedState } ) => {
             <Alert />
           </div>
         </>
-      }
+      )}
     </section>
   );
 };

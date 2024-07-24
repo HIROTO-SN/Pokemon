@@ -76,8 +76,8 @@ const FilterContentRight = () => {
     }
   `;
   const pill = (name) => css`
-    margin-left: ${name == "middle" && "5.62%"};
-    margin-right: ${name == "middle" && "5.62%"};
+    margin-left: ${name === "middle" && "5.62%"};
+    margin-right: ${name === "middle" && "5.62%"};
   `;
   const imgHWeight = ({ list }) => css`
     cursor: pointer;
@@ -167,6 +167,8 @@ const FilterContentRight = () => {
           });
         }
         break;
+      default:
+        break;
     }
   };
 
@@ -194,10 +196,10 @@ const FilterContentRight = () => {
       el_target.style.background = CLICKED_COLOR.HW;
     };
     clickedHeightList.map((name) => {
-      func_map(name, "h_");
+      return func_map(name, "h_");
     });
     clickedWeightList.map((name) => {
-      func_map(name, "w_");
+      return func_map(name, "w_");
     });
   };
 
@@ -240,6 +242,7 @@ const FilterContentRight = () => {
                   css={imgHWeight({ list })}
                   src={list.urlB}
                   height={list.height}
+                  alt="imageHeight"
                 />
               </span>
               <span css={offscreen}></span>
@@ -262,6 +265,7 @@ const FilterContentRight = () => {
                   css={imgHWeight({ list })}
                   src={list.urlB}
                   height={list.height}
+                  alt="imageWeight"
                 />
               </span>
               <span css={offscreen}></span>
