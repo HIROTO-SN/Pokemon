@@ -1,5 +1,4 @@
 import { getSearchedPokemonList } from "../../../components/api/PokemoApi.js";
-import { isStrEmptyOrNull } from "../../../components/CommonFunc/Common.js";
 
 /**
  * Pokedex画面での検索機能カスタムHOOKS
@@ -15,6 +14,7 @@ export const pokeSearchSubmit = async (
   setNoResult,
   actionType = "search"
 ) => {
+  setNoResult();
   const newSearch = {
     ...search,
     pokeIdList: [],
@@ -23,6 +23,7 @@ export const pokeSearchSubmit = async (
   };
   const res = await getSearchedPokemonList(newSearch);
   setNoResult(res.status);
+  console.log("status: " + res.status);
 
   if (res) {
     setPoke(res.data.pokemonList);
