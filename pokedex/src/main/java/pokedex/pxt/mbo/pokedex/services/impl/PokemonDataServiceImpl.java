@@ -509,6 +509,9 @@ public class PokemonDataServiceImpl implements PokemonDataService {
 	 * @return <SearchDto> SearchDtoオブジェクト(検索内容)
 	 */
 	private List<TypePair> getWeakTypePair(List<Integer> weakList) {
+		if (weakList.size() == 0) {
+			return null;
+		}
 		List<TypePair> typePair = new ArrayList<>();
 		if (weakList.size() > 0) {
 			typeChartRepository.findAll().forEach(weak -> {
