@@ -112,7 +112,11 @@ public class PokemonSpecification<Pokemon> {
 	 */
 	public Specification<Pokemon> typeEqual(Integer typeId, String no) {
 		return (root, query, builder) -> {
-			return builder.equal(root.get("type" + no).get("typeId"), typeId);
+			return 
+				typeId != null ?
+					builder.equal(root.get("type" + no).get("typeId"), typeId) :
+					builder.isNull(root.get("type" + no))
+			;
 			// .equal(root.join("type" + no, JoinType.LEFT)
 			// .get("typeId"), type.intValue());
 		};
@@ -129,10 +133,12 @@ public class PokemonSpecification<Pokemon> {
 	public Specification<Pokemon> weakSearch(List<TypePair> weaks, String n1, String n2) {
 		if (weaks == null) {
 			return null;
+		} else if (weaks.size() == 0) {
+			return (root, query, criteriaBuilder) -> criteriaBuilder.disjunction();
 		} else {
 			Specification<Pokemon> retSpecification = null;
 			for (TypePair weak : weaks) {
-				Specification<Pokemon> spec = typeEqual(weak.type_1, n1).and(typeEqual(weak.type_2, n2));
+				Specification<Pokemon> spec = typeEqual(weak.type_1, n1).and(typeEqual(weak.type_2, n2)) ;
 				if (retSpecification == null) {
 					retSpecification = spec;
 				} else {

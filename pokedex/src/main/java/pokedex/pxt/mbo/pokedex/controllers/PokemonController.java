@@ -39,7 +39,7 @@ public class PokemonController {
 	public ResponseEntity<PokemonDto> getPokemonList(@RequestBody SearchDto searchDto) {
 		try {
 			PokemonDto response = pokemonDataService.getPokemonList(searchDto);
-			if (response == null) {
+			if (response.getPokemonList().size() == 0) {
 				return new ResponseEntity<PokemonDto>(response, HttpStatus.NO_CONTENT);
 			} else {
 				return new ResponseEntity<PokemonDto>(response, HttpStatus.OK);
